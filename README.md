@@ -162,7 +162,7 @@ Mở file `vci-admin-connected.html` trong trình duyệt:
 1. Nhập URL backend vào ô **"URL Backend"** → **Test & Lưu**
    - Dev local: `http://localhost:5000`
    - Production: `https://api.vcicantho.com`
-2. Đăng nhập: `admin@vci.edu.vn` / `Admin@VCI2026!`
+2. Đăng nhập: `admin@vci.edu.vn` / `node`
 3. Đổi mật khẩu ngay sau lần đăng nhập đầu
 
 ---
