@@ -7,84 +7,75 @@ const { body, validationResult } = require('express-validator');
 const { getSupabase } = require('../config/supabase');
 const { protect } = require('../middleware/auth');
 
-const sign = (id) =>
-  jwt.sign(
-    { id },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_EXPIRES || '8h'
-    }
-  );
+// ==========================
+// JWT SIGN
+// ==========================
+const signToken = (id) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET missing');
+  }
+
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES || '8h'
+  });
+};
 
 
 // ======================================================
-// LOGIN (FIXED)
+// LOGIN
 // ======================================================
-
 router.post(
   '/login',
-
-  body('email').isEmail().normalizeEmail(),
+  body('email').isEmail(),
   body('password').notEmpty(),
 
   async (req, res) => {
-
-    console.log('BODY:', req.body);
-
-    const errs = validationResult(req);
-    if (!errs.isEmpty()) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        errors: errs.array()
+        errors: errors.array()
       });
     }
 
     try {
       const sb = getSupabase();
 
-      // ✅ FIX: dùng maybeSingle() thay vì single()
+      const email = req.body.email?.toLowerCase();
+
       const { data: user, error } = await sb
         .from('users')
         .select('*')
-        .eq('email', req.body.email)
+        .eq('email', email)
         .maybeSingle();
 
-      console.log('EMAIL INPUT:', req.body.email);
-      console.log('SUPABASE USER:', user);
-      console.log('SUPABASE ERROR:', error);
-
-      // ❌ handle Supabase error trước
       if (error) {
+        console.error('SUPABASE ERROR LOGIN:', error);
         return res.status(500).json({
           success: false,
-          message: error.message
+          message: 'Database error',
+          detail: error.message
         });
       }
 
-      // ❌ user không tồn tại
       if (!user) {
         return res.status(401).json({
           success: false,
-          message: 'Không tìm thấy user'
+          message: 'Email không tồn tại'
         });
       }
 
-      // ❌ user bị khóa
       if (!user.active) {
         return res.status(403).json({
           success: false,
-          message: 'Tài khoản đã bị khóa'
+          message: 'Tài khoản bị khóa'
         });
       }
 
-      console.log('INPUT PASSWORD:', req.body.password);
-      console.log('DB PASSWORD:', user.password);
-
-      // ❌ chống lỗi null password
       if (!user.password) {
         return res.status(500).json({
           success: false,
-          message: 'User chưa có mật khẩu trong DB'
+          message: 'User chưa có password trong DB'
         });
       }
 
@@ -93,8 +84,6 @@ router.post(
         user.password
       );
 
-      console.log('COMPARE RESULT:', ok);
-
       if (!ok) {
         return res.status(401).json({
           success: false,
@@ -102,18 +91,14 @@ router.post(
         });
       }
 
-      const token = sign(user.id);
-
-      console.log('TOKEN OK');
+      const token = signToken(user.id);
 
       await sb
         .from('users')
-        .update({
-          last_login: new Date().toISOString()
-        })
+        .update({ last_login: new Date().toISOString() })
         .eq('id', user.id);
 
-      const { password: _, ...safeUser } = user;
+      const { password, ...safeUser } = user;
 
       return res.json({
         success: true,
@@ -122,7 +107,7 @@ router.post(
       });
 
     } catch (err) {
-      console.log('LOGIN ERROR:', err);
+      console.error('LOGIN CRASH:', err);
 
       return res.status(500).json({
         success: false,
@@ -134,11 +119,10 @@ router.post(
 
 
 // ======================================================
-// ME (unchanged)
+// ME
 // ======================================================
-
 router.get('/me', protect, (req, res) => {
-  const { password: _, ...safeUser } = req.user;
+  const { password, ...safeUser } = req.user;
 
   return res.json({
     success: true,
@@ -148,26 +132,20 @@ router.get('/me', protect, (req, res) => {
 
 
 // ======================================================
-// CHANGE PASSWORD (SAFE FIX)
+// CHANGE PASSWORD
 // ======================================================
-
 router.post(
   '/change-password',
-
   protect,
-
   body('oldPassword').notEmpty(),
-  body('newPassword')
-    .isLength({ min: 8 })
-    .withMessage('Mật khẩu mới tối thiểu 8 ký tự'),
+  body('newPassword').isLength({ min: 8 }),
 
   async (req, res) => {
-
-    const errs = validationResult(req);
-    if (!errs.isEmpty()) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        errors: errs.array()
+        errors: errors.array()
       });
     }
 
@@ -187,10 +165,10 @@ router.post(
         });
       }
 
-      if (!user || !user.password) {
+      if (!user?.password) {
         return res.status(404).json({
           success: false,
-          message: 'User không tồn tại'
+          message: 'User not found'
         });
       }
 
@@ -202,7 +180,7 @@ router.post(
       if (!ok) {
         return res.status(401).json({
           success: false,
-          message: 'Mật khẩu cũ không đúng.'
+          message: 'Mật khẩu cũ sai'
         });
       }
 
@@ -218,10 +196,12 @@ router.post(
 
       return res.json({
         success: true,
-        message: 'Đổi mật khẩu thành công.'
+        message: 'Đổi mật khẩu thành công'
       });
 
     } catch (err) {
+      console.error('CHANGE PASSWORD ERROR:', err);
+
       return res.status(500).json({
         success: false,
         message: err.message
