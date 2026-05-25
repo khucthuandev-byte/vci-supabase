@@ -47,7 +47,7 @@ async function seed() {
       console.log('🔐 Creating admin...');
 
       const hashed = await bcrypt.hash(
-        process.env.SEED_ADMIN_PASS || 'Admin@VCI2026!',
+        process.env.SEED_ADMIN_PASS || '123456',
         12
       );
 
