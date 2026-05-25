@@ -10,12 +10,9 @@ const app = express();
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:5500',
-    /\.vci\.edu\.vn$/,
-    'http://localhost:3000',
-  ],
-  credentials: true,
+  origin: '*',
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
