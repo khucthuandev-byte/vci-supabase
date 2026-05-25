@@ -1,46 +1,25 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const WebSocket = require('ws');
-
 let sb;
 
 function getSupabase() {
-
   if (!sb) {
+    const url = process.env.SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_KEY;
 
-    if (
-      !process.env.SUPABASE_URL ||
-      !process.env.SUPABASE_SERVICE_KEY
-    ) {
-      throw new Error(
-        'Chưa cấu hình SUPABASE_URL / SUPABASE_SERVICE_KEY trong .env'
-      );
+    if (!url || !key) {
+      throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_KEY');
     }
 
-    sb = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_KEY,
-      {
-        auth: {
-          persistSession: false
-        },
-
-        realtime: {
-          WebSocket
-        }
+    sb = createClient(url, key, {
+      auth: {git add .
+git commit -m "fix supabase client production"
+        persistSession: false
       }
-    );
+    });
   }
 
   return sb;
 }
 
-module.exports = {
-  getSupabase
-};
-
-console.log('SUPABASE_URL:', process.env.SUPABASE_URL);
-console.log(
-  'SERVICE_KEY EXISTS:',
-  !!process.env.SUPABASE_SERVICE_KEY
-);
+module.exports = { getSupabase };
