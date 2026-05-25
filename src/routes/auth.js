@@ -50,7 +50,7 @@ router.post(
       const { data: user, error } = await sb
         .from('users')
         .select('*')
-        .eq('email', req.body.email)
+        .eq('email', req.body.email || req.body.username)
         .single();
 
       console.log('USER:', user);
