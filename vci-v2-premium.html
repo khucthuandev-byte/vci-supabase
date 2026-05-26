@@ -616,6 +616,9 @@ button{cursor:pointer;font-family:var(--fh)}
 }
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--red)}
 .fg textarea{resize:vertical;min-height:80px}
+.fg.error input,.fg.error select,.fg.error textarea{border-color:#e53935;background:#fff8f8}
+.fg-err{font-size:11.5px;color:#e53935;margin-top:3px;display:none}
+.fg.error .fg-err{display:block}
 .submit-btn{
   width:100%;padding:15px;background:var(--red);border-radius:var(--r2);
   font-family:var(--fs);font-size:15px;font-weight:700;color:#fff;
@@ -1426,8 +1429,8 @@ button{cursor:pointer;font-family:var(--fh)}
       <h3>Đăng ký xét tuyển 2026</h3>
       <p class="sub">Điền thông tin – chúng tôi liên hệ trong 24h</p>
       <div class="fg-row">
-        <div class="fg"><label>Họ và tên *</label><input type="text" id="f-name" placeholder="Nguyễn Văn A"></div>
-        <div class="fg"><label>Điện thoại *</label><input type="tel" id="f-phone" placeholder="0900 000 000"></div>
+        <div class="fg" id="fg-name"><label>Họ và tên *</label><input type="text" id="f-name" placeholder="Nguyễn Văn A" oninput="clearErr('fg-name')"><span class="fg-err">Vui lòng nhập họ và tên</span></div>
+        <div class="fg" id="fg-phone"><label>Điện thoại *</label><input type="tel" id="f-phone" placeholder="0900 000 000" oninput="clearErr('fg-phone')"><span class="fg-err">Số điện thoại chưa hợp lệ</span></div>
       </div>
       <div class="fg"><label>Email</label><input type="email" id="f-email" placeholder="email@example.com"></div>
       <div class="fg-row">
@@ -1436,15 +1439,18 @@ button{cursor:pointer;font-family:var(--fh)}
           <select id="f-level"><option>Học sinh lớp 9</option><option>Học sinh lớp 10–12</option><option>Đã tốt nghiệp THPT</option><option>Đã có bằng TC/CĐ</option><option>Khác</option></select>
         </div>
       </div>
-      <div class="fg"><label>Hệ đào tạo quan tâm *</label>
-        <select id="f-he"><option value="">-- Chọn hệ đào tạo --</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select>
+      <div class="fg" id="fg-he"><label>Hệ đào tạo quan tâm *</label>
+        <select id="f-he" onchange="clearErr('fg-he')"><option value="">-- Chọn hệ đào tạo --</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select>
+        <span class="fg-err">Vui lòng chọn hệ đào tạo</span>
       </div>
       <div class="fg"><label>Ngành học quan tâm</label>
         <select id="f-nganh"><option value="">-- Chọn ngành --</option></select>
       </div>
-      <div class="fg"><label>Cơ sở gần nhất</label>
-        <select id="f-coso"><option value="">-- Chọn cơ sở --</option><option>Cần Thơ – 41 CMT8, Cái Khế</option><option>Hà Nội – Xã Ngọc Hồi</option><option>TP. Hồ Chí Minh – 302A Vườn Lài</option><option>Đắk Lắk – 349 Lê Duẩn</option><option>Thái Nguyên – Xã Phú Bình</option></select>
+      <div class="fg" id="fg-address"><label>Địa chỉ *</label>
+        <input type="text" id="f-address" placeholder="VD: 41 CMT8, Phường Cái Khế, Cần Thơ" oninput="clearErr('fg-address')">
+        <span class="fg-err">Vui lòng nhập địa chỉ</span>
       </div>
+
       <div class="fg"><label>Ghi chú thêm</label><textarea id="f-note" placeholder="Câu hỏi hoặc thông tin bổ sung..."></textarea></div>
       <button class="submit-btn" id="submitBtn" onclick="submitForm()">
         Gửi đăng ký – Nhận tư vấn miễn phí 🎓
@@ -1711,27 +1717,52 @@ calcFee();
 /* ============================================================
    FORM – gửi lên Railway
 ============================================================ */
+function showErr(id, msg){
+  const fg = document.getElementById(id);
+  if(!fg) return;
+  fg.classList.add('error');
+  const s = fg.querySelector('.fg-err');
+  if(s && msg) s.textContent = msg;
+}
+function clearErr(id){
+  const fg = document.getElementById(id);
+  if(fg) fg.classList.remove('error');
+}
 async function submitForm(){
-  const name=document.getElementById('f-name').value.trim();
-  const phone=document.getElementById('f-phone').value.trim();
-  const he=document.getElementById('f-he').value;
-  if(!name){alert('Vui lòng nhập họ và tên!');return;}
-  if(!phone){alert('Vui lòng nhập số điện thoại!');return;}
-  if(!he){alert('Vui lòng chọn hệ đào tạo!');return;}
-  const btn=document.getElementById('submitBtn');
+  const name    = document.getElementById('f-name').value.trim();
+  const phone   = document.getElementById('f-phone').value.trim();
+  const he      = document.getElementById('f-he').value;
+  const address = document.getElementById('f-address').value.trim();
+
+  // Reset lỗi cũ
+  ['fg-name','fg-phone','fg-he','fg-address'].forEach(clearErr);
+
+  let valid = true;
+  if(!name)                          { showErr('fg-name',  'Vui lòng nhập họ và tên');      valid=false; }
+  if(!/^(0|\+84)\d{8,10}$/.test(phone.replace(/\s/g,'')))
+                                     { showErr('fg-phone', 'Số điện thoại chưa hợp lệ');   valid=false; }
+  if(!he)                            { showErr('fg-he',    'Vui lòng chọn hệ đào tạo');     valid=false; }
+  if(!address)                       { showErr('fg-address','Vui lòng nhập địa chỉ');       valid=false; }
+  if(!valid){
+    document.querySelector('.fg.error').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
   btn.textContent='⏳ Đang gửi...'; btn.disabled=true;
   try {
     await apiPost('/api/hoso',{
-      name,phone,
-      email:document.getElementById('f-email').value,
-      dob:document.getElementById('f-dob').value,
-      he_dao_tao:he,
-      nganh:document.getElementById('f-nganh').value,
-      coso:document.getElementById('f-coso').value,
-      source:'website',
-      note:document.getElementById('f-note').value,
+      name, phone,
+      email:   document.getElementById('f-email').value,
+      dob:     document.getElementById('f-dob').value,
+      level:   document.getElementById('f-level').value,
+      he_dao_tao: he,
+      nganh:   document.getElementById('f-nganh').value,
+      address,
+      source:  'website',
+      note:    document.getElementById('f-note').value,
     });
-  }catch(e){console.warn('API:',e.message);}
+  } catch(e){ console.warn('API:',e.message); }
   // Luôn hiện thành công dù API có lỗi
   document.getElementById('formBox').querySelectorAll('h3,.sub,.fg,.fg-row,.submit-btn').forEach(el=>el.style.display='none');
   document.getElementById('formSuccess').style.display='block';
@@ -1791,6 +1822,77 @@ async function sendMsg(){
 function sendSug(btn){document.getElementById('chatInput').value=btn.textContent;sendMsg();}
 
 /* ============================================================
+   ĐỊA CHỈ – tự động gợi ý cơ sở gần nhất theo tỉnh
+============================================================ */
+const PROVINCE_COSO = {
+  'Cần Thơ':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Hà Nội':'Hà Nội – Xã Ngọc Hồi',
+  'TP. Hồ Chí Minh':'TP. Hồ Chí Minh – 302A Vườn Lài',
+  'Đắk Lắk':'Đắk Lắk – 349 Lê Duẩn',
+  'Thái Nguyên':'Thái Nguyên – Xã Phú Bình',
+  'An Giang':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Bạc Liêu':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Bến Tre':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Cà Mau':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Đồng Tháp':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Hậu Giang':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Kiên Giang':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Long An':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Sóc Trăng':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Tiền Giang':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Trà Vinh':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Vĩnh Long':'Cần Thơ – 41 CMT8, Cái Khế',
+  'Bà Rịa – Vũng Tàu':'TP. Hồ Chí Minh – 302A Vườn Lài',
+  'Bình Dương':'TP. Hồ Chí Minh – 302A Vườn Lài',
+  'Bình Phước':'TP. Hồ Chí Minh – 302A Vườn Lài',
+  'Bình Thuận':'TP. Hồ Chí Minh – 302A Vườn Lài',
+  'Đồng Nai':'TP. Hồ Chí Minh – 302A Vườn Lài',
+  'Tây Ninh':'TP. Hồ Chí Minh – 302A Vườn Lài',
+  'Ninh Thuận':'TP. Hồ Chí Minh – 302A Vườn Lài',
+  'Đắk Nông':'Đắk Lắk – 349 Lê Duẩn',
+  'Gia Lai':'Đắk Lắk – 349 Lê Duẩn',
+  'Kon Tum':'Đắk Lắk – 349 Lê Duẩn',
+  'Lâm Đồng':'Đắk Lắk – 349 Lê Duẩn',
+};
+const POSTAL_MAP = {
+  'Cần Thơ':'900000','Hà Nội':'100000','TP. Hồ Chí Minh':'700000',
+  'Đắk Lắk':'630000','Thái Nguyên':'250000','An Giang':'880000',
+  'Bạc Liêu':'960000','Cà Mau':'970000','Kiên Giang':'920000',
+  'Đồng Tháp':'810000','Vĩnh Long':'850000','Trà Vinh':'870000',
+  'Sóc Trăng':'950000','Hậu Giang':'940000','Tiền Giang':'820000',
+  'Bến Tre':'930000','Long An':'850000','Đồng Nai':'810000',
+  'Bình Dương':'820000','TP. Hồ Chí Minh':'700000',
+};
+function loadDistricts() {
+  const prov = document.getElementById('f-province').value;
+  if (!prov) return;
+  // Tự động gợi ý cơ sở gần nhất
+  const suggested = PROVINCE_COSO[prov];
+  const cosoSel = document.getElementById('f-coso');
+  if (suggested) {
+    for (let i = 0; i < cosoSel.options.length; i++) {
+      if (cosoSel.options[i].text.startsWith(suggested.split('–')[0].trim())) {
+        cosoSel.selectedIndex = i; break;
+      }
+    }
+    cosoSel.style.borderColor = 'var(--green)';
+    cosoSel.title = 'Gợi ý cơ sở gần ' + prov;
+    setTimeout(() => { cosoSel.style.borderColor = ''; cosoSel.title = ''; }, 3000);
+    // Toast nhỏ
+    showAddrHint('📍 Đã gợi ý cơ sở gần ' + prov);
+  }
+  // Điền mã bưu chính
+  const postalEl = document.getElementById('f-postal');
+  if (!postalEl.value && POSTAL_MAP[prov]) postalEl.value = POSTAL_MAP[prov];
+}
+function showAddrHint(msg) {
+  const el = document.getElementById('addrHint');
+  if (!el) return;
+  el.textContent = msg; el.style.opacity = '1';
+  setTimeout(() => { el.style.opacity = '0'; }, 2500);
+}
+
+/* ============================================================
    SCROLL & REVEAL & NAV ACTIVE
 ============================================================ */
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.12});
@@ -1813,9 +1915,147 @@ function closeMob(){document.getElementById('mobOverlay').classList.remove('open
 function closeMobOut(e){if(e.target===document.getElementById('mobOverlay'))closeMob();}
 
 /* ============================================================
+   CMS CONTENT – fetch /api/content on load, inject into DOM
+============================================================ */
+async function fetchContent() {
+  try {
+    const r = await apiGet('/api/content');
+    if (!r || !r.success) return;
+    const c = r.data || {};
+
+    /* ---- ANNOUNCEMENT ---- */
+    const ann = c.announcement;
+    if (ann !== undefined) {
+      const el = document.querySelector('.announce');
+      if (el) {
+        if (ann.visible === false) { el.style.display = 'none'; }
+        else {
+          el.style.display = '';
+          const t = el.querySelector('.ann-tag'), tx = el.querySelector('.ann-txt'), b = el.querySelector('.ann-btn');
+          if (t && ann.tag !== undefined) t.innerHTML = ann.tag;
+          if (tx && ann.text !== undefined) tx.innerHTML = ann.text;
+          if (b && ann.btn !== undefined) b.textContent = ann.btn;
+        }
+      }
+    }
+
+    /* ---- HERO ---- */
+    const hero = c.hero;
+    if (hero) {
+      const badge = document.querySelector('.hero-badge');
+      if (badge && hero.badge) badge.innerHTML = '<span class="hero-badge-dot"></span> ' + hero.badge;
+      const h1 = document.querySelector('.hero h1');
+      if (h1 && (hero.h1_1 !== undefined || hero.h1_2 !== undefined)) {
+        h1.innerHTML = (hero.h1_1 || '') + '<br><span class="accent">' + (hero.h1_2 || '') + '</span>';
+      }
+      const desc = document.querySelector('.hero-desc');
+      if (desc && hero.desc) desc.innerHTML = hero.desc;
+      const statsWrap = document.querySelector('.hero-stats');
+      if (statsWrap && Array.isArray(hero.stats) && hero.stats.length) {
+        statsWrap.innerHTML = hero.stats.map(s =>
+          `<div class="hero-stat"><div class="hs-num">${s.num}<span>${s.unit||''}</span></div><div class="hs-lbl">${s.label||''}</div></div>`
+        ).join('');
+      }
+    }
+
+    /* ---- STATS BAR ---- */
+    if (c.stats_bar && Array.isArray(c.stats_bar.items)) {
+      const bar = document.querySelector('.stats-inner');
+      if (bar) {
+        bar.innerHTML = c.stats_bar.items.map(s =>
+          `<div class="stat-item"><div class="stat-num">${s.num}<span>${s.unit||''}</span></div><div class="stat-lbl">${s.label||''}</div></div>`
+        ).join('');
+      }
+    }
+
+    /* ---- HỆ ĐÀO TẠO ---- */
+    if (Array.isArray(c.he_dao_tao) && c.he_dao_tao.length) {
+      const grid = document.querySelector('.he-grid');
+      if (grid) {
+        const dl = ['', 'reveal-delay-1', 'reveal-delay-2', '', 'reveal-delay-1'];
+        grid.innerHTML = c.he_dao_tao.map((h, i) => `
+          <div class="he-card reveal ${dl[i]||''}">
+            <div class="he-card-img">
+              ${h.img ? `<img src="${h.img}" alt="${h.title||''}" loading="lazy">` : ''}
+              <div class="he-card-img-overlay"></div>
+              <span class="he-card-badge"${h.badge_color ? ` style="background:${h.badge_color}"` : ''}>${h.badge||''}</span>
+            </div>
+            <div class="he-card-body">
+              <h3>${h.title||''}</h3>
+              <p>${h.desc||''}</p>
+              <div class="he-card-meta">
+                ${(h.chips||[]).map(ch => `<span class="he-chip">${ch}</span>`).join('')}
+              </div>
+              ${h.link ? `<a class="he-link" href="${h.link}" target="_blank">Tìm hiểu thêm →</a>` : ''}
+            </div>
+          </div>`).join('');
+        grid.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+      }
+    }
+
+    /* ---- TESTIMONIALS ---- */
+    if (Array.isArray(c.testimonials) && c.testimonials.length) {
+      const tg = document.querySelector('.testi-grid');
+      if (tg) {
+        const dl = ['', 'reveal-delay-1', 'reveal-delay-2'];
+        tg.innerHTML = c.testimonials.map((t, i) => `
+          <div class="testi-card reveal ${dl[i]||''}">
+            <div class="testi-quote">"</div>
+            <div class="testi-stars">${'★'.repeat(Math.max(0, Math.min(5, t.stars||5)))}</div>
+            <p class="testi-text">${t.text||''}</p>
+            <div class="testi-author">
+              ${t.img ? `<div class="testi-ava"><img src="${t.img}" alt="${t.author||''}" loading="lazy"></div>` : ''}
+              <div>
+                <div class="testi-name">${t.author||''}</div>
+                <div class="testi-info">${t.role||''}</div>
+              </div>
+            </div>
+          </div>`).join('');
+        tg.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+      }
+    }
+
+    /* ---- CONTACT ---- */
+    const ct = c.contact;
+    if (ct) {
+      if (ct.phone) {
+        const ph = ct.phone;
+        const phRaw = 'tel:' + ph.replace(/[\s.()-]/g, '');
+        const tb = document.querySelector('.topbar-phone');
+        if (tb) tb.textContent = '📞 ' + ph;
+        const navBtn = document.querySelector('.nav-btn-phone');
+        if (navBtn) { navBtn.textContent = '📞 ' + ph; navBtn.href = phRaw; }
+        const mobBtn = document.querySelector('.mob-phone');
+        if (mobBtn) { mobBtn.textContent = '📞 ' + ph; mobBtn.href = phRaw; }
+        const hlStrong = document.querySelector('.hotline-box strong');
+        if (hlStrong) hlStrong.textContent = ph;
+      }
+      const fc = document.querySelector('.f-contact');
+      if (fc) {
+        const lines = [];
+        if (ct.address) lines.push(`<p>📍 ${ct.address}</p>`);
+        if (ct.phone) {
+          const phRaw = ct.phone.replace(/[\s.()-]/g, '');
+          lines.push(`<p>📞 <a href="tel:${phRaw}">${ct.phone}</a> (Cần Thơ)</p>`);
+        }
+        if (ct.website) {
+          const display = ct.website.replace(/^https?:\/\//, '');
+          lines.push(`<p>🌐 <a href="${ct.website}" target="_blank">${display}</a></p>`);
+        }
+        if (ct.email) lines.push(`<p>✉️ <a href="mailto:${ct.email}">${ct.email}</a></p>`);
+        if (lines.length) fc.innerHTML = lines.join('');
+      }
+    }
+
+  } catch(e) { /* silently ignore — hardcoded defaults stay visible */ }
+}
+
+/* ============================================================
    HERO IMAGE LAZY LOAD
 ============================================================ */
 window.addEventListener('DOMContentLoaded', async ()=>{
+  // Load CMS content (before anything else so UI updates immediately)
+  await fetchContent();
   // Lazy load hero bg
   const bgEl = document.getElementById('heroBg');
   const img = new Image();
