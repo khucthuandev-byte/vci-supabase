@@ -1,52 +1,13 @@
 const { createClient } = require('@supabase/supabase-js');
-
 let sb;
-
 function getSupabase() {
-
-  if (sb) return sb;
-
-  const url = process.env.SUPABASE_URL;
-
-  // FIX ĐÚNG BIẾN ENV
-  const key = process.env.SUPABASE_SERVICE_KEY;
-
-  if (!url || !key) {
-
-    console.error('❌ SUPABASE ENV MISSING');
-
-    console.error('URL:', !!url);
-
-    console.error('KEY:', !!key);
-
-    throw new Error('Missing Supabase ENV');
-
-  }
-
-  try {
-
-    sb = createClient(url, key, {
-      auth: {
-        persistSession: false
-      }
+  if (!sb) {
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY)
+      throw new Error('Chưa cấu hình SUPABASE_URL / SUPABASE_SERVICE_KEY trong .env');
+    sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY, {
+      auth: { persistSession: false }
     });
-
-    console.log('✅ Supabase client initialized');
-
-    console.log('👉 URL:', url);
-
-    console.log('👉 KEY length:', key.length);
-
-  } catch (err) {
-
-    console.error('❌ Supabase init error:', err.message);
-
-    throw err;
-
   }
-
   return sb;
-
 }
-
 module.exports = { getSupabase };
