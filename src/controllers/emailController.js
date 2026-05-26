@@ -27,7 +27,7 @@ exports.sendConfirmation = async (hs) => {
           <p><b>Cơ sở:</b> ${hs.coso||'Chưa chọn'}</p>
           <p><b>Điện thoại:</b> ${hs.phone}</p>
         </div>
-        <p>📞 Hotline: <a href="tel:0966670100" style="color:#C0392B;font-weight:700">0966 670 100</a></p>
+        <p>📞 Hotline: <a href="tel:0965670100" style="color:#C0392B;font-weight:700">0966 670 100</a></p>
       </div>
       <div style="background:#f0f0ee;padding:14px 32px;text-align:center;font-size:12px;color:#888">
         © 2026 Trường Cao đẳng Công thương Việt Nam · Mã trường C98
