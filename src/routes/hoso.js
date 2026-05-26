@@ -304,11 +304,18 @@ router.post(
         phone: req.body.phone,
         email: req.body.email || null,
 
+        dob: req.body.dob || null,
+        level: req.body.level || null,
+        address: req.body.address || null,
+
         nganh: req.body.nganh || null,
 
         he_dao_tao: req.body.he_dao_tao,
 
         coso: req.body.coso || 'Cần Thơ',
+
+        source: req.body.source || 'website',
+        note: req.body.note || null,
 
         status: 'new',
 

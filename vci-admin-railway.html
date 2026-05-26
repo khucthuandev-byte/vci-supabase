@@ -353,7 +353,7 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
         <div class="fbar">
           <div class="sbox">🔍<input placeholder="Tìm tên, SĐT..." id="hsQ" oninput="debounce(loadHS,500)()"></div>
           <select class="fsel" id="hsSt" onchange="loadHS()"><option value="">Tất cả trạng thái</option><option value="new">Mới</option><option value="contacted">Đang tư vấn</option><option value="consulting">Tư vấn chi tiết</option><option value="success">Đã nhập học</option><option value="cancel">Đã hủy</option><option value="pending">Đang chờ</option></select>
-          <select class="fsel" id="hsHe" onchange="loadHS()"><option value="">Tất cả hệ</option><option>CĐ Chính quy</option><option>Nước ngoài</option><option>Hệ 9+</option><option>Liên thông</option><option>Từ xa</option></select>
+          <select class="fsel" id="hsHe" onchange="loadHS()"><option value="">Tất cả hệ</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select>
           <select class="fsel" id="hsCs" onchange="loadHS()"><option value="">Tất cả cơ sở</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. HCM</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select>
           <div class="factions">
             <button class="hbtn hbtn-red" onclick="openModal('mAddHS')">+ Thêm hồ sơ</button>
@@ -474,6 +474,101 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
         </div>
       </div>
 
+      <!-- NỘI DUNG WEBSITE -->
+      <div class="page" id="page-content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <p style="font-size:13px;color:var(--muted)">Thay đổi sẽ hiển thị ngay trên website sau khi lưu.</p>
+          <button class="hbtn hbtn-red" onclick="loadContent()">↻ Tải lại</button>
+        </div>
+
+        <!-- THÔNG BÁO -->
+        <div class="card" id="cms-announcement-card">
+          <div class="ch"><span class="ch-title">📢 Banner thông báo</span>
+            <div style="display:flex;align-items:center;gap:10px">
+              <label style="font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px">
+                <input type="checkbox" id="cms-ann-visible" style="accent-color:var(--red);width:14px;height:14px"> Hiển thị
+              </label>
+              <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('announcement')">💾 Lưu</button>
+            </div>
+          </div>
+          <div class="cb"><div class="fgrid">
+            <div class="fg"><label>Tag nhãn (VD: 🔥 Ưu đãi)</label><input id="cms-ann-tag" placeholder="🔥 Ưu đãi"></div>
+            <div class="fg"><label>Nút bấm</label><input id="cms-ann-btn" placeholder="Đăng ký ngay →"></div>
+            <div class="fg full"><label>Nội dung thông báo</label><textarea id="cms-ann-text" style="min-height:60px" placeholder="Nhập học trước 30/5/2026 nhận ngay học bổng..."></textarea></div>
+          </div></div>
+        </div>
+
+        <!-- HERO -->
+        <div class="card">
+          <div class="ch"><span class="ch-title">🏠 Hero – Banner chính</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('hero')">💾 Lưu</button>
+          </div>
+          <div class="cb"><div class="fgrid">
+            <div class="fg"><label>Badge nhỏ phía trên</label><input id="cms-hero-badge" placeholder="🏆 Top 1 Cao đẳng..."></div>
+            <div class="fg"><label>Tiêu đề dòng 1</label><input id="cms-hero-h1_1" placeholder="Khởi nghiệp vững vàng"></div>
+            <div class="fg"><label>Tiêu đề dòng 2 (nhấn mạnh)</label><input id="cms-hero-h1_2" placeholder="với VCI"></div>
+            <div class="fg full"><label>Mô tả ngắn</label><textarea id="cms-hero-desc" style="min-height:60px"></textarea></div>
+            <div class="fg full">
+              <label>4 Số liệu thống kê (JSON – <code style="font-size:11px">[{num,unit,label}]</code>)</label>
+              <textarea id="cms-hero-stats" style="min-height:80px;font-family:monospace;font-size:12px"></textarea>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- STATS BAR -->
+        <div class="card">
+          <div class="ch"><span class="ch-title">📊 Thanh số liệu (dưới hero)</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('stats_bar')">💾 Lưu</button>
+          </div>
+          <div class="cb">
+            <div class="fg full">
+              <label>Danh sách số liệu (JSON – <code style="font-size:11px">[{num,unit,label}]</code>)</label>
+              <textarea id="cms-stats-items" style="min-height:100px;font-family:monospace;font-size:12px"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- HỆ ĐÀO TẠO -->
+        <div class="card">
+          <div class="ch"><span class="ch-title">🎓 Hệ đào tạo (5 thẻ)</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('he_dao_tao')">💾 Lưu</button>
+          </div>
+          <div class="cb">
+            <div class="fg full">
+              <label>Mảng JSON (mỗi phần tử: <code style="font-size:11px">{title,badge,badge_color,desc,chips:[],link}</code>)</label>
+              <textarea id="cms-hedt-items" style="min-height:180px;font-family:monospace;font-size:12px"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- TESTIMONIALS -->
+        <div class="card">
+          <div class="ch"><span class="ch-title">⭐ Đánh giá học viên</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('testimonials')">💾 Lưu</button>
+          </div>
+          <div class="cb">
+            <div class="fg full">
+              <label>Mảng JSON (mỗi phần tử: <code style="font-size:11px">{stars,text,author,role,img}</code>)</label>
+              <textarea id="cms-testi-items" style="min-height:160px;font-family:monospace;font-size:12px"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIÊN HỆ -->
+        <div class="card">
+          <div class="ch"><span class="ch-title">📞 Thông tin liên hệ</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('contact')">💾 Lưu</button>
+          </div>
+          <div class="cb"><div class="fgrid">
+            <div class="fg"><label>Số điện thoại</label><input id="cms-ct-phone" placeholder="0966 670 100"></div>
+            <div class="fg"><label>Email</label><input id="cms-ct-email" placeholder="tuyensinh@vci.edu.vn"></div>
+            <div class="fg"><label>Facebook URL</label><input id="cms-ct-facebook" placeholder="https://facebook.com/..."></div>
+            <div class="fg"><label>Website</label><input id="cms-ct-website" placeholder="https://vci.edu.vn"></div>
+            <div class="fg full"><label>Địa chỉ cơ sở chính</label><input id="cms-ct-address" placeholder="Số 1 đường..."></div>
+          </div></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -486,7 +581,7 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
     <div class="fg"><label>Số điện thoại *</label><input id="mfPhone" placeholder="0900 000 000"></div>
     <div class="fg"><label>Email</label><input id="mfEmail" type="email" placeholder="email@example.com"></div>
     <div class="fg"><label>Năm sinh</label><input id="mfDob" placeholder="2007"></div>
-    <div class="fg"><label>Hệ đào tạo *</label><select id="mfHe"><option value="">Chọn hệ...</option><option>CĐ Chính quy</option><option>Nước ngoài</option><option>Hệ 9+</option><option>Liên thông</option><option>Từ xa</option></select></div>
+    <div class="fg"><label>Hệ đào tạo *</label><select id="mfHe"><option value="">Chọn hệ...</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select></div>
     <div class="fg"><label>Ngành học</label><select id="mfNganh"><option value="">Chọn ngành...</option></select></div>
     <div class="fg"><label>Cơ sở</label><select id="mfCoso"><option value="">Chọn cơ sở...</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. HCM</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select></div>
     <div class="fg"><label>Nguồn</label><select id="mfSrc"><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="walk-in">Đến trực tiếp</option><option value="phone">Gọi điện</option></select></div>
@@ -497,11 +592,15 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
 
 <div class="overlay" id="mEditHS"><div class="modal">
   <div class="mh"><h3>✏️ Cập nhật hồ sơ</h3><button class="mc" onclick="closeModal('mEditHS')">✕</button></div>
-  <div class="mb"><div class="fgrid">
-    <div class="fg"><label>Trạng thái</label><select id="efStatus"><option value="new">Mới</option><option value="contacted">Đang tư vấn</option><option value="consulting">Tư vấn chi tiết</option><option value="success">Đã nhập học</option><option value="cancel">Đã hủy</option><option value="pending">Đang chờ</option></select></div>
-    <div class="fg"><label>Tư vấn viên</label><select id="efTvv"><option value="">Chưa phân công</option></select></div>
-    <div class="fg full"><label>Ghi chú / Lý do</label><textarea id="efNote" placeholder="Nhập ghi chú..."></textarea></div>
-  </div><div id="efHistory" style="margin-top:12px"></div></div>
+  <div class="mb">
+    <div id="efInfo" style="background:var(--bg);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;font-size:12.5px;display:grid;grid-template-columns:1fr 1fr;gap:6px 16px"></div>
+    <div class="fgrid">
+      <div class="fg"><label>Trạng thái</label><select id="efStatus"><option value="new">Mới</option><option value="contacted">Đang tư vấn</option><option value="consulting">Tư vấn chi tiết</option><option value="success">Đã nhập học</option><option value="cancel">Đã hủy</option><option value="pending">Đang chờ</option></select></div>
+      <div class="fg"><label>Tư vấn viên</label><select id="efTvv"><option value="">Chưa phân công</option></select></div>
+      <div class="fg full"><label>Ghi chú / Lý do</label><textarea id="efNote" placeholder="Nhập ghi chú..."></textarea></div>
+    </div>
+    <div id="efHistory" style="margin-top:12px"></div>
+  </div>
   <div class="mf"><button class="btn-gray" onclick="closeModal('mEditHS')">Hủy</button><button class="btn-red" id="mEditHSBtn" onclick="submitEditHS()">💾 Lưu thay đổi</button></div>
 </div></div>
 
@@ -557,6 +656,7 @@ const NAV = [
   {id:'users',    ico:'👤',lbl:'Tài khoản',grp:'Hệ thống',perm:'taiKhoan'},
   {id:'perm',     ico:'🔐',lbl:'Phân quyền',grp:'Hệ thống',perm:'phanQuyen'},
   {id:'settings', ico:'⚙️',lbl:'Cài đặt',grp:'Hệ thống',perm:'caiDat'},
+  {id:'content',  ico:'🖊️',lbl:'Nội dung Website',grp:'Hệ thống',perm:'caiDat'},
 ];
 const PAGE_TITLES = {
   dashboard:['Dashboard','Tổng quan hệ thống VCI'],
@@ -566,6 +666,7 @@ const PAGE_TITLES = {
   users:    ['Tài khoản','Quản lý người dùng hệ thống'],
   perm:     ['Phân quyền','Cấu hình quyền truy cập'],
   settings: ['Cài đặt','Kết nối Railway & Supabase'],
+  content:  ['Nội dung Website','Quản lý nội dung giao diện frontend'],
 };
 
 /* ============================================================
@@ -684,6 +785,7 @@ async function showPage(id) {
   else if (id === 'nganh') loadNganh();
   else if (id === 'users') loadUsers();
   else if (id === 'report') loadReport();
+  else if (id === 'content') loadContent();
 }
 
 /* ============================================================
@@ -790,6 +892,19 @@ async function submitAddHS() {
 }
 function openEditHS(id, r) {
   editingHSId = id;
+  document.getElementById('efInfo').innerHTML = `
+    <div><span style="color:var(--muted);font-size:11px">Họ tên</span><div style="font-weight:600">${r.name}</div></div>
+    <div><span style="color:var(--muted);font-size:11px">Điện thoại</span><div><a href="tel:${r.phone}" style="color:var(--blue)">${r.phone}</a></div></div>
+    ${r.email?`<div><span style="color:var(--muted);font-size:11px">Email</span><div>${r.email}</div></div>`:''}
+    ${r.dob?`<div><span style="color:var(--muted);font-size:11px">Năm sinh</span><div>${r.dob}</div></div>`:''}
+    <div><span style="color:var(--muted);font-size:11px">Hệ đào tạo</span><div>${r.he_dao_tao||'–'}</div></div>
+    ${r.nganh?`<div><span style="color:var(--muted);font-size:11px">Ngành học</span><div>${r.nganh}</div></div>`:''}
+    ${r.level?`<div><span style="color:var(--muted);font-size:11px">Trình độ</span><div>${r.level}</div></div>`:''}
+    ${r.coso?`<div><span style="color:var(--muted);font-size:11px">Cơ sở</span><div>${r.coso}</div></div>`:''}
+    ${r.source?`<div><span style="color:var(--muted);font-size:11px">Nguồn</span><div>${r.source}</div></div>`:''}
+    ${r.address?`<div style="grid-column:span 2"><span style="color:var(--muted);font-size:11px">Địa chỉ</span><div>${r.address}</div></div>`:''}
+    ${r.note?`<div style="grid-column:span 2"><span style="color:var(--muted);font-size:11px">Ghi chú ban đầu</span><div>${r.note}</div></div>`:''}
+  `;
   document.getElementById('efStatus').value = r.status || 'new';
   document.getElementById('efTvv').innerHTML = '<option value="">Chưa phân công</option>' +
     usersCache.map(u => `<option value="${u.id}" ${r.tu_van_vien?.id===u.id?'selected':''}>${u.name}</option>`).join('');
@@ -1025,6 +1140,130 @@ function buildSysInfo() {
     Vai trò: <strong>${ROLE_VN[CU?.role]||'–'}</strong><br>
     Cơ sở: <strong>${CU?.coso||'–'}</strong>`;
   document.getElementById('settUrl').value = 'https://vci-supabase-production.up.railway.app';
+}
+
+/* ============================================================
+   NỘI DUNG WEBSITE
+============================================================ */
+const CMS_DEFAULTS = {
+  announcement: { tag:'🔥 Ưu đãi', text:'Nhập học trước 30/5/2026 nhận ngay học bổng 2.000.000đ + áo đồng phục miễn phí', btn:'Đăng ký ngay →', visible:true },
+  hero: {
+    badge:'🏆 Top 1 Trường Cao đẳng Công thương Việt Nam',
+    h1_1:'Khởi nghiệp vững vàng',
+    h1_2:'với VCI',
+    desc:'Chương trình đào tạo chất lượng cao, cam kết việc làm 100% sau tốt nghiệp.',
+    stats:[{num:'100',unit:'%',label:'Cam kết việc làm'},{num:'54',unit:'+',label:'Ngành đào tạo'},{num:'10',unit:'+',label:'Năm kinh nghiệm'},{num:'C98',unit:'',label:'Xếp hạng Webometrics'}]
+  },
+  stats_bar: { items:[{num:'100',unit:'%',label:'Cam kết việc làm'},{num:'7-45',unit:'tr',label:'Mức lương sau TN'},{num:'54',unit:'+',label:'Ngành học'},{num:'5',unit:'',label:'Tỉnh thành'},{num:'C98',unit:'',label:'Webometrics'}] },
+  he_dao_tao: [
+    {title:'CĐ Chính quy',badge:'Phổ biến',badge_color:'#E74C3C',desc:'Chương trình chuẩn 2.5 năm',chips:['2.5 năm','Toàn thời gian'],link:'#'},
+    {title:'Nước ngoài',badge:'HOT',badge_color:'#9B59B6',desc:'Du học Nhật – Đức – Hàn',chips:['Du học','Học bổng'],link:'#'},
+    {title:'Hệ 9+',badge:'Mới',badge_color:'#27AE60',desc:'Học song song THPT & CĐ',chips:['9+','2 bằng'],link:'#'},
+    {title:'Liên thông',badge:'',badge_color:'',desc:'Từ trung cấp lên cao đẳng',chips:['1-1.5 năm'],link:'#'},
+    {title:'Từ xa',badge:'',badge_color:'',desc:'Học online linh hoạt',chips:['Online','Bán thời gian'],link:'#'}
+  ],
+  testimonials: [
+    {stars:5,text:'Trường đào tạo rất tốt, thầy cô nhiệt tình, ra trường có việc ngay.',author:'Nguyễn Thị Hoa',role:'Điều dưỡng – Đang làm tại Nhật Bản',img:''},
+    {stars:5,text:'Chương trình 9+ giúp tôi tiết kiệm thời gian và có 2 bằng cùng lúc.',author:'Trần Văn Minh',role:'CNTT – Hệ 9+',img:''},
+    {stars:5,text:'Học bổng du học rất tốt, VCI hỗ trợ tận tình từ đầu đến cuối.',author:'Lê Thị Lan',role:'Tiếng Nhật – Du học Nhật Bản',img:''}
+  ],
+  contact: { phone:'0966 670 100', email:'tuyensinh@vci.edu.vn', facebook:'https://facebook.com/vci.edu.vn', website:'https://vci.edu.vn', address:'Số 1 Nguyễn Bỉnh Khiêm, Ninh Kiều, Cần Thơ' }
+};
+
+let cmsData = {};
+
+async function loadContent() {
+  try {
+    const {data} = await api('GET', '/api/content');
+    cmsData = data || {};
+    fillCmsForm();
+    toast('Đã tải nội dung website!', 'info');
+  } catch(e) {
+    cmsData = {};
+    fillCmsForm();
+    toast('Dùng giá trị mặc định (chưa có dữ liệu CMS)', 'warn');
+  }
+}
+
+function fillCmsForm() {
+  const ann = cmsData.announcement || CMS_DEFAULTS.announcement;
+  document.getElementById('cms-ann-tag').value     = ann.tag || '';
+  document.getElementById('cms-ann-text').value    = ann.text || '';
+  document.getElementById('cms-ann-btn').value     = ann.btn || '';
+  document.getElementById('cms-ann-visible').checked = ann.visible !== false;
+
+  const hero = cmsData.hero || CMS_DEFAULTS.hero;
+  document.getElementById('cms-hero-badge').value  = hero.badge || '';
+  document.getElementById('cms-hero-h1_1').value   = hero.h1_1 || '';
+  document.getElementById('cms-hero-h1_2').value   = hero.h1_2 || '';
+  document.getElementById('cms-hero-desc').value   = hero.desc || '';
+  document.getElementById('cms-hero-stats').value  = JSON.stringify(hero.stats || CMS_DEFAULTS.hero.stats, null, 2);
+
+  const sb = cmsData.stats_bar || CMS_DEFAULTS.stats_bar;
+  document.getElementById('cms-stats-items').value = JSON.stringify(sb.items || CMS_DEFAULTS.stats_bar.items, null, 2);
+
+  document.getElementById('cms-hedt-items').value  = JSON.stringify(cmsData.he_dao_tao || CMS_DEFAULTS.he_dao_tao, null, 2);
+  document.getElementById('cms-testi-items').value = JSON.stringify(cmsData.testimonials || CMS_DEFAULTS.testimonials, null, 2);
+
+  const ct = cmsData.contact || CMS_DEFAULTS.contact;
+  document.getElementById('cms-ct-phone').value    = ct.phone || '';
+  document.getElementById('cms-ct-email').value    = ct.email || '';
+  document.getElementById('cms-ct-facebook').value = ct.facebook || '';
+  document.getElementById('cms-ct-website').value  = ct.website || '';
+  document.getElementById('cms-ct-address').value  = ct.address || '';
+}
+
+async function saveContent(key) {
+  let value;
+  try {
+    switch(key) {
+      case 'announcement':
+        value = {
+          tag: document.getElementById('cms-ann-tag').value.trim(),
+          text: document.getElementById('cms-ann-text').value.trim(),
+          btn: document.getElementById('cms-ann-btn').value.trim(),
+          visible: document.getElementById('cms-ann-visible').checked
+        };
+        break;
+      case 'hero':
+        value = {
+          badge: document.getElementById('cms-hero-badge').value.trim(),
+          h1_1:  document.getElementById('cms-hero-h1_1').value.trim(),
+          h1_2:  document.getElementById('cms-hero-h1_2').value.trim(),
+          desc:  document.getElementById('cms-hero-desc').value.trim(),
+          stats: JSON.parse(document.getElementById('cms-hero-stats').value)
+        };
+        break;
+      case 'stats_bar':
+        value = { items: JSON.parse(document.getElementById('cms-stats-items').value) };
+        break;
+      case 'he_dao_tao':
+        value = JSON.parse(document.getElementById('cms-hedt-items').value);
+        break;
+      case 'testimonials':
+        value = JSON.parse(document.getElementById('cms-testi-items').value);
+        break;
+      case 'contact':
+        value = {
+          phone:    document.getElementById('cms-ct-phone').value.trim(),
+          email:    document.getElementById('cms-ct-email').value.trim(),
+          facebook: document.getElementById('cms-ct-facebook').value.trim(),
+          website:  document.getElementById('cms-ct-website').value.trim(),
+          address:  document.getElementById('cms-ct-address').value.trim()
+        };
+        break;
+      default: toast('Key không hợp lệ', 'err'); return;
+    }
+  } catch(e) {
+    toast('JSON không hợp lệ: ' + e.message, 'err'); return;
+  }
+  try {
+    await api('PUT', '/api/content/' + key, { value });
+    cmsData[key] = value;
+    toast('✅ Đã lưu "' + key + '" thành công!');
+  } catch(e) {
+    toast('Lỗi lưu nội dung: ' + e.message, 'err');
+  }
 }
 
 /* ============================================================

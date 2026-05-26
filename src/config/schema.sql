@@ -141,4 +141,16 @@ CHECK (
     'pending'
   )
 );
+
+CREATE TABLE site_content (
+    key        TEXT PRIMARY KEY,
+    value      JSONB,
+    updated_at TIMESTAMPTZ DEFAULT now()
+  );
+
+  ALTER TABLE ho_so ADD COLUMN IF NOT EXISTS dob TEXT;
+  ALTER TABLE ho_so ADD COLUMN IF NOT EXISTS level TEXT;
+  ALTER TABLE ho_so ADD COLUMN IF NOT EXISTS address TEXT;
+  ALTER TABLE ho_so ADD COLUMN IF NOT EXISTS source TEXT DEFAULT 'website';
+  ALTER TABLE ho_so ADD COLUMN IF NOT EXISTS note TEXT;
 select 'Schema tạo thành công! ✅' as result;
