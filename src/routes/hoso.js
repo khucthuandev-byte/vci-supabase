@@ -1,5 +1,5 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 
 const { body, validationResult } = require('express-validator');
 
@@ -48,7 +48,7 @@ router.get(
           { count: 'exact' }
         );
 
-      // STAFF chỉ xem cơ sở của mình
+      // STAFF chỉ xem cơ sở mình
       if (
         req.user.role === 'staff' &&
         req.user.coso !== 'Tất cả'
@@ -106,6 +106,8 @@ router.get(
       });
 
     } catch (err) {
+
+      console.error('GET HOSO ERROR:', err);
 
       return res.status(500).json({
         success: false,
@@ -199,6 +201,8 @@ router.get(
 
     } catch (err) {
 
+      console.error('EXPORT CSV ERROR:', err);
+
       return res.status(500).json({
         success: false,
         message: err.message
@@ -245,6 +249,8 @@ router.get(
 
     } catch (err) {
 
+      console.error('GET DETAIL ERROR:', err);
+
       return res.status(500).json({
         success: false,
         message: err.message
@@ -263,11 +269,17 @@ router.get(
 router.post(
   '/',
 
-  body('name').notEmpty().trim(),
+  body('name')
+    .notEmpty()
+    .withMessage('Vui lòng nhập họ tên'),
 
-  body('phone').notEmpty().trim(),
+  body('phone')
+    .notEmpty()
+    .withMessage('Vui lòng nhập số điện thoại'),
 
-  body('he_dao_tao').notEmpty(),
+  body('he_dao_tao')
+    .notEmpty()
+    .withMessage('Vui lòng chọn hệ đào tạo'),
 
   async (req, res) => {
 
@@ -287,9 +299,18 @@ router.post(
       const sb = getSupabase();
 
       const payload = {
-        ...req.body,
 
-        status: req.body.status || 'Mới',
+        name: req.body.name,
+        phone: req.body.phone,
+        email: req.body.email || null,
+
+        nganh: req.body.nganh || null,
+
+        he_dao_tao: req.body.he_dao_tao,
+
+        coso: req.body.coso || 'Cần Thơ',
+
+        status: 'Mới',
 
         history: [
           {
@@ -299,6 +320,7 @@ router.post(
             at: new Date().toISOString()
           }
         ]
+
       };
 
       const {
@@ -327,19 +349,24 @@ router.post(
             .eq('id', data.id);
 
         })
-        .catch(console.error);
+        .catch(err => {
+          console.error('GOOGLE SHEET ERROR:', err.message);
+        });
 
-      // Email
+      // Email xác nhận
       if (data.email) {
 
         email
           .sendConfirmation(data)
-          .catch(console.error);
+          .catch(err => {
+            console.error('EMAIL ERROR:', err.message);
+          });
 
       }
 
       return res.status(201).json({
         success: true,
+        message: 'Đăng ký thành công',
         data
       });
 
@@ -391,7 +418,6 @@ router.put(
 
       }
 
-      // STAFF chỉ sửa hồ sơ cơ sở mình
       if (
         req.user.role === 'staff' &&
         req.user.coso !== 'Tất cả' &&
@@ -415,16 +441,12 @@ router.put(
         ...(existing.history || [])
       ];
 
-      if (action || note) {
-
-        history.push({
-          action: action || 'Cập nhật',
-          note,
-          by: req.user.id,
-          at: new Date().toISOString()
-        });
-
-      }
+      history.push({
+        action: action || 'Cập nhật',
+        note: note || '',
+        by: req.user.id,
+        at: new Date().toISOString()
+      });
 
       updateData.history = history;
 
@@ -461,6 +483,8 @@ router.put(
       });
 
     } catch (err) {
+
+      console.error('UPDATE HOSO ERROR:', err);
 
       return res.status(500).json({
         success: false,
@@ -518,6 +542,8 @@ router.delete(
       });
 
     } catch (err) {
+
+      console.error('DELETE HOSO ERROR:', err);
 
       return res.status(500).json({
         success: false,
