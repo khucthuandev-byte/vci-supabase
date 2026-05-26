@@ -105,4 +105,22 @@ create policy "service_all" on ho_so     for all using (true) with check (true);
 create policy "service_all" on nganh     for all using (true) with check (true);
 create policy "service_all" on audit_logs for all using (true) with check (true);
 
+ALTER TABLE ho_so
+DROP CONSTRAINT ho_so_status_check;
+
+ALTER TABLE ho_so
+ALTER COLUMN status SET DEFAULT 'Mới';
+
+ALTER TABLE ho_so
+ADD CONSTRAINT ho_so_status_check
+CHECK (
+  status IN (
+    'Mới',
+    'Đang xử lý',
+    'Đã liên hệ',
+    'Nhập học',
+    'Hủy'
+  )
+);
+
 select 'Schema tạo thành công! ✅' as result;

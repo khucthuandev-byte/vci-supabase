@@ -394,7 +394,7 @@ button{cursor:pointer;font-family:var(--fb)}
     <div class="topbar-links">
       <a href="https://vci.edu.vn" target="_blank">vci.edu.vn</a>
       <a href="https://facebook.com/CaodangCongThuongVietNam" target="_blank">Facebook</a>
-      <span class="topbar-phone">📞 0966 670 100</span>
+      <span class="topbar-phone">📞 0965 670 100</span>
     </div>
   </div>
 </div>
@@ -719,7 +719,7 @@ button{cursor:pointer;font-family:var(--fb)}
     <p>Đừng để trôi cơ hội – đăng ký ngay, nhận tư vấn miễn phí trong vòng 24 giờ.</p>
     <div class="cta-btns">
       <button class="btn btn--gold btn--lg" onclick="scrollTo('#dang-ky')">📋 Đăng ký xét tuyển ngay</button>
-      <a href="tel:0966670100" class="btn btn--outline btn--lg">📞 Gọi 0966 670 100</a>
+      <a href="tel:0966670100" class="btn btn--outline btn--lg">📞 Gọi 0965 670 100</a>
     </div>
   </div>
 </div>
@@ -771,7 +771,7 @@ button{cursor:pointer;font-family:var(--fb)}
           <div style="font-size:48px;margin-bottom:12px">✅</div>
           <h4>Đăng ký thành công!</h4>
           <p>Cảm ơn bạn đã quan tâm đến VCI.<br>Đội tư vấn sẽ liên hệ trong vòng 24 giờ.</p>
-          <p style="margin-top:12px;font-weight:700;color:var(--red)">📞 Hoặc gọi ngay: 0966 670 100</p>
+          <p style="margin-top:12px;font-weight:700;color:var(--red)">📞 Hoặc gọi ngay: 0965 670 100</p>
         </div>
       </div>
     </div>
@@ -1107,7 +1107,7 @@ async function submitForm(){
       <div style="font-size:48px;margin-bottom:12px">✅</div>
       <h4>Đăng ký thành công!</h4>
       <p>Chúng tôi đã nhận được thông tin của bạn.<br>Đội tư vấn sẽ liên hệ trong vòng 24 giờ.</p>
-      <p style="margin-top:12px;font-weight:700;color:var(--red)">📞 Hoặc gọi ngay: 0966 670 100</p>`;
+      <p style="margin-top:12px;font-weight:700;color:var(--red)">📞 Hoặc gọi ngay: 0965 670 100</p>`;
     document.getElementById('formSuccess').style.display='block';
   } finally {
     btn.textContent = origTxt; btn.disabled = false;
@@ -1189,7 +1189,7 @@ async function sendMsg(){
     });
     if(res.ok){
       const data = await res.json();
-      const reply = data.reply || data.message || 'Cảm ơn câu hỏi! Liên hệ 0966 670 100 để tư vấn chi tiết.';
+      const reply = data.reply || data.message || 'Cảm ơn câu hỏi! Liên hệ 0965 670 100 để tư vấn chi tiết.';
       chatHistory.push({role:'assistant', content: reply});
       typing.style.display='none';
       addMsg(reply,'bot');
