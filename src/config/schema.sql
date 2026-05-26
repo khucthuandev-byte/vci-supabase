@@ -123,4 +123,22 @@ CHECK (
   )
 );
 
+ALTER TABLE ho_so
+DROP CONSTRAINT ho_so_status_check;
+
+ALTER TABLE ho_so
+ALTER COLUMN status SET DEFAULT 'new';
+
+ALTER TABLE ho_so
+ADD CONSTRAINT ho_so_status_check
+CHECK (
+  status IN (
+    'new',
+    'contacted',
+    'consulting',
+    'success',
+    'cancel',
+    'pending'
+  )
+);
 select 'Schema tạo thành công! ✅' as result;

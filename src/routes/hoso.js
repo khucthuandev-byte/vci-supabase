@@ -310,7 +310,7 @@ router.post(
 
         coso: req.body.coso || 'Cần Thơ',
 
-        status: 'Mới',
+        status: 'new',
 
         history: [
           {
