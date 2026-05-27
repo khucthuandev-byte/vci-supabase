@@ -567,6 +567,61 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
             <div class="fg full"><label>Địa chỉ cơ sở chính</label><input id="cms-ct-address" placeholder="Số 1 đường..."></div>
           </div></div>
         </div>
+        </div>
+
+        <!-- THEME -->
+        <div class="card">
+          <div class="ch"><span class="ch-title">🎨 Theme &amp; Màu sắc</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('theme')">💾 Lưu theme</button>
+          </div>
+          <div class="cb"><div class="fgrid">
+            <div class="fg"><label>Màu chủ đạo (đỏ) – VD: #B71C1C</label><input id="cms-theme-red" placeholder="#B71C1C" style="font-family:monospace"></div>
+            <div class="fg"><label>Màu phụ (xanh navy) – VD: #0D2137</label><input id="cms-theme-navy" placeholder="#0D2137" style="font-family:monospace"></div>
+            <div class="fg"><label>Màu vàng gold – VD: #F57F17</label><input id="cms-theme-gold" placeholder="#F57F17" style="font-family:monospace"></div>
+            <div class="fg"><label>URL Logo trường</label><input id="cms-theme-logo" placeholder="https://..."></div>
+            <div class="fg full"><label>Tên trường (navbar)</label><input id="cms-theme-school-name" placeholder="Trường CĐ Công thương Việt Nam"></div>
+            <div class="fg full"><label>Slogan ngắn</label><input id="cms-theme-slogan" placeholder="Mã trường C98 · Đào tạo – Việc làm"></div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- CHATBOT -->
+      <div class="page" id="page-chatbot">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <p style="font-size:13px;color:var(--muted)">Cấu hình chatbot tư vấn tự động hiển thị trên website.</p>
+          <button class="hbtn hbtn-red" onclick="loadChatbot()">↻ Tải lại</button>
+        </div>
+        <div class="g2">
+          <div>
+            <div class="card">
+              <div class="ch"><span class="ch-title">⚙️ Cài đặt chung</span>
+                <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveChatbotSection('general')">💾 Lưu</button>
+              </div>
+              <div class="cb"><div class="fgrid">
+                <div class="fg full" style="flex-direction:row;align-items:center;gap:12px">
+                  <input type="checkbox" id="cb-enabled" style="accent-color:var(--red);width:16px;height:16px">
+                  <label style="margin:0;font-size:13.5px;font-weight:600;cursor:pointer" for="cb-enabled">Bật chatbot trên website</label>
+                </div>
+                <div class="fg full"><label>Lời chào ban đầu</label><textarea id="cb-greeting" placeholder="Xin chào! Mình là trợ lý VCI..." style="min-height:70px"></textarea></div>
+                <div class="fg full"><label>Số hotline hiển thị trong chatbot</label><input id="cb-phone" placeholder="0966 670 100"></div>
+                <div class="fg full"><label>Câu gợi ý nhanh (mỗi dòng 1 câu, tối đa 4)</label><textarea id="cb-suggestions" placeholder="Học phí bao nhiêu?
+Đăng ký như thế nào?" style="min-height:90px"></textarea></div>
+              </div></div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="ch"><span class="ch-title">❓ FAQ – Câu hỏi tự động</span>
+                <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveChatbotSection('faq')">💾 Lưu FAQ</button>
+              </div>
+              <div class="cb">
+                <p style="font-size:12px;color:var(--muted);margin-bottom:10px">JSON – mỗi phần tử: <code style="font-size:11px">{"keywords":["từ khóa"],"answer":"Câu trả lời"}</code></p>
+                <textarea id="cb-faq-json" style="width:100%;min-height:300px;font-family:monospace;font-size:12px;border:1.5px solid var(--border);border-radius:var(--r);padding:10px;resize:vertical"></textarea>
+                <p style="font-size:11.5px;color:var(--muted);margin-top:8px">💡 Keywords là mảng từ khóa kích hoạt. Bot khớp với tin nhắn của khách.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -657,6 +712,7 @@ const NAV = [
   {id:'perm',     ico:'🔐',lbl:'Phân quyền',grp:'Hệ thống',perm:'phanQuyen'},
   {id:'settings', ico:'⚙️',lbl:'Cài đặt',grp:'Hệ thống',perm:'caiDat'},
   {id:'content',  ico:'🖊️',lbl:'Nội dung Website',grp:'Hệ thống',perm:'caiDat'},
+  {id:'chatbot',  ico:'🤖',lbl:'Quản lý Chatbot',grp:'Hệ thống',perm:'chatbot'},
 ];
 const PAGE_TITLES = {
   dashboard:['Dashboard','Tổng quan hệ thống VCI'],
@@ -667,6 +723,7 @@ const PAGE_TITLES = {
   perm:     ['Phân quyền','Cấu hình quyền truy cập'],
   settings: ['Cài đặt','Kết nối Railway & Supabase'],
   content:  ['Nội dung Website','Quản lý nội dung giao diện frontend'],
+  chatbot:  ['Chatbot','Cấu hình chatbot tư vấn tự động'],
 };
 
 /* ============================================================
@@ -786,6 +843,7 @@ async function showPage(id) {
   else if (id === 'users') loadUsers();
   else if (id === 'report') loadReport();
   else if (id === 'content') loadContent();
+  else if (id === 'chatbot') loadChatbot();
 }
 
 /* ============================================================
@@ -1211,6 +1269,14 @@ function fillCmsForm() {
   document.getElementById('cms-ct-facebook').value = ct.facebook || '';
   document.getElementById('cms-ct-website').value  = ct.website || '';
   document.getElementById('cms-ct-address').value  = ct.address || '';
+
+  const th = cmsData.theme || {};
+  document.getElementById('cms-theme-red').value         = th.red || '';
+  document.getElementById('cms-theme-navy').value        = th.navy || '';
+  document.getElementById('cms-theme-gold').value        = th.gold || '';
+  document.getElementById('cms-theme-logo').value        = th.logo || '';
+  document.getElementById('cms-theme-school-name').value = th.schoolName || '';
+  document.getElementById('cms-theme-slogan').value      = th.slogan || '';
 }
 
 async function saveContent(key) {
@@ -1252,6 +1318,16 @@ async function saveContent(key) {
           address:  document.getElementById('cms-ct-address').value.trim()
         };
         break;
+      case 'theme':
+        value = {
+          red:   document.getElementById('cms-theme-red').value.trim() || '#B71C1C',
+          navy:  document.getElementById('cms-theme-navy').value.trim() || '#0D2137',
+          gold:  document.getElementById('cms-theme-gold').value.trim() || '#F57F17',
+          logo:  document.getElementById('cms-theme-logo').value.trim(),
+          schoolName: document.getElementById('cms-theme-school-name').value.trim(),
+          slogan: document.getElementById('cms-theme-slogan').value.trim()
+        };
+        break;
       default: toast('Key không hợp lệ', 'err'); return;
     }
   } catch(e) {
@@ -1264,6 +1340,65 @@ async function saveContent(key) {
   } catch(e) {
     toast('Lỗi lưu nội dung: ' + e.message, 'err');
   }
+}
+
+/* ============================================================
+   CHATBOT MANAGEMENT
+============================================================ */
+let chatbotData = {};
+
+async function loadChatbot() {
+  try {
+    const {data} = await api('GET', '/api/content');
+    chatbotData = data.chatbot || {};
+    fillChatbotForm();
+    toast('Đã tải cấu hình chatbot');
+  } catch(e) {
+    fillChatbotForm();
+    toast('Dùng giá trị mặc định', 'warn');
+  }
+}
+
+function fillChatbotForm() {
+  const cb = chatbotData;
+  const cbEnabled = document.getElementById('cb-enabled');
+  if (cbEnabled) cbEnabled.checked = cb.enabled !== false;
+  const cbGreeting = document.getElementById('cb-greeting');
+  if (cbGreeting) cbGreeting.value = cb.greeting || 'Xin chào! Mình là trợ lý tư vấn VCI. Bạn muốn hỏi gì?';
+  const cbPhone = document.getElementById('cb-phone');
+  if (cbPhone) cbPhone.value = cb.phone || '0966 670 100';
+  const cbSugs = document.getElementById('cb-suggestions');
+  if (cbSugs) cbSugs.value = (cb.suggestions || ['Học phí bao nhiêu?','Đăng ký xét tuyển thế nào?','Cơ sở ở đâu?','Ngành nào đang tuyển?']).join('
+');
+  const cbFaq = document.getElementById('cb-faq-json');
+  if (cbFaq) cbFaq.value = JSON.stringify(cb.faqs || [
+    {keywords:['học phí','phí','tiền'],answer:'Học phí từ 525,000đ – 590,000đ/tín chỉ. Gọi <b>0966 670 100</b> để tư vấn!'},
+    {keywords:['ngành','ngành học'],answer:'VCI đào tạo: Tiếp viên HK, CNTT, Điện, Thiết kế đồ họa... Bạn quan tâm ngành nào?'},
+    {keywords:['cơ sở','địa chỉ','ở đâu'],answer:'VCI có cơ sở tại Cần Thơ, TP.HCM, Hà Nội, Đắk Lắk, Thái Nguyên. Bạn ở đâu?'},
+    {keywords:['đăng ký','xét tuyển','nộp hồ sơ'],answer:'Đăng ký ngay trên website hoặc gọi <b>0966 670 100</b>!'}
+  ], null, 2);
+}
+
+async function saveChatbotSection(section) {
+  try {
+    let value = Object.assign({}, chatbotData);
+    if (section === 'general') {
+      const suggs = document.getElementById('cb-suggestions').value.split('
+').map(s=>s.trim()).filter(Boolean).slice(0,4);
+      value = Object.assign(value, {
+        enabled: document.getElementById('cb-enabled').checked,
+        greeting: document.getElementById('cb-greeting').value.trim(),
+        phone: document.getElementById('cb-phone').value.trim(),
+        suggestions: suggs
+      });
+    } else if (section === 'faq') {
+      const faqs = JSON.parse(document.getElementById('cb-faq-json').value);
+      value = Object.assign(value, { faqs });
+    }
+    await api('PUT', '/api/content/chatbot', { value });
+    chatbotData = value;
+    toast('Đã lưu cấu hình chatbot!');
+  } catch(e) { toast(e.message || 'Lỗi JSON', 'err'); }
 }
 
 /* ============================================================
