@@ -9,13 +9,13 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --red:#C0392B;--red2:#E74C3C;--red-lt:#FDECEA;
-  --green:#27AE60;--green-lt:#EAFAF1;
+  --red:#B71C1C;--red2:#C62828;--red-lt:#FFEBEE;
+  --green:#2E7D32;--green-lt:#E8F5E9;
   --blue:#2980B9;--blue-lt:#EBF5FB;
   --orange:#E67E22;--orange-lt:#FEF5E7;
   --gold:#F39C12;--gold-lt:#FEF9E7;
   --purple:#8E44AD;--purple-lt:#F5EEF8;
-  --dark:#0F1117;--dark2:#161B22;--dark3:#1E2530;
+  --dark:#0A1A0A;--dark2:#112011;--dark3:#1B3A1B;
   --ink:#1a1a1a;--muted:#6B7280;--border:#E5E7EB;
   --bg:#F3F4F6;--white:#fff;
   --sh:0 1px 4px rgba(0,0,0,.08);--sh2:0 4px 20px rgba(0,0,0,.12);
@@ -268,6 +268,27 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
   .content{padding:12px}
   .g3{grid-template-columns:1fr}
 }
+/* ---- Repeater UI ---- */
+.rep-container{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+.rep-row{display:flex;align-items:center;gap:8px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:8px 10px}
+.rep-f{flex:1;padding:6px 9px;border:1px solid #e0e0e0;border-radius:4px;font-size:13px;background:#fff}
+.rep-f:focus{outline:none;border-color:#93c5fd}
+.rep-del{background:#fee2e2;color:#b71c1c;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;transition:background .15s}
+.rep-del:hover{background:#fca5a5}
+.rep-add{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:#f0f9ff;color:#0369a1;border:1.5px dashed #7dd3fc;border-radius:6px;padding:8px;font-size:13px;font-weight:600;cursor:pointer;margin-top:2px;transition:all .15s}
+.rep-add:hover{background:#e0f2fe;border-color:#38bdf8}
+.rep-block{flex-direction:column;padding:0;overflow:hidden}
+.rep-block-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:#f3f4f6;border-bottom:1px solid #e5e7eb;gap:10px}
+.rep-block-hd span{font-size:13px;font-weight:700;color:var(--navy);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rep-block-body{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.chip-area{border:1px solid #e0e0e0;border-radius:6px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:38px;background:#fff;cursor:text}
+.chip-area:focus-within{border-color:#93c5fd}
+.chip-tag{display:inline-flex;align-items:center;gap:3px;background:#dbeafe;color:#1d4ed8;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600}
+.chip-tag button{background:none;border:none;cursor:pointer;color:#1d4ed8;padding:0;font-size:13px;line-height:1;opacity:.7}
+.chip-tag button:hover{opacity:1}
+.chip-input{border:none;outline:none;font-size:13px;min-width:120px;background:transparent;padding:2px 4px}
+.color-pair{display:flex;gap:6px;align-items:center}
+.color-pair input[type=color]{width:36px;height:32px;border:1px solid #e0e0e0;border-radius:4px;padding:2px;cursor:pointer;background:#fff}
 </style>
 </head>
 <body>
@@ -516,7 +537,6 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
           </div>
         </div>
       </div>
-      </div>
 
       <!-- NỘI DUNG WEBSITE -->
       <div class="page" id="page-content">
@@ -553,8 +573,9 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
             <div class="fg"><label>Tiêu đề dòng 2 (nhấn mạnh)</label><input id="cms-hero-h1_2" placeholder="với VCI"></div>
             <div class="fg full"><label>Mô tả ngắn</label><textarea id="cms-hero-desc" style="min-height:60px"></textarea></div>
             <div class="fg full">
-              <label>4 Số liệu thống kê (JSON – <code style="font-size:11px">[{num,unit,label}]</code>)</label>
-              <textarea id="cms-hero-stats" style="min-height:80px;font-family:monospace;font-size:12px"></textarea>
+              <label>Số liệu thống kê <small style="color:var(--muted);font-weight:400">(tối đa 4 mục)</small></label>
+              <div class="rep-container" id="rep-hero-stats"></div>
+              <button class="rep-add" onclick="addStatRow('hero-stats')">+ Thêm số liệu</button>
             </div>
           </div></div>
         </div>
@@ -566,8 +587,9 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
           </div>
           <div class="cb">
             <div class="fg full">
-              <label>Danh sách số liệu (JSON – <code style="font-size:11px">[{num,unit,label}]</code>)</label>
-              <textarea id="cms-stats-items" style="min-height:100px;font-family:monospace;font-size:12px"></textarea>
+              <label>Danh sách số liệu</label>
+              <div class="rep-container" id="rep-stats-bar"></div>
+              <button class="rep-add" onclick="addStatRow('stats-bar')">+ Thêm số liệu</button>
             </div>
           </div>
         </div>
@@ -579,8 +601,8 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
           </div>
           <div class="cb">
             <div class="fg full">
-              <label>Mảng JSON (mỗi phần tử: <code style="font-size:11px">{title,badge,badge_color,desc,chips:[],link}</code>)</label>
-              <textarea id="cms-hedt-items" style="min-height:180px;font-family:monospace;font-size:12px"></textarea>
+              <div class="rep-container" id="rep-hedt"></div>
+              <button class="rep-add" onclick="addHedtRow()">+ Thêm hệ đào tạo</button>
             </div>
           </div>
         </div>
@@ -592,8 +614,8 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
           </div>
           <div class="cb">
             <div class="fg full">
-              <label>Mảng JSON (mỗi phần tử: <code style="font-size:11px">{stars,text,author,role,img}</code>)</label>
-              <textarea id="cms-testi-items" style="min-height:160px;font-family:monospace;font-size:12px"></textarea>
+              <div class="rep-container" id="rep-testi"></div>
+              <button class="rep-add" onclick="addTestiRow()">+ Thêm đánh giá</button>
             </div>
           </div>
         </div>
@@ -1654,13 +1676,13 @@ function fillCmsForm() {
   document.getElementById('cms-hero-h1_1').value   = hero.h1_1 || '';
   document.getElementById('cms-hero-h1_2').value   = hero.h1_2 || '';
   document.getElementById('cms-hero-desc').value   = hero.desc || '';
-  document.getElementById('cms-hero-stats').value  = JSON.stringify(hero.stats || CMS_DEFAULTS.hero.stats, null, 2);
+  renderStatRep('hero-stats', hero.stats || CMS_DEFAULTS.hero.stats);
 
   const sb = cmsData.stats_bar || CMS_DEFAULTS.stats_bar;
-  document.getElementById('cms-stats-items').value = JSON.stringify(sb.items || CMS_DEFAULTS.stats_bar.items, null, 2);
+  renderStatRep('stats-bar', sb.items || CMS_DEFAULTS.stats_bar.items);
 
-  document.getElementById('cms-hedt-items').value  = JSON.stringify(cmsData.he_dao_tao || CMS_DEFAULTS.he_dao_tao, null, 2);
-  document.getElementById('cms-testi-items').value = JSON.stringify(cmsData.testimonials || CMS_DEFAULTS.testimonials, null, 2);
+  renderHedtRep(cmsData.he_dao_tao || CMS_DEFAULTS.he_dao_tao);
+  renderTestiRep(cmsData.testimonials || CMS_DEFAULTS.testimonials);
 
   const ct = cmsData.contact || CMS_DEFAULTS.contact;
   document.getElementById('cms-ct-phone').value    = ct.phone || '';
@@ -1696,17 +1718,17 @@ async function saveContent(key) {
           h1_1:  document.getElementById('cms-hero-h1_1').value.trim(),
           h1_2:  document.getElementById('cms-hero-h1_2').value.trim(),
           desc:  document.getElementById('cms-hero-desc').value.trim(),
-          stats: JSON.parse(document.getElementById('cms-hero-stats').value)
+          stats: getStatRows('hero-stats')
         };
         break;
       case 'stats_bar':
-        value = { items: JSON.parse(document.getElementById('cms-stats-items').value) };
+        value = { items: getStatRows('stats-bar') };
         break;
       case 'he_dao_tao':
-        value = JSON.parse(document.getElementById('cms-hedt-items').value);
+        value = getHedtRows();
         break;
       case 'testimonials':
-        value = JSON.parse(document.getElementById('cms-testi-items').value);
+        value = getTestiRows();
         break;
       case 'contact':
         value = {
@@ -1730,7 +1752,7 @@ async function saveContent(key) {
       default: toast('Key không hợp lệ', 'err'); return;
     }
   } catch(e) {
-    toast('JSON không hợp lệ: ' + e.message, 'err'); return;
+    toast('Lỗi đọc dữ liệu form: ' + e.message, 'err'); return;
   }
   try {
     await api('PUT', '/api/content/' + key, { value });
@@ -2319,6 +2341,184 @@ async function saveAiConfig() {
     });
     toast('Đã lưu cấu hình AI ✅');
   } catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+
+/* ============================================================
+   REPEATER HELPERS – CMS Content
+============================================================ */
+function _esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ---- Stat Repeater (hero stats + stats bar) ---- */
+function addStatRow(repId, data={}) {
+  const c = document.getElementById('rep-' + repId);
+  const row = document.createElement('div');
+  row.className = 'rep-row';
+  row.innerHTML = `
+    <input class="rep-f rep-num"   placeholder="Số (VD: 100)"    value="${_esc(data.num)}"   style="max-width:100px">
+    <input class="rep-f rep-unit"  placeholder="Đơn vị (VD: %)"  value="${_esc(data.unit)}"  style="max-width:80px">
+    <input class="rep-f rep-label" placeholder="Nhãn (VD: Cam kết việc làm)" value="${_esc(data.label)}" style="flex:2">
+    <button class="rep-del" onclick="this.closest('.rep-row').remove()">× Xóa</button>`;
+  c.appendChild(row);
+}
+function renderStatRep(repId, arr) {
+  const c = document.getElementById('rep-' + repId);
+  c.innerHTML = '';
+  (arr||[]).forEach(d => addStatRow(repId, d));
+}
+function getStatRows(repId) {
+  return [...document.querySelectorAll(`#rep-${repId} .rep-row`)].map(r => ({
+    num:   r.querySelector('.rep-num').value.trim(),
+    unit:  r.querySelector('.rep-unit').value.trim(),
+    label: r.querySelector('.rep-label').value.trim()
+  })).filter(r => r.num||r.label);
+}
+
+/* ---- Hệ đào tạo Repeater ---- */
+function _makeChipHtml(chips) {
+  return (chips||[]).map(c =>
+    `<span class="chip-tag">${_esc(c)}<button type="button" onclick="this.closest('.chip-tag').remove()">×</button></span>`
+  ).join('');
+}
+function addChip(input) {
+  const val = input.value.trim();
+  if (!val) return;
+  const list = input.previousElementSibling;
+  const span = document.createElement('span');
+  span.className = 'chip-tag';
+  span.innerHTML = `${_esc(val)}<button type="button" onclick="this.closest('.chip-tag').remove()">×</button>`;
+  list.appendChild(span);
+  input.value = '';
+}
+function addHedtRow(data={}) {
+  const c = document.getElementById('rep-hedt');
+  const row = document.createElement('div');
+  row.className = 'rep-row rep-block';
+  const bc = data.badge_color || '#B71C1C';
+  row.innerHTML = `
+    <div class="rep-block-hd">
+      <span>🎓 ${_esc(data.title||'Hệ đào tạo mới')}</span>
+      <button class="rep-del" onclick="this.closest('.rep-block').remove()">× Xóa</button>
+    </div>
+    <div class="rep-block-body">
+      <div class="fgrid">
+        <div class="fg">
+          <label>Tiêu đề</label>
+          <input class="hedt-title" value="${_esc(data.title)}"
+            oninput="this.closest('.rep-block').querySelector('.rep-block-hd span').textContent='🎓 '+(this.value||'Hệ đào tạo mới')">
+        </div>
+        <div class="fg">
+          <label>Badge</label>
+          <input class="hedt-badge" value="${_esc(data.badge)}" placeholder="VD: HOT, Mới, Phổ biến">
+        </div>
+        <div class="fg" style="flex:0 0 auto">
+          <label>Màu badge</label>
+          <div class="color-pair">
+            <input type="color" value="${_esc(bc)}"
+              oninput="this.nextElementSibling.value=this.value">
+            <input class="rep-f hedt-badge-color" value="${_esc(bc)}" style="width:90px"
+              oninput="this.previousElementSibling.value=this.value">
+          </div>
+        </div>
+        <div class="fg">
+          <label>Link URL</label>
+          <input class="hedt-link rep-f" value="${_esc(data.link)}" placeholder="#">
+        </div>
+        <div class="fg full">
+          <label>Ảnh đại diện (URL)</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input class="hedt-img rep-f" value="${_esc(data.img)}" placeholder="https://... hoặc chọn từ Media"
+              oninput="const p=this.nextElementSibling;p.src=this.value||'';p.style.display=this.value?'block':'none'">
+            <img src="${_esc(data.img)}" style="width:64px;height:44px;object-fit:cover;border-radius:4px;border:1px solid #e0e0e0;${data.img?'':'display:none'}" alt="">
+          </div>
+        </div>
+        <div class="fg full">
+          <label>Mô tả ngắn</label>
+          <textarea class="hedt-desc rep-f" style="min-height:52px">${_esc(data.desc)}</textarea>
+        </div>
+        <div class="fg full">
+          <label>Chips <small style="color:var(--muted);font-weight:400">(nhấn Enter để thêm)</small></label>
+          <div class="chip-area" onclick="this.querySelector('.chip-input').focus()">
+            <div class="chip-list d-inline" style="display:contents">${_makeChipHtml(data.chips)}</div>
+            <input class="chip-input" placeholder="Tên chip + Enter"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();addChip(this)}">
+          </div>
+        </div>
+      </div>
+    </div>`;
+  c.appendChild(row);
+}
+function renderHedtRep(arr) {
+  document.getElementById('rep-hedt').innerHTML = '';
+  (arr||[]).forEach(d => addHedtRow(d));
+}
+function getHedtRows() {
+  return [...document.querySelectorAll('#rep-hedt .rep-block')].map(r => ({
+    title:       r.querySelector('.hedt-title').value.trim(),
+    badge:       r.querySelector('.hedt-badge').value.trim(),
+    badge_color: r.querySelector('.hedt-badge-color').value.trim(),
+    link:        r.querySelector('.hedt-link').value.trim(),
+    img:         r.querySelector('.hedt-img').value.trim(),
+    desc:        r.querySelector('.hedt-desc').value.trim(),
+    chips:       [...r.querySelectorAll('.chip-tag')].map(c => c.firstChild.textContent.trim()).filter(Boolean)
+  }));
+}
+
+/* ---- Testimonials Repeater ---- */
+function addTestiRow(data={}) {
+  const c = document.getElementById('rep-testi');
+  const row = document.createElement('div');
+  row.className = 'rep-row rep-block';
+  const stars = Number(data.stars)||5;
+  row.innerHTML = `
+    <div class="rep-block-hd">
+      <span>⭐ ${_esc(data.author||'Học viên mới')}</span>
+      <button class="rep-del" onclick="this.closest('.rep-block').remove()">× Xóa</button>
+    </div>
+    <div class="rep-block-body">
+      <div class="fgrid">
+        <div class="fg">
+          <label>Tên học viên</label>
+          <input class="ti-author rep-f" value="${_esc(data.author)}"
+            oninput="this.closest('.rep-block').querySelector('.rep-block-hd span').textContent='⭐ '+(this.value||'Học viên mới')">
+        </div>
+        <div class="fg">
+          <label>Chức danh / Ngành</label>
+          <input class="ti-role rep-f" value="${_esc(data.role)}" placeholder="VD: Điều dưỡng – Nhật Bản">
+        </div>
+        <div class="fg">
+          <label>Số sao</label>
+          <select class="ti-stars rep-f">
+            <option value="5" ${stars===5?'selected':''}>⭐⭐⭐⭐⭐ 5 sao</option>
+            <option value="4" ${stars===4?'selected':''}>⭐⭐⭐⭐ 4 sao</option>
+            <option value="3" ${stars===3?'selected':''}>⭐⭐⭐ 3 sao</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Ảnh đại diện (URL)</label>
+          <input class="ti-img rep-f" value="${_esc(data.img)}" placeholder="https://...">
+        </div>
+        <div class="fg full">
+          <label>Nội dung nhận xét</label>
+          <textarea class="ti-text rep-f" style="min-height:68px">${_esc(data.text)}</textarea>
+        </div>
+      </div>
+    </div>`;
+  c.appendChild(row);
+}
+function renderTestiRep(arr) {
+  document.getElementById('rep-testi').innerHTML = '';
+  (arr||[]).forEach(d => addTestiRow(d));
+}
+function getTestiRows() {
+  return [...document.querySelectorAll('#rep-testi .rep-block')].map(r => ({
+    stars:  Number(r.querySelector('.ti-stars').value),
+    author: r.querySelector('.ti-author').value.trim(),
+    role:   r.querySelector('.ti-role').value.trim(),
+    img:    r.querySelector('.ti-img').value.trim(),
+    text:   r.querySelector('.ti-text').value.trim()
+  })).filter(r => r.author||r.text);
 }
 </script>
 </body>
