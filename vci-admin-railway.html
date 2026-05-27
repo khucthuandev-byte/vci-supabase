@@ -362,7 +362,7 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
           </div>
         </div>
         <div class="card">
-          <div class="cb-np tw"><table class="tbl"><thead><tr><th>#</th><th>Họ tên</th><th>SĐT</th><th>Hệ đào tạo</th><th>Ngành</th><th>Cơ sở</th><th>Ngày</th><th>Trạng thái</th><th>Tư vấn viên</th><th>Thao tác</th></tr></thead><tbody id="hoSoTbl"><tr><td colspan="10" class="empty"><div class="spin spin-dk" style="margin:auto;width:20px;height:20px"></div></td></tr></tbody></table></div>
+          <div class="cb-np tw"><table class="tbl"><thead><tr><th>#</th><th>Họ tên</th><th>SĐT</th><th>Hệ đào tạo</th><th>Ngành</th><th>Cơ sở</th><th>Ngày / Nguồn</th><th>Trạng thái</th><th>Tư vấn viên</th><th>Thao tác</th></tr></thead><tbody id="hoSoTbl"><tr><td colspan="10" class="empty"><div class="spin spin-dk" style="margin:auto;width:20px;height:20px"></div></td></tr></tbody></table></div>
           <div class="pag-row"><span id="hsPagInfo">–</span><div style="display:flex;gap:6px"><button class="ab ab-view" onclick="hsPage>1&&(hsPage--,loadHS())">← Trước</button><button class="ab ab-view" onclick="hsPage<hsPages&&(hsPage++,loadHS())">Sau →</button></div></div>
         </div>
       </div>
@@ -652,7 +652,11 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
     <div class="fgrid">
       <div class="fg"><label>Trạng thái</label><select id="efStatus"><option value="new">Mới</option><option value="contacted">Đang tư vấn</option><option value="consulting">Tư vấn chi tiết</option><option value="success">Đã nhập học</option><option value="cancel">Đã hủy</option><option value="pending">Đang chờ</option></select></div>
       <div class="fg"><label>Tư vấn viên</label><select id="efTvv"><option value="">Chưa phân công</option></select></div>
-      <div class="fg full"><label>Ghi chú / Lý do</label><textarea id="efNote" placeholder="Nhập ghi chú..."></textarea></div>
+      <div class="fg"><label>Hệ đào tạo</label><select id="efHe"><option value="">– Giữ nguyên –</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select></div>
+      <div class="fg"><label>Ngành học</label><select id="efNganh"><option value="">– Giữ nguyên –</option></select></div>
+      <div class="fg"><label>Cơ sở</label><select id="efCoso"><option value="">– Giữ nguyên –</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. Hồ Chí Minh</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select></div>
+      <div class="fg"><label>Nguồn</label><select id="efSrc"><option value="">– Giữ nguyên –</option><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="walk-in">Đến trực tiếp</option><option value="phone">Gọi điện</option><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="referral">Giới thiệu</option></select></div>
+      <div class="fg full"><label>Ghi chú lần cập nhật này (lưu vào lịch sử)</label><textarea id="efNote" placeholder="VD: Đã gọi điện, khách hẹn gặp trực tiếp ngày..."></textarea></div>
     </div>
     <div id="efHistory" style="margin-top:12px"></div>
   </div>
@@ -917,7 +921,7 @@ async function loadHS() {
         <td style="font-size:12.5px">${r.he_dao_tao}</td>
         <td style="font-size:12.5px">${r.nganh||'–'}</td>
         <td style="font-size:12.5px">${r.coso||'–'}</td>
-        <td style="font-size:11.5px;color:var(--muted)">${new Date(r.created_at).toLocaleDateString('vi-VN')}</td>
+        <td style="font-size:11.5px"><div>${new Date(r.created_at).toLocaleDateString('vi-VN')}</div><div style="color:var(--muted);margin-top:2px">${r.source ? (() => { const icons={'website':'🌐','facebook':'📘','zalo':'💬','walk-in':'🚶','phone':'📞','tiktok':'🎵','youtube':'▶️','referral':'👥'}; return (icons[r.source]||'📌')+' '+r.source; })() : ''}</div></td>
         <td><span class="bdg bdg-${r.status}">${STATUS_VN[r.status]||r.status}</span></td>
         <td style="font-size:12px">${r.tu_van_vien?.name||'Chưa phân công'}</td>
         <td><div style="display:flex;gap:3px">
@@ -935,16 +939,21 @@ async function submitAddHS() {
   const btn = document.getElementById('mAddHSBtn'); btn.disabled = true; btn.textContent = 'Đang lưu...';
   try {
     await api('POST', '/api/hoso', {
-      name, phone, email:document.getElementById('mfEmail').value,
-      dob:document.getElementById('mfDob').value, he_dao_tao: he,
-      nganh:document.getElementById('mfNganh').value,
-      coso:document.getElementById('mfCoso').value,
-      source:document.getElementById('mfSrc').value,
-      note:document.getElementById('mfNote').value,
+      name, phone,
+      email:   document.getElementById('mfEmail').value,
+      dob:     document.getElementById('mfDob').value,
+      level:   document.getElementById('mfLevel').value,
+      he_dao_tao: he,
+      nganh:   document.getElementById('mfNganh').value,
+      coso:    document.getElementById('mfCoso').value,
+      source:  document.getElementById('mfSrc').value,
+      address: document.getElementById('mfAddress').value.trim(),
+      note:    document.getElementById('mfNote').value,
     });
     closeModal('mAddHS'); toast('✅ Đã thêm hồ sơ thành công!');
     loadHS(); loadDash();
-    ['mfName','mfPhone','mfEmail','mfDob','mfNote'].forEach(id => document.getElementById(id).value='');
+    ['mfName','mfPhone','mfEmail','mfDob','mfAddress','mfNote'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('mfLevel').value = '';
   } catch(e) { toast(e.message, 'err'); }
   finally { btn.disabled = false; btn.textContent = '➕ Thêm hồ sơ'; }
 }
@@ -966,11 +975,19 @@ function openEditHS(id, r) {
   document.getElementById('efStatus').value = r.status || 'new';
   document.getElementById('efTvv').innerHTML = '<option value="">Chưa phân công</option>' +
     usersCache.map(u => `<option value="${u.id}" ${r.tu_van_vien?.id===u.id?'selected':''}>${u.name}</option>`).join('');
+  // Điền các trường sửa được
+  const _setSelectVal = (id, val) => { const el=document.getElementById(id); if(!el) return; for(let i=0;i<el.options.length;i++) if(el.options[i].value===val){el.selectedIndex=i;return;} el.selectedIndex=0; };
+  _setSelectVal('efHe', r.he_dao_tao || '');
+  document.getElementById('efNganh').innerHTML = '<option value="">– Giữ nguyên –</option>' +
+    (ngAll||[]).map(n => `<option value="${n.name}" ${n.name===r.nganh?'selected':''}>${n.name}</option>`).join('');
+  _setSelectVal('efCoso', r.coso || '');
+  _setSelectVal('efSrc',  r.source || '');
   document.getElementById('efNote').value = '';
-  const hist = r.history || [];
+  // Lịch sử – hiển thị toàn bộ, mới nhất lên đầu
+  const hist = (r.history || []).slice().reverse();
   document.getElementById('efHistory').innerHTML = hist.length ?
-    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">Lịch sử liên hệ</div>' +
-    hist.slice(-4).reverse().map(h => `<div style="font-size:12px;padding:7px 0;border-bottom:1px solid #f3f4f6;color:var(--muted)">
+    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">Lịch sử liên hệ (' + hist.length + ')</div>' +
+    hist.map(h => `<div style="font-size:12px;padding:7px 0;border-bottom:1px solid #f3f4f6;color:var(--muted)">
       <strong style="color:var(--ink)">${h.action}</strong>${h.note?' – '+h.note:''}
       <br><span style="font-size:11px">${new Date(h.at).toLocaleString('vi-VN')}</span></div>`).join('') : '';
   openModal('mEditHS');
@@ -978,12 +995,22 @@ function openEditHS(id, r) {
 async function submitEditHS() {
   const btn = document.getElementById('mEditHSBtn'); btn.disabled=true; btn.textContent='Đang lưu...';
   try {
-    await api('PUT', '/api/hoso/' + editingHSId, {
-      status:document.getElementById('efStatus').value,
-      tu_van_vien:document.getElementById('efTvv').value || null,
-      note:document.getElementById('efNote').value,
-      action:'Cập nhật trạng thái',
-    });
+    const payload = {
+      status:       document.getElementById('efStatus').value,
+      tu_van_vien:  document.getElementById('efTvv').value || null,
+      note:         document.getElementById('efNote').value,
+      action:       'Cập nhật hồ sơ',
+    };
+    // Chỉ gửi các trường đã chọn (khác "Giữ nguyên")
+    const he    = document.getElementById('efHe').value;
+    const nganh = document.getElementById('efNganh').value;
+    const coso  = document.getElementById('efCoso').value;
+    const src   = document.getElementById('efSrc').value;
+    if (he)    payload.he_dao_tao = he;
+    if (nganh) payload.nganh     = nganh;
+    if (coso)  payload.coso      = coso;
+    if (src)   payload.source    = src;
+    await api('PUT', '/api/hoso/' + editingHSId, payload);
     closeModal('mEditHS'); toast('✅ Đã cập nhật hồ sơ!'); loadHS();
   } catch(e) { toast(e.message,'err'); }
   finally { btn.disabled=false; btn.textContent='💾 Lưu thay đổi'; }
