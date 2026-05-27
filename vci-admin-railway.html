@@ -947,6 +947,21 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
   <div class="mf"><button class="btn-gray" onclick="closeModal('mAddNganh')">Hủy</button><button class="btn-red" onclick="submitAddNganh()">➕ Thêm ngành</button></div>
 </div></div>
 
+<div class="overlay" id="mEditNganh"><div class="modal">
+  <div class="mh"><h3>✏️ Sửa ngành học</h3><button class="mc" onclick="closeModal('mEditNganh')">✕</button></div>
+  <div class="mb"><div class="fgrid">
+    <input type="hidden" id="enfId">
+    <div class="fg full"><label>Tên ngành *</label><input id="enfName" placeholder="VD: Công nghệ thông tin"></div>
+    <div class="fg"><label>Nhóm ngành</label><select id="enfGrp"><option>Kỹ thuật</option><option>Ngoại ngữ</option><option>Kinh tế</option><option>Y tế</option><option>Du lịch</option><option>Truyền thông</option></select></div>
+    <div class="fg"><label>HP/tín chỉ (đ)</label><input type="number" id="enfDon"></div>
+    <div class="fg"><label>Số TC Cao đẳng</label><input type="number" id="enfTcCd"></div>
+    <div class="fg"><label>Số TC Trung cấp</label><input type="number" id="enfTcTc"></div>
+    <div class="fg"><label>Cam kết việc làm</label><select id="enfCk"><option value="true">Có ★</option><option value="false">Không</option></select></div>
+    <div class="fg full"><label>Mô tả</label><textarea id="enfMota" placeholder="Mô tả ngắn về ngành..."></textarea></div>
+  </div></div>
+  <div class="mf"><button class="btn-gray" onclick="closeModal('mEditNganh')">Hủy</button><button class="btn-red" onclick="submitEditNganh()">💾 Lưu thay đổi</button></div>
+</div></div>
+
 <div class="overlay" id="mCosoItem"><div class="modal" style="max-width:400px">
   <div class="mh"><h3 id="mCosoTitle">➕ Thêm cơ sở</h3><button class="mc" onclick="closeModal('mCosoItem')">✕</button></div>
   <div class="mb"><div class="fgrid">
@@ -1434,6 +1449,7 @@ function renderNganh(list) {
       <td>${n.cam_ket?'<span class="bdg bdg-success">★ Có</span>':'<span class="bdg bdg-cancel">✗ Không</span>'}</td>
       <td>${n.active?'<span class="bdg bdg-active">Hoạt động</span>':'<span class="bdg bdg-inactive">Ẩn</span>'}</td>
       <td><div style="display:flex;gap:3px">
+        <button class="ab ab-edit" onclick="openEditNganh('${n.id}')">✏️ Sửa</button>
         <button class="ab ${n.active?'ab-del':'ab-view'}" onclick="toggleNganh('${n.id}',${!n.active})">${n.active?'🔒 Ẩn':'▶ Hiện'}</button>
         ${CU.role==='admin'?`<button class="ab ab-del" onclick="deleteNganh('${n.id}','${n.name}')">🗑</button>`:''}</div></td>
     </tr>`).join('') || `<tr><td colspan="8" class="empty" style="padding:40px 20px">
@@ -1454,6 +1470,37 @@ async function submitAddNganh() {
       cam_ket:document.getElementById('nfCk').value==='true',
       mo_ta:document.getElementById('nfMota').value});
     closeModal('mAddNganh'); toast('Đã thêm ngành!'); loadNganh();
+  } catch(e) { toast(e.message,'err'); }
+}
+function openEditNganh(id) {
+  const n = (ngAll||[]).find(x => x.id == id);
+  if (!n) { toast('Không tìm thấy ngành','err'); return; }
+  document.getElementById('enfId').value     = n.id;
+  document.getElementById('enfName').value   = n.name || '';
+  document.getElementById('enfGrp').value    = n.grp || 'Kỹ thuật';
+  document.getElementById('enfDon').value    = n.don_gia || 0;
+  document.getElementById('enfTcCd').value   = n.tc_cao_dang || 0;
+  document.getElementById('enfTcTc').value   = n.tc_trung_cap || 0;
+  document.getElementById('enfCk').value     = n.cam_ket ? 'true' : 'false';
+  document.getElementById('enfMota').value   = n.mo_ta || '';
+  openModal('mEditNganh');
+}
+async function submitEditNganh() {
+  const id   = document.getElementById('enfId').value;
+  const name = document.getElementById('enfName').value.trim();
+  if (!id)   { toast('Thiếu ID ngành','err'); return; }
+  if (!name) { toast('Nhập tên ngành!','warn'); return; }
+  try {
+    await api('PUT','/api/nganh/'+id, {
+      name,
+      grp:          document.getElementById('enfGrp').value,
+      don_gia:      Number(document.getElementById('enfDon').value),
+      tc_cao_dang:  Number(document.getElementById('enfTcCd').value),
+      tc_trung_cap: Number(document.getElementById('enfTcTc').value),
+      cam_ket:      document.getElementById('enfCk').value === 'true',
+      mo_ta:        document.getElementById('enfMota').value,
+    });
+    closeModal('mEditNganh'); toast('Đã cập nhật ngành!'); loadNganh();
   } catch(e) { toast(e.message,'err'); }
 }
 async function toggleNganh(id, active) {
