@@ -175,6 +175,20 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
 .prog{width:100%;height:7px;background:var(--bg);border-radius:4px;overflow:hidden;margin-top:4px}
 .prog-fill{height:100%;border-radius:4px;transition:width .6s}
 
+/* ── CMS Sub-tabs ── */
+.cms-tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:5px;margin-bottom:16px;overflow-x:auto;box-shadow:var(--sh)}
+.cms-tab{flex:1;min-width:auto;padding:9px 14px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;border-radius:var(--r);transition:all .18s;display:flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
+.cms-tab:hover{background:var(--bg);color:var(--ink)}
+.cms-tab.active{background:var(--red);color:#fff;box-shadow:0 4px 10px rgba(183,28,28,.25)}
+.cms-tab .cms-tab-ico{font-size:15px;line-height:1}
+.cms-pane{display:none}
+.cms-pane.active{display:block;animation:cmsFade .25s ease}
+@keyframes cmsFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(max-width:700px){
+  .cms-tabs{flex-wrap:wrap}
+  .cms-tab{flex:1 1 calc(50% - 4px);min-width:0}
+}
+
 /* ── FORM ── */
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .fg{display:flex;flex-direction:column;gap:5px}
@@ -540,10 +554,20 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
 
       <!-- NỘI DUNG WEBSITE -->
       <div class="page" id="page-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-          <p style="font-size:13px;color:var(--muted)">Thay đổi sẽ hiển thị ngay trên website sau khi lưu.</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap">
+          <p style="font-size:13px;color:var(--muted);margin:0">Thay đổi sẽ hiển thị ngay trên website sau khi lưu.</p>
           <button class="hbtn hbtn-red" onclick="loadContent()">↻ Tải lại</button>
         </div>
+
+        <!-- Sub-tabs -->
+        <div class="cms-tabs">
+          <button class="cms-tab active" data-cms-tab="homepage" onclick="switchCmsTab('homepage')"><span class="cms-tab-ico">🏠</span> Trang chủ</button>
+          <button class="cms-tab" data-cms-tab="content" onclick="switchCmsTab('content')"><span class="cms-tab-ico">📚</span> Nội dung</button>
+          <button class="cms-tab" data-cms-tab="brand" onclick="switchCmsTab('brand')"><span class="cms-tab-ico">🎨</span> Liên hệ &amp; Thương hiệu</button>
+        </div>
+
+        <!-- ====== PANE 1: TRANG CHỦ ====== -->
+        <div class="cms-pane active" data-cms-pane="homepage">
 
         <!-- THÔNG BÁO -->
         <div class="card" id="cms-announcement-card">
@@ -568,12 +592,12 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
             <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('hero')">💾 Lưu</button>
           </div>
           <div class="cb"><div class="fgrid">
-            <div class="fg"><label>Badge nhỏ phía trên</label><input id="cms-hero-badge" placeholder="🏆 Top 1 Cao đẳng..."></div>
-            <div class="fg"><label>Tiêu đề dòng 1</label><input id="cms-hero-h1_1" placeholder="Khởi nghiệp vững vàng"></div>
-            <div class="fg"><label>Tiêu đề dòng 2 (nhấn mạnh)</label><input id="cms-hero-h1_2" placeholder="với VCI"></div>
-            <div class="fg full"><label>Mô tả ngắn</label><textarea id="cms-hero-desc" style="min-height:60px"></textarea></div>
+            <div class="fg full"><label>Badge nhỏ phía trên (tuỳ chọn)</label><input id="cms-hero-badge" placeholder="🏆 Top 1 Cao đẳng..."></div>
+            <div class="fg"><label>Tiêu đề – Dòng 1</label><input id="cms-hero-h1_1" placeholder="Trường Cao đẳng"></div>
+            <div class="fg"><label>Tiêu đề – Dòng 2 <small style="color:var(--muted);font-weight:400">(nhấn đỏ gradient)</small></label><input id="cms-hero-h1_2" placeholder="Công thương Việt Nam"></div>
+            <div class="fg full"><label>Mô tả ngắn dưới tiêu đề</label><textarea id="cms-hero-desc" style="min-height:60px" placeholder="Đào tạo gắn kết doanh nghiệp..."></textarea></div>
             <div class="fg full">
-              <label>Số liệu thống kê <small style="color:var(--muted);font-weight:400">(tối đa 4 mục)</small></label>
+              <label>Số liệu overlay trên ảnh hero <small style="color:var(--muted);font-weight:400">(tối đa 4)</small></label>
               <div class="rep-container" id="rep-hero-stats"></div>
               <button class="rep-add" onclick="addStatRow('hero-stats')">+ Thêm số liệu</button>
             </div>
@@ -593,6 +617,11 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
             </div>
           </div>
         </div>
+
+        </div><!-- /PANE 1 -->
+
+        <!-- ====== PANE 2: NỘI DUNG ====== -->
+        <div class="cms-pane" data-cms-pane="content">
 
         <!-- HỆ ĐÀO TẠO -->
         <div class="card">
@@ -619,6 +648,11 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
             </div>
           </div>
         </div>
+
+        </div><!-- /PANE 2 -->
+
+        <!-- ====== PANE 3: LIÊN HỆ & THƯƠNG HIỆU ====== -->
+        <div class="cms-pane" data-cms-pane="brand">
 
         <!-- LIÊN HỆ -->
         <div class="card">
@@ -682,6 +716,8 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
             <input type="hidden" id="cms-theme-gold">
           </div></div>
         </div>
+
+        </div><!-- /PANE 3 -->
       </div>
 
       <!-- BANNER & SLIDER -->
@@ -1229,7 +1265,7 @@ async function showPage(id) {
   else if (id === 'nganh')   loadNganh();
   else if (id === 'users')   loadUsers();
   else if (id === 'report')  loadReport();
-  else if (id === 'content') loadContent();
+  else if (id === 'content') { loadContent(); try { switchCmsTab(sessionStorage.getItem('vci_cms_tab') || 'homepage'); } catch(_){} }
   else if (id === 'chatbot') loadChatbot();
   else if (id === 'form')    loadFormConfig();
   else if (id === 'banners') loadBanners();
@@ -1758,6 +1794,12 @@ async function loadContent() {
     fillCmsForm();
     toast('Dùng giá trị mặc định (chưa có dữ liệu CMS)', 'warn');
   }
+}
+
+function switchCmsTab(key) {
+  document.querySelectorAll('.cms-tab').forEach(b => b.classList.toggle('active', b.dataset.cmsTab === key));
+  document.querySelectorAll('.cms-pane').forEach(p => p.classList.toggle('active', p.dataset.cmsPane === key));
+  try { sessionStorage.setItem('vci_cms_tab', key); } catch(_) {}
 }
 
 function fillCmsForm() {

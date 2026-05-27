@@ -7,7 +7,6 @@
 <title>VCI – Cao đẳng Công thương Việt Nam | Tuyển sinh 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 /* ====================================================
    TOKENS
@@ -120,7 +119,7 @@ button{cursor:pointer;font-family:var(--fh)}
 .nav-btn-phone:hover{border-color:var(--red);color:var(--red)}
 
 /* Language picker */
-.lang-picker{position:relative}
+.lang-picker{position:relative;display:inline-block}
 .lang-trigger{
   display:flex;align-items:center;gap:6px;
   font-size:12.5px;font-weight:700;color:var(--navy);
@@ -131,6 +130,14 @@ button{cursor:pointer;font-family:var(--fh)}
 .lang-trigger:hover{border-color:var(--navy)}
 .lang-trigger .lang-flag{font-size:16px;line-height:1}
 .lang-trigger .lang-caret{font-size:10px;opacity:.6;margin-left:2px}
+/* Topbar variant – compact, light on dark navy bg */
+.lang-picker-topbar .lang-trigger{
+  font-size:12px;padding:3px 9px;
+  color:#fff;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.20);
+}
+.lang-picker-topbar .lang-trigger:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
+.lang-picker-topbar .lang-trigger .lang-flag{font-size:14px}
 .lang-menu{
   position:absolute;top:calc(100% + 6px);right:0;
   background:#fff;border:1px solid var(--gray3);border-radius:var(--r2);
@@ -229,12 +236,13 @@ button{cursor:pointer;font-family:var(--fh)}
 .seal-status{font-size:11.5px;color:#15803d;font-weight:700;letter-spacing:.04em}
 /* -- Heading -- */
 .hero h1{
-  font-family:var(--fs);font-size:clamp(2.5rem,4.8vw,4.2rem);
-  font-weight:900;line-height:1.07;color:var(--navy);
-  margin-bottom:22px;letter-spacing:-.03em;
+  font-family:var(--fs);font-size:clamp(1.9rem,3.4vw,2.9rem);
+  font-weight:900;line-height:1.35;color:var(--red);
+  margin-bottom:22px;letter-spacing:-.02em;
 }
+.hero h1 .h1-accent{margin-top:6px}
 .h1-accent{
-  background:linear-gradient(88deg,#C9A227 0%,#F5C84B 50%,#C9A227 100%);
+  background:linear-gradient(88deg,var(--red) 0%,#E53935 50%,var(--red) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   display:block;
 }
@@ -1180,8 +1188,15 @@ button{cursor:pointer;font-family:var(--fh)}
   <div class="container">
     <span data-i18n-html="topbar.tagline">🎓 Trường Cao đẳng Công thương Việt Nam – Mã trường <strong>C98</strong> – Tuyển sinh 2026</span>
     <div class="topbar-links">
-      <a href="https://vci.edu.vn" target="_blank">vci.edu.vn</a>
       <a href="https://facebook.com/CaodangCongThuongVietNam" target="_blank">📘 Facebook</a>
+      <div class="lang-picker lang-picker-topbar" id="langPicker">
+        <button class="lang-trigger" onclick="toggleLang()" aria-haspopup="true">
+          <span class="lang-flag" id="langCurFlag">🇻🇳</span>
+          <span id="langCurCode">VI</span>
+          <span class="lang-caret">▾</span>
+        </button>
+        <div class="lang-menu" id="langMenu" role="menu"></div>
+      </div>
       <span class="topbar-phone">📞 0966 670 100</span>
     </div>
   </div>
@@ -1206,14 +1221,6 @@ button{cursor:pointer;font-family:var(--fh)}
       <a href="#dang-ky" data-i18n="nav.register">Đăng ký</a>
     </nav>
     <div class="nav-actions">
-      <div class="lang-picker" id="langPicker">
-        <button class="lang-trigger" onclick="toggleLang()" aria-haspopup="true">
-          <span class="lang-flag" id="langCurFlag">🇻🇳</span>
-          <span id="langCurCode">VI</span>
-          <span class="lang-caret">▾</span>
-        </button>
-        <div class="lang-menu" id="langMenu" role="menu"></div>
-      </div>
       <a href="tel:0966670100" class="nav-btn-phone">📞 0966 670 100</a>
       <button class="btn btn-red" style="padding:10px 20px;font-size:13px" onclick="openRegModal()" data-i18n="nav.cta">Đăng ký ngay</button>
     </div>
@@ -1261,7 +1268,7 @@ button{cursor:pointer;font-family:var(--fh)}
         </div>
       </div>
 
-      <h1 data-i18n-html="hero.title">Trường Cao đẳng<br>Công thương<br><span class="h1-accent">Việt Nam</span></h1>
+      <h1 data-i18n-html="hero.title">Trường Cao đẳng<br><span class="h1-accent">Công thương Việt Nam</span></h1>
 
       <p class="hero-tagline" id="heroTagline" data-i18n="hero.tagline">
         Đào tạo gắn kết doanh nghiệp · Cam kết 100% việc làm ·
@@ -1786,7 +1793,7 @@ button{cursor:pointer;font-family:var(--fh)}
     </div>
     <div class="coso-layout reveal">
       <div class="coso-list" id="cosoList"></div>
-      <div id="map"></div>
+      <iframe id="mapFrame" src="" style="border:0;width:100%;height:100%;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
     </div>
   </div>
 </section>
@@ -1958,8 +1965,6 @@ button{cursor:pointer;font-family:var(--fh)}
   </div>
 </div>
 
-<!-- LEAFLET MAP -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* ============================================================
    CONFIG – Railway API
@@ -2073,15 +2078,13 @@ const COSO = [
   {city:'Đắk Lắk',icon:'🌳',addr:'349 Lê Duẩn, phường Ea Kao, tỉnh Đắk Lắk',phone:'0262.383.1111 | 0826.391.189',lat:12.6803,lng:108.0377},
   {city:'Thái Nguyên',icon:'🏔️',addr:'Tổ dân phố Đình Cả 2, Xã Phú Bình · Xã Phú Bình, Tỉnh Thái Nguyên',phone:'02083.567.555 | 0972.161.822',lat:21.5943,lng:105.8412},
 ];
-let map, markers=[], activeCs=2;
+let activeCs=2;
+function gmapEmbed(lat,lng,zoom=14){
+  // Google Maps embed URL không cần API key
+  return `https://www.google.com/maps?q=${lat},${lng}&z=${zoom}&hl=vi&output=embed`;
+}
 function initMap(){
-  map = L.map('map',{scrollWheelZoom:false}).setView([16,107],5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
-  COSO.forEach((cs,i)=>{
-    const m=L.marker([cs.lat,cs.lng]).addTo(map).bindPopup(`<strong>${cs.city}</strong><br>${cs.addr}<br><b>📞 ${cs.phone}</b>`);
-    markers.push(m);
-  });
-  selectCoso(2);
+  selectCoso(activeCs);
 }
 function renderCosoList(){
   document.getElementById('cosoList').innerHTML=COSO.map((cs,i)=>`
@@ -2092,7 +2095,13 @@ function renderCosoList(){
       <div class="coso-phone">📞 ${cs.phone}</div></div>
     </div>`).join('');
 }
-function selectCoso(i){activeCs=i;renderCosoList();if(map){map.setView([COSO[i].lat,COSO[i].lng],13,{animate:true});markers[i].openPopup();}}
+function selectCoso(i){
+  activeCs=i;
+  renderCosoList();
+  const cs=COSO[i];
+  const fr=document.getElementById('mapFrame');
+  if(fr && cs) fr.src=gmapEmbed(cs.lat,cs.lng);
+}
 renderCosoList();
 window.addEventListener('load',()=>setTimeout(initMap,300));
 
@@ -2381,11 +2390,13 @@ async function fetchContent() {
       const badge = document.querySelector('.hero-badge');
       if (badge && hero.badge) badge.innerHTML = '<span class="hero-badge-dot"></span> ' + hero.badge;
       const h1 = document.querySelector('.hero h1');
-      if (h1 && (hero.h1_1 !== undefined || hero.h1_2 !== undefined)) {
-        h1.innerHTML = (hero.h1_1 || '') + '<br><span class="accent">' + (hero.h1_2 || '') + '</span>';
+      if (h1 && ((hero.h1_1 && hero.h1_1.trim()) || (hero.h1_2 && hero.h1_2.trim()))) {
+        h1.innerHTML = (hero.h1_1 || '') + '<br><span class="h1-accent">' + (hero.h1_2 || '') + '</span>';
+        // CMS thắng i18n cho h1 — bỏ attribute để switch lang không ghi đè
+        h1.removeAttribute('data-i18n-html');
       }
-      const desc = document.querySelector('.hero-desc');
-      if (desc && hero.desc) desc.innerHTML = hero.desc;
+      const desc = document.querySelector('.hero-tagline');
+      if (desc && hero.desc) { desc.innerHTML = hero.desc; desc.removeAttribute('data-i18n'); }
       const statsWrap = document.querySelector('.hero-stats');
       if (statsWrap && Array.isArray(hero.stats) && hero.stats.length) {
         statsWrap.innerHTML = hero.stats.map(s =>
@@ -2605,7 +2616,7 @@ const I18N = {
     'hero.sealCode':'Cao đẳng Công thương VN &nbsp;·&nbsp; Mã C98',
     'hero.sealYear':'Tuyển sinh năm học 2026–2027',
     'hero.sealStatus':'Đang nhận hồ sơ',
-    'hero.title':'Trường Cao đẳng<br>Công thương<br><span class="h1-accent">Việt Nam</span>',
+    'hero.title':'Trường Cao đẳng<br><span class="h1-accent">Công thương Việt Nam</span>',
     'hero.tagline':'Đào tạo gắn kết doanh nghiệp · Cam kết 100% việc làm · Thực tập lương cao tại Nhật, Hàn, Đức, Úc, Đài Loan',
     'hero.ctaPrimary':'📋 Đăng ký xét tuyển ngay','hero.ctaSecondary':'Khám phá ngành học →',
     'hero.trust1':'Được Bộ LĐTBXH cấp phép','hero.trust2':'Kiểm định chất lượng Bộ GDĐT','hero.trust3':'Hỗ trợ vay vốn Ngân hàng Nhà nước',
