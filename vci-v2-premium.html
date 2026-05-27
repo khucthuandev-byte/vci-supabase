@@ -985,6 +985,13 @@ button{cursor:pointer;font-family:var(--fh)}
 </style>
 </head>
 <body>
+<!-- MAINTENANCE OVERLAY -->
+<div id="maintenanceOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0D2137 0%,#1A3A5C 100%);color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;">
+  <div style="font-size:4rem;margin-bottom:1rem">🔧</div>
+  <h1 style="font-size:2rem;font-weight:800;margin-bottom:1rem">Hệ thống đang bảo trì</h1>
+  <p id="maintenanceMsg" style="font-size:1.1rem;opacity:.85;max-width:480px;line-height:1.7">Vui lòng quay lại sau.</p>
+  <p style="margin-top:2rem;font-size:.9rem;opacity:.5">VCI – Cao đẳng Công thương Việt Nam</p>
+</div>
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -1635,6 +1642,7 @@ button{cursor:pointer;font-family:var(--fh)}
       <button class="submit-btn" id="submitBtn" onclick="submitForm()">
         Gửi đăng ký – Nhận tư vấn miễn phí 🎓
       </button>
+      <div id="formApiErr" style="display:none;margin-top:12px;padding:12px 16px;background:#fff3cd;border:1px solid #ffc107;border-radius:8px;font-size:14px;color:#856404;text-align:center"></div>
       <div class="form-success" id="formSuccess">
         <div class="fs-icon">✅</div>
         <h4>Đăng ký thành công!</h4>
@@ -1931,6 +1939,8 @@ async function submitForm(){
   }
 
   const btn = document.getElementById('submitBtn');
+  const errEl = document.getElementById('formApiErr');
+  if (errEl) errEl.style.display = 'none';
   btn.textContent='⏳ Đang gửi...'; btn.disabled=true;
   try {
     await apiPost('/api/hoso',{
@@ -1945,10 +1955,14 @@ async function submitForm(){
       source:  'website',
       note:    document.getElementById('f-note').value,
     });
-  } catch(e){ console.warn('API:',e.message); }
-  // Luôn hiện thành công dù API có lỗi
-  document.getElementById('formBox').querySelectorAll('h3,.sub,.fg,.fg-row,.submit-btn').forEach(el=>el.style.display='none');
-  document.getElementById('formSuccess').style.display='block';
+    document.getElementById('formBox').querySelectorAll('h3,.sub,.fg,.fg-row,.submit-btn').forEach(el=>el.style.display='none');
+    document.getElementById('formSuccess').style.display='block';
+  } catch(e) {
+    btn.textContent='Gửi đăng ký – Nhận tư vấn miễn phí 🎓';
+    btn.disabled=false;
+    if (errEl) { errEl.textContent='⚠️ Gửi thất bại: '+(e.message||'Lỗi kết nối. Vui lòng thử lại.'); errEl.style.display='block'; }
+    document.querySelector('.submit-btn')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }
 }
 
 /* ============================================================
@@ -2340,15 +2354,57 @@ async function fetchContent() {
    HERO IMAGE LAZY LOAD
 ============================================================ */
 window.addEventListener('DOMContentLoaded', async ()=>{
-  // Load CMS content (before anything else so UI updates immediately)
-  await fetchContent();
-  // Lazy load hero bg
-  const bgEl = document.getElementById('heroBg');
-  const img = new Image();
-  img.onload = ()=>{ bgEl.style.backgroundImage=`url('${bgEl.style.backgroundImage.slice(5,-2)}')`;  bgEl.classList.add('loaded'); };
-  bgEl.style.backgroundImage = `url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920&q=80&auto=format&fit=crop')`;
-  setTimeout(()=>bgEl.classList.add('loaded'), 100);
-  // Load ngành từ API
+  // 1. Kiểm tra maintenance mode trước tiên
+  try {
+    const maint = await apiGet('/api/settings/maintenance');
+    if (maint?.value?.enabled) {
+      const overlay = document.getElementById('maintenanceOverlay');
+      const msgEl   = document.getElementById('maintenanceMsg');
+      if (maint.value.message) msgEl.textContent = maint.value.message;
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      return; // dừng tải trang
+    }
+  } catch(_) {}
+
+  // 2. Load CMS content + banners song song
+  const [, bannersRes] = await Promise.all([
+    fetchContent(),
+    apiGet('/api/banners')
+  ]);
+
+  // 3. Áp dụng banner đầu tiên vào hero (nếu có)
+  const banners = bannersRes?.data || [];
+  if (banners.length > 0) {
+    const b = banners[0];
+    if (b.image_url) {
+      const bgEl = document.getElementById('heroBg');
+      bgEl.style.backgroundImage = `url('${b.image_url}')`;
+      setTimeout(()=>bgEl.classList.add('loaded'), 100);
+    }
+    if (b.title) {
+      const h1 = document.querySelector('.hero h1');
+      if (h1) h1.innerHTML = b.title;
+    }
+    if (b.subtitle) {
+      const desc = document.querySelector('.hero .hero-desc');
+      if (desc) desc.innerHTML = b.subtitle;
+    }
+    if (b.link_url && b.btn_text) {
+      const mainBtn = document.querySelector('.hero .btn-gold');
+      if (mainBtn) {
+        mainBtn.textContent = b.btn_text;
+        mainBtn.onclick = ()=>{ location.href = b.link_url; };
+      }
+    }
+  } else {
+    // Không có banner → lazy load ảnh mặc định
+    const bgEl = document.getElementById('heroBg');
+    bgEl.style.backgroundImage = `url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920&q=80&auto=format&fit=crop')`;
+    setTimeout(()=>bgEl.classList.add('loaded'), 100);
+  }
+
+  // 4. Load ngành từ API
   await loadNganhAPI();
 });
 </script>

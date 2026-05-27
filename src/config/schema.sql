@@ -176,4 +176,118 @@ CREATE POLICY "service_all" ON audit_logs   FOR ALL USING (TRUE) WITH CHECK (TRU
 CREATE POLICY "service_all" ON site_content FOR ALL USING (TRUE) WITH CHECK (TRUE);
 
 
+-- ============================================================
+-- BẢNG BANNERS  (Banner/Slider cho trang chủ)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS banners (
+  id          UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title       TEXT,
+  subtitle    TEXT,
+  image_url   TEXT,
+  link_url    TEXT        DEFAULT '#',
+  btn_text    TEXT        DEFAULT 'Tìm hiểu thêm',
+  active      BOOLEAN     DEFAULT TRUE,
+  sort_order  INTEGER     DEFAULT 0,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_banners_sort   ON banners(sort_order);
+CREATE INDEX IF NOT EXISTS idx_banners_active ON banners(active);
+
+
+-- ============================================================
+-- BẢNG ARTICLES  (Tin tức & bài viết SEO)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS articles (
+  id          UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title       TEXT        NOT NULL,
+  slug        TEXT        UNIQUE NOT NULL,
+  excerpt     TEXT,
+  content     TEXT,
+  cover_url   TEXT,
+  meta_title  TEXT,
+  meta_desc   TEXT,
+  schema_json JSONB,
+  published   BOOLEAN     DEFAULT FALSE,
+  created_by  UUID        REFERENCES users(id) ON DELETE SET NULL,
+  created_at  TIMESTAMPTZ DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_articles_slug      ON articles(slug);
+CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(published);
+CREATE INDEX IF NOT EXISTS idx_articles_created   ON articles(created_at DESC);
+
+DROP TRIGGER IF EXISTS trg_articles_updated ON articles;
+CREATE TRIGGER trg_articles_updated
+  BEFORE UPDATE ON articles
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+
+-- ============================================================
+-- BẢNG CHAT_HISTORY  (Lịch sử chat chatbot)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS chat_history (
+  id          UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
+  session_id  TEXT,
+  messages    JSONB       DEFAULT '[]'::JSONB,
+  visitor_ip  TEXT,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_chat_history_session ON chat_history(session_id);
+CREATE INDEX IF NOT EXISTS idx_chat_history_created ON chat_history(created_at DESC);
+
+
+-- ============================================================
+-- BẢNG SYSTEM_SETTINGS  (Cấu hình hệ thống)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS system_settings (
+  key         TEXT        PRIMARY KEY,
+  value       JSONB,
+  updated_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+DROP TRIGGER IF EXISTS trg_settings_updated ON system_settings;
+CREATE TRIGGER trg_settings_updated
+  BEFORE UPDATE ON system_settings
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+INSERT INTO system_settings (key, value) VALUES
+  ('maintenance', '{"enabled":false,"message":"Hệ thống đang bảo trì. Vui lòng quay lại sau."}'),
+  ('smtp', '{"host":"","port":587,"user":"","pass":"","from_name":"VCI Tuyển sinh"}'),
+  ('ai', '{"provider":"gemini","apiKey":""}')
+ON CONFLICT (key) DO NOTHING;
+
+
+-- ============================================================
+-- SUPABASE STORAGE BUCKET  (vci-media)
+-- ============================================================
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'vci-media', 'vci-media', TRUE, 5242880,
+  ARRAY['image/jpeg','image/png','image/webp','image/gif','video/mp4']
+)
+ON CONFLICT (id) DO NOTHING;
+
+
+-- ============================================================
+-- RLS – các bảng mới
+-- ============================================================
+ALTER TABLE banners         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE articles        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE chat_history    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE system_settings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "service_all" ON banners;
+DROP POLICY IF EXISTS "service_all" ON articles;
+DROP POLICY IF EXISTS "service_all" ON chat_history;
+DROP POLICY IF EXISTS "service_all" ON system_settings;
+
+CREATE POLICY "service_all" ON banners         FOR ALL USING (TRUE) WITH CHECK (TRUE);
+CREATE POLICY "service_all" ON articles        FOR ALL USING (TRUE) WITH CHECK (TRUE);
+CREATE POLICY "service_all" ON chat_history    FOR ALL USING (TRUE) WITH CHECK (TRUE);
+CREATE POLICY "service_all" ON system_settings FOR ALL USING (TRUE) WITH CHECK (TRUE);
+
+
 SELECT 'Schema VCI tạo thành công! ✅' AS result;

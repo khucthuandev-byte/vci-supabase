@@ -61,18 +61,45 @@ app.get('/api/health', (req, res) => {
 });
 
 /* =========================
+   MAINTENANCE MIDDLEWARE
+========================= */
+const { getSupabase } = require('./config/supabase');
+
+app.use('/api', async (req, res, next) => {
+  const skip = req.path === '/health'
+    || req.path.startsWith('/auth')
+    || req.path === '/settings/maintenance'
+    || req.path.startsWith('/banners')
+    || req.path.startsWith('/articles');
+  if (skip) return next();
+  try {
+    const { data } = await getSupabase()
+      .from('system_settings').select('value').eq('key', 'maintenance').single();
+    if (data?.value?.enabled) {
+      return res.status(503).json({ success: false, message: data.value.message || 'Hệ thống đang bảo trì.' });
+    }
+  } catch (_) {}
+  next();
+});
+
+/* =========================
    ROUTES
 ========================= */
 try {
-  app.use('/api/auth', require('./routes/auth'));
-  app.use('/api/hoso', require('./routes/hoso'));
-  app.use('/api/nganh', require('./routes/nganh'));
-  app.use('/api/users', require('./routes/users'));
-  app.use('/api/reports', require('./routes/reports'));
-  app.use('/api/sheets', require('./routes/sheets'));
-  app.use('/api/email', require('./routes/email'));
-  app.use('/api/content', require('./routes/content'));
-  app.use('/api/chat',    require('./routes/chat'));
+  app.use('/api/auth',         require('./routes/auth'));
+  app.use('/api/hoso',         require('./routes/hoso'));
+  app.use('/api/nganh',        require('./routes/nganh'));
+  app.use('/api/users',        require('./routes/users'));
+  app.use('/api/reports',      require('./routes/reports'));
+  app.use('/api/sheets',       require('./routes/sheets'));
+  app.use('/api/email',        require('./routes/email'));
+  app.use('/api/content',      require('./routes/content'));
+  app.use('/api/chat',         require('./routes/chat'));
+  app.use('/api/banners',      require('./routes/banners'));
+  app.use('/api/articles',     require('./routes/articles'));
+  app.use('/api/media',        require('./routes/media'));
+  app.use('/api/settings',     require('./routes/settings'));
+  app.use('/api/chat-history', require('./routes/chatHistory'));
 } catch (err) {
   console.error('❌ ROUTE LOAD ERROR:', err.message);
 }

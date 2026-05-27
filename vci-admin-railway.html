@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>VCI Admin – Quản trị tuyển sinh</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -102,13 +103,13 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
 .hbtn-red{background:var(--red);color:#fff;border:none}.hbtn-red:hover{background:var(--red2)}
 .hbtn-out{background:transparent;border:1.5px solid var(--border);color:var(--muted)}.hbtn-out:hover{border-color:var(--red);color:var(--red)}
 .ham{display:none;padding:6px;background:none;border:none;font-size:20px;color:var(--ink)}
-.content{flex:1;overflow-y:auto;padding:20px}
+.content{flex:1;min-height:0;overflow-y:auto;padding:20px}
 
 /* ── PAGES ── */
 .page{display:none}.page.active{display:block}
 
 /* ── STAT CARDS ── */
-.sc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
 .sc{background:var(--white);border-radius:var(--r2);padding:18px;border:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;box-shadow:var(--sh);transition:box-shadow .2s}
 .sc:hover{box-shadow:var(--sh2)}
 .sc-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
@@ -235,6 +236,21 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
 .empty{text-align:center;padding:32px;color:var(--muted);font-size:13px}
 .pag-row{padding:11px 18px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
 
+/* ── MEDIA GRID ── */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;padding:16px 18px}
+.media-card{border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--white);transition:box-shadow .18s}
+.media-card:hover{box-shadow:var(--sh2)}
+.media-thumb{width:100%;height:100px;object-fit:cover;background:var(--bg);display:block}
+.media-thumb-vid{width:100%;height:100px;background:#000;display:flex;align-items:center;justify-content:center;font-size:28px}
+.media-info{padding:6px 8px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media-actions{padding:4px 6px;display:flex;gap:4px;border-top:1px solid var(--border)}
+
+/* ── FUNNEL ── */
+.funnel{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.funnel-step{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--r);font-size:13px}
+.funnel-bar{height:8px;border-radius:4px;min-width:4px;transition:width .6s}
+.funnel-num{font-size:1.1rem;font-weight:800;min-width:40px;text-align:right}
+
 /* ── MOBILE ── */
 .mob-overlay{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.6)}
 .mob-overlay.open{display:block}
@@ -270,15 +286,14 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
       <span class="api-dot-sm dot-ping" id="apiDot"></span>
       <span id="apiStatusTxt" style="color:#888">Đang kiểm tra server...</span>
     </div>
-    <div class="lf"><label>Email đăng nhập</label><input type="email" id="loginEmail" placeholder="admin@vci.edu.vn" value="admin@vci.edu.vn"></div>
-    <div class="lf"><label>Mật khẩu</label><input type="password" id="loginPass" placeholder="••••••••" value="Admin@VCI2026!" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="lf"><label>Email đăng nhập</label><input type="email" id="loginEmail" placeholder="Nhập email..."></div>
+    <div class="lf"><label>Mật khẩu</label><input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <button class="login-btn" id="loginBtn" onclick="doLogin()">
       <span id="loginBtnTxt">Đăng nhập</span>
     </button>
     <div class="login-err" id="loginErr"></div>
     <div class="login-hint">
-      <strong>Tài khoản mặc định sau seed:</strong><br>
-      admin@vci.edu.vn / Admin@VCI2026!<br>
+      <strong>Liên hệ quản trị viên</strong> nếu bạn quên mật khẩu.<br>
       <span style="color:#666;font-size:11px">Server: https://vci-supabase-production.up.railway.app</span>
     </div>
   </div>
@@ -343,6 +358,10 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
               <div class="cb" id="cosoChart"><div style="text-align:center;padding:20px"><div class="spin spin-dk" style="margin:auto"></div></div></div>
             </div>
             <div class="card">
+              <div class="ch"><span class="ch-title">📊 Phễu chuyển đổi</span></div>
+              <div class="cb" id="funnelChart"><div class="empty">Đang tải...</div></div>
+            </div>
+            <div class="card">
               <div class="ch"><span class="ch-title">⚡ Hoạt động gần đây</span></div>
               <div class="cb" style="padding:8px 16px"><div class="tl" id="dashAct"><div class="empty">Đang tải...</div></div></div>
             </div>
@@ -353,13 +372,13 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
       <!-- HỒ SƠ -->
       <div class="page" id="page-ho-so">
         <div class="fbar">
-          <div class="sbox">🔍<input placeholder="Tìm tên, SĐT..." id="hsQ" oninput="debounce(loadHS,500)()"></div>
+          <div class="sbox">🔍<input placeholder="Tìm tên, SĐT..." id="hsQ" oninput="debouncedLoadHS()"></div>
           <select class="fsel" id="hsSt" onchange="loadHS()"><option value="">Tất cả trạng thái</option><option value="new">Mới</option><option value="contacted">Đang tư vấn</option><option value="consulting">Tư vấn chi tiết</option><option value="success">Đã nhập học</option><option value="cancel">Đã hủy</option><option value="pending">Đang chờ</option></select>
           <select class="fsel" id="hsHe" onchange="loadHS()"><option value="">Tất cả hệ</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select>
           <select class="fsel" id="hsCs" onchange="loadHS()"><option value="">Tất cả cơ sở</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. HCM</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select>
           <div class="factions">
             <button class="hbtn hbtn-red" onclick="openModal('mAddHS')">+ Thêm hồ sơ</button>
-            <button class="hbtn hbtn-out" onclick="exportCSV()">⬇ CSV</button>
+            <button class="hbtn hbtn-out" onclick="exportExcel()">⬇ Excel</button>
             <button class="hbtn hbtn-out" onclick="syncSheets()">☁ Sheets</button>
           </div>
         </div>
@@ -414,7 +433,7 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
               <span style="font-size:12px;color:var(--muted)">đến</span>
               <input type="date" class="fsel" id="rTo">
               <button class="hbtn hbtn-red" onclick="loadReport()">↻ Tải lại</button>
-              <button class="hbtn hbtn-out" onclick="exportCSV()">⬇ Xuất CSV</button>
+              <button class="hbtn hbtn-out" onclick="exportExcel()">⬇ Xuất Excel</button>
             </div>
           </div>
         </div>
@@ -422,6 +441,28 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
 
       <!-- CÀI ĐẶT -->
       <div class="page" id="page-settings">
+        <div class="g2" style="margin-bottom:14px">
+          <div class="card">
+            <div class="ch"><span class="ch-title">🔧 Chế độ bảo trì</span><button class="btn-red" style="padding:7px 16px;font-size:12.5px" onclick="saveMaintenanceSettings()">💾 Lưu</button></div>
+            <div class="cb"><div class="fgrid">
+              <div class="fg full" style="flex-direction:row;align-items:center;gap:12px">
+                <input type="checkbox" id="maintEnabled" style="accent-color:var(--red);width:16px;height:16px">
+                <label style="margin:0;font-size:13.5px;font-weight:600;cursor:pointer" for="maintEnabled">Bật chế độ bảo trì (503 cho tất cả API)</label>
+              </div>
+              <div class="fg full"><label>Thông báo bảo trì</label><input id="maintMsg" placeholder="Hệ thống đang bảo trì. Vui lòng quay lại sau."></div>
+            </div></div>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ch-title">📧 Cấu hình SMTP</span><button class="btn-red" style="padding:7px 16px;font-size:12.5px" onclick="saveSmtpSettings()">💾 Lưu</button></div>
+            <div class="cb"><div class="fgrid">
+              <div class="fg"><label>SMTP Host</label><input id="smtpHost" placeholder="smtp.gmail.com"></div>
+              <div class="fg"><label>Port</label><input id="smtpPort" type="number" placeholder="587"></div>
+              <div class="fg"><label>Email user</label><input id="smtpUser" placeholder="tuyensinh@vci.edu.vn"></div>
+              <div class="fg"><label>Password/App Key</label><input id="smtpPass" type="password" placeholder="••••••••"></div>
+              <div class="fg full"><label>Tên người gửi</label><input id="smtpFromName" placeholder="VCI Tuyển sinh"></div>
+            </div></div>
+          </div>
+        </div>
         <div class="g2">
           <div>
             <div class="card">
@@ -474,6 +515,7 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       <!-- NỘI DUNG WEBSITE -->
@@ -569,21 +611,71 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
             <div class="fg full"><label>Địa chỉ cơ sở chính</label><input id="cms-ct-address" placeholder="Số 1 đường..."></div>
           </div></div>
         </div>
-        </div>
+      </div>
 
-        <!-- THEME -->
-        <div class="card">
-          <div class="ch"><span class="ch-title">🎨 Theme &amp; Màu sắc</span>
-            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('theme')">💾 Lưu theme</button>
+      <!-- BANNER & SLIDER -->
+      <div class="page" id="page-banners">
+        <div class="fbar">
+          <p style="font-size:13px;color:var(--muted);flex:1">Quản lý banner hiển thị trên trang chủ website.</p>
+          <div class="factions">
+            <button class="hbtn hbtn-red" onclick="openBannerModal()">+ Thêm banner</button>
+            <button class="hbtn hbtn-out" onclick="loadBanners()">↻ Tải lại</button>
           </div>
-          <div class="cb"><div class="fgrid">
-            <div class="fg"><label>Màu chủ đạo (đỏ) – VD: #B71C1C</label><input id="cms-theme-red" placeholder="#B71C1C" style="font-family:monospace"></div>
-            <div class="fg"><label>Màu phụ (xanh navy) – VD: #0D2137</label><input id="cms-theme-navy" placeholder="#0D2137" style="font-family:monospace"></div>
-            <div class="fg"><label>Màu vàng gold – VD: #F57F17</label><input id="cms-theme-gold" placeholder="#F57F17" style="font-family:monospace"></div>
-            <div class="fg"><label>URL Logo trường</label><input id="cms-theme-logo" placeholder="https://..."></div>
-            <div class="fg full"><label>Tên trường (navbar)</label><input id="cms-theme-school-name" placeholder="Trường CĐ Công thương Việt Nam"></div>
-            <div class="fg full"><label>Slogan ngắn</label><input id="cms-theme-slogan" placeholder="Mã trường C98 · Đào tạo – Việc làm"></div>
-          </div></div>
+        </div>
+        <div class="card"><div class="cb-np tw"><table class="tbl">
+          <thead><tr><th>#</th><th>Tiêu đề</th><th>Phụ đề</th><th>Link</th><th>Thứ tự</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+          <tbody id="bannerTbl"><tr><td colspan="7" class="empty"><div class="spin spin-dk" style="margin:auto;width:20px;height:20px"></div></td></tr></tbody>
+        </table></div></div>
+      </div>
+
+      <!-- THƯ VIỆN MEDIA -->
+      <div class="page" id="page-media">
+        <div class="fbar">
+          <p style="font-size:13px;color:var(--muted);flex:1">Tối đa 5MB. Định dạng: JPG, PNG, WebP, GIF, MP4.</p>
+          <div class="factions">
+            <label class="hbtn hbtn-red" style="cursor:pointer">📤 Upload <input type="file" id="mediaFileInput" accept="image/*,video/mp4" style="display:none" onchange="uploadMedia(this)"></label>
+            <button class="hbtn hbtn-out" onclick="loadMedia()">↻ Tải lại</button>
+          </div>
+        </div>
+        <div class="card">
+          <div id="mediaUploadProg" style="display:none;padding:12px 18px"><div class="spin spin-dk" style="width:18px;height:18px;display:inline-block;margin-right:8px"></div>Đang tải lên...</div>
+          <div class="media-grid" id="mediaGrid"><div class="empty" style="grid-column:1/-1">Đang tải...</div></div>
+        </div>
+      </div>
+
+      <!-- TIN TỨC & SEO -->
+      <div class="page" id="page-articles">
+        <div class="fbar">
+          <p style="font-size:13px;color:var(--muted);flex:1">Quản lý bài viết và tin tức tuyển sinh (SEO).</p>
+          <div class="factions">
+            <button class="hbtn hbtn-red" onclick="openArticleModal()">+ Viết bài</button>
+            <button class="hbtn hbtn-out" onclick="loadArticles()">↻ Tải lại</button>
+          </div>
+        </div>
+        <div class="card"><div class="cb-np tw"><table class="tbl">
+          <thead><tr><th>#</th><th>Tiêu đề</th><th>Slug</th><th>Tóm tắt</th><th>Trạng thái</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+          <tbody id="articleTbl"><tr><td colspan="7" class="empty"><div class="spin spin-dk" style="margin:auto;width:20px;height:20px"></div></td></tr></tbody>
+        </table></div>
+        <div class="pag-row"><span id="articlePagInfo">–</span><div style="display:flex;gap:6px"><button class="ab ab-view" onclick="articlePage>1&&(articlePage--,loadArticles())">← Trước</button><button class="ab ab-view" onclick="articlePage<articlePages&&(articlePage++,loadArticles())">Sau →</button></div></div>
+        </div>
+      </div>
+
+      <!-- LỊCH SỬ CHAT -->
+      <div class="page" id="page-chat-history">
+        <div class="fbar">
+          <input type="date" class="fsel" id="chFrom">
+          <span style="font-size:12px;color:var(--muted)">đến</span>
+          <input type="date" class="fsel" id="chTo">
+          <div class="factions">
+            <button class="hbtn hbtn-red" onclick="loadChatHistory()">🔍 Lọc</button>
+            <button class="hbtn hbtn-out" onclick="loadChatHistory(true)">↻ Tất cả</button>
+          </div>
+        </div>
+        <div class="card"><div class="cb-np tw"><table class="tbl">
+          <thead><tr><th>#</th><th>Session ID</th><th>IP</th><th>Số lượt</th><th>Thời gian</th><th>Xem</th><th>Xóa</th></tr></thead>
+          <tbody id="chatHistTbl"><tr><td colspan="7" class="empty"><div class="spin spin-dk" style="margin:auto;width:20px;height:20px"></div></td></tr></tbody>
+        </table></div>
+        <div class="pag-row"><span id="chatHistPagInfo">–</span><div style="display:flex;gap:6px"><button class="ab ab-view" onclick="chatHistPage>1&&(chatHistPage--,loadChatHistory())">← Trước</button><button class="ab ab-view" onclick="chatHistPage<chatHistPages&&(chatHistPage++,loadChatHistory())">Sau →</button></div></div>
         </div>
       </div>
 
@@ -674,7 +766,26 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
       <div class="page" id="page-chatbot">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
           <p style="font-size:13px;color:var(--muted)">Cấu hình chatbot tư vấn tự động hiển thị trên website.</p>
-          <button class="hbtn hbtn-red" onclick="loadChatbot()">↻ Tải lại</button>
+          <div style="display:flex;gap:8px">
+            <button class="hbtn hbtn-out" onclick="showPage('chat-history')">💬 Lịch sử chat</button>
+            <button class="hbtn hbtn-red" onclick="loadChatbot()">↻ Tải lại</button>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="ch"><span class="ch-title">🤖 Cấu hình AI (Gemini)</span><button class="btn-red" style="padding:7px 16px;font-size:12.5px" onclick="saveAiConfig()">💾 Lưu</button></div>
+          <div class="cb"><div class="fgrid">
+            <div class="fg"><label>Nhà cung cấp AI</label>
+              <select id="aiProvider" style="padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13.5px">
+                <option value="gemini">Google Gemini (Miễn phí)</option>
+                <option value="openai">OpenAI GPT</option>
+                <option value="none">Tắt AI – Chỉ dùng FAQ</option>
+              </select>
+            </div>
+            <div class="fg"><label>API Key</label><input id="aiApiKey" type="password" placeholder="AIza... hoặc sk-..."></div>
+            <div class="fg full" style="font-size:12px;color:var(--muted)">
+              Lấy Gemini API Key miễn phí tại: <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--blue)">aistudio.google.com/apikey</a>
+            </div>
+          </div></div>
         </div>
         <div class="g2">
           <div>
@@ -714,6 +825,53 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
     </div>
   </div>
 </div>
+
+<!-- ====================================================== MODALS MỚI -->
+
+<!-- Modal Banner -->
+<div class="overlay" id="mBanner"><div class="modal">
+  <div class="mh"><h3 id="mBannerTitle">🖼️ Thêm banner</h3><button class="mc" onclick="closeModal('mBanner')">✕</button></div>
+  <div class="mb"><div class="fgrid">
+    <input type="hidden" id="bId">
+    <div class="fg full"><label>Tiêu đề</label><input id="bTitle" placeholder="Tuyển sinh 2026"></div>
+    <div class="fg full"><label>Phụ đề</label><input id="bSubtitle" placeholder="Đăng ký sớm nhận học bổng"></div>
+    <div class="fg full"><label>URL Ảnh</label><input id="bImageUrl" placeholder="https://..."></div>
+    <div class="fg"><label>URL Đích (link)</label><input id="bLinkUrl" placeholder="#form-dk"></div>
+    <div class="fg"><label>Nút CTA</label><input id="bBtnText" placeholder="Đăng ký ngay"></div>
+    <div class="fg"><label>Thứ tự hiển thị</label><input id="bSortOrder" type="number" placeholder="0"></div>
+    <div class="fg full" style="flex-direction:row;align-items:center;gap:10px">
+      <input type="checkbox" id="bActive" checked style="accent-color:var(--red);width:16px;height:16px">
+      <label style="margin:0;font-size:13.5px;cursor:pointer" for="bActive">Hiển thị banner này</label>
+    </div>
+  </div></div>
+  <div class="mf"><button class="btn-gray" onclick="closeModal('mBanner')">Hủy</button><button class="btn-red" id="mBannerBtn" onclick="submitBanner()">💾 Lưu</button></div>
+</div></div>
+
+<!-- Modal Article -->
+<div class="overlay" id="mArticle"><div class="modal" style="width:min(720px,100%)">
+  <div class="mh"><h3 id="mArticleTitle">📰 Viết bài viết</h3><button class="mc" onclick="closeModal('mArticle')">✕</button></div>
+  <div class="mb"><div class="fgrid">
+    <input type="hidden" id="artId">
+    <div class="fg full"><label>Tiêu đề *</label><input id="artTitle" placeholder="Tuyển sinh Cao đẳng 2026 - VCI"></div>
+    <div class="fg full"><label>Tóm tắt (hiển thị ngoài danh sách)</label><textarea id="artExcerpt" style="min-height:60px" placeholder="Mô tả ngắn..."></textarea></div>
+    <div class="fg full"><label>Nội dung bài viết</label><textarea id="artContent" style="min-height:200px;font-size:13px" placeholder="Nội dung HTML hoặc text..."></textarea></div>
+    <div class="fg full"><label>URL ảnh bìa</label><input id="artCoverUrl" placeholder="https://..."></div>
+    <div class="fg"><label>Meta Title (SEO)</label><input id="artMetaTitle" placeholder="Tuyển sinh 2026 | VCI"></div>
+    <div class="fg"><label>Meta Description (SEO)</label><input id="artMetaDesc" placeholder="Đăng ký tuyển sinh..."></div>
+    <div class="fg full" style="flex-direction:row;align-items:center;gap:10px">
+      <input type="checkbox" id="artPublished" style="accent-color:var(--red);width:16px;height:16px">
+      <label style="margin:0;font-size:13.5px;cursor:pointer" for="artPublished">Xuất bản ngay</label>
+    </div>
+  </div></div>
+  <div class="mf"><button class="btn-gray" onclick="closeModal('mArticle')">Hủy</button><button class="btn-red" id="mArticleBtn" onclick="submitArticle()">💾 Lưu bài</button></div>
+</div></div>
+
+<!-- Modal xem chat history -->
+<div class="overlay" id="mChatLog"><div class="modal" style="width:min(600px,100%)">
+  <div class="mh"><h3>💬 Nội dung chat</h3><button class="mc" onclick="closeModal('mChatLog')">✕</button></div>
+  <div class="mb" id="chatLogContent" style="max-height:60vh;overflow-y:auto"></div>
+  <div class="mf"><button class="btn-gray" onclick="closeModal('mChatLog')">Đóng</button></div>
+</div></div>
 
 <!-- ====================================================== MODALS -->
 <div class="overlay" id="mAddHS"><div class="modal">
@@ -826,28 +984,36 @@ const PERM_DEF  = {
   viewer: {dashboard:true,hoSo:false,nganh:false,taiKhoan:false,phanQuyen:false,caiDat:false,baoCao:true,chatbot:false},
 };
 const NAV = [
-  {id:'dashboard',ico:'🏠',lbl:'Dashboard',grp:'Tổng quan',perm:'dashboard'},
-  {id:'ho-so',    ico:'📋',lbl:'Hồ sơ đăng ký',grp:'Tuyển sinh',perm:'hoSo'},
-  {id:'nganh',    ico:'📚',lbl:'Ngành học',grp:'Tuyển sinh',perm:'nganh'},
-  {id:'report',   ico:'📊',lbl:'Báo cáo & Thống kê',grp:'Phân tích',perm:'baoCao'},
-  {id:'users',    ico:'👤',lbl:'Tài khoản',grp:'Hệ thống',perm:'taiKhoan'},
-  {id:'perm',     ico:'🔐',lbl:'Phân quyền',grp:'Hệ thống',perm:'phanQuyen'},
-  {id:'settings', ico:'⚙️',lbl:'Cài đặt',grp:'Hệ thống',perm:'caiDat'},
-  {id:'content',  ico:'🖊️',lbl:'Nội dung Website',grp:'Hệ thống',perm:'caiDat'},
-  {id:'form',     ico:'📝',lbl:'Form đăng ký',grp:'Hệ thống',perm:'caiDat'},
-  {id:'chatbot',  ico:'🤖',lbl:'Quản lý Chatbot',grp:'Hệ thống',perm:'chatbot'},
+  {id:'dashboard',    ico:'🏠',lbl:'Dashboard',          grp:'Tổng quan',  perm:'dashboard'},
+  {id:'ho-so',        ico:'📋',lbl:'Hồ sơ đăng ký',      grp:'Tuyển sinh', perm:'hoSo'},
+  {id:'nganh',        ico:'📚',lbl:'Ngành học',           grp:'Tuyển sinh', perm:'nganh'},
+  {id:'articles',     ico:'📰',lbl:'Tin tức & SEO',       grp:'Nội dung',   perm:'hoSo'},
+  {id:'report',       ico:'📊',lbl:'Báo cáo & Thống kê', grp:'Phân tích',  perm:'baoCao'},
+  {id:'users',        ico:'👤',lbl:'Tài khoản',           grp:'Hệ thống',   perm:'taiKhoan'},
+  {id:'perm',         ico:'🔐',lbl:'Phân quyền',          grp:'Hệ thống',   perm:'phanQuyen'},
+  {id:'settings',     ico:'⚙️',lbl:'Cài đặt',            grp:'Hệ thống',   perm:'caiDat'},
+  {id:'content',      ico:'🖊️',lbl:'Nội dung Website',   grp:'Giao diện',  perm:'caiDat'},
+  {id:'banners',      ico:'🖼️',lbl:'Banner & Slider',    grp:'Giao diện',  perm:'caiDat'},
+  {id:'media',        ico:'📁',lbl:'Thư viện Media',      grp:'Giao diện',  perm:'caiDat'},
+  {id:'form',         ico:'📝',lbl:'Form đăng ký',        grp:'Giao diện',  perm:'caiDat'},
+  {id:'chatbot',      ico:'🤖',lbl:'Quản lý Chatbot',     grp:'Chatbot',    perm:'chatbot'},
+  {id:'chat-history', ico:'💬',lbl:'Lịch sử Chat',        grp:'Chatbot',    perm:'chatbot'},
 ];
 const PAGE_TITLES = {
-  dashboard:['Dashboard','Tổng quan hệ thống VCI'],
-  'ho-so':  ['Hồ sơ đăng ký','Quản lý danh sách xét tuyển'],
-  nganh:    ['Ngành học','Quản lý ngành đào tạo'],
-  report:   ['Báo cáo','Thống kê tuyển sinh'],
-  users:    ['Tài khoản','Quản lý người dùng hệ thống'],
-  perm:     ['Phân quyền','Cấu hình quyền truy cập'],
-  settings: ['Cài đặt','Kết nối Railway & Supabase'],
-  content:  ['Nội dung Website','Quản lý nội dung giao diện frontend'],
-  chatbot:  ['Chatbot','Cấu hình chatbot tư vấn tự động'],
-  form:     ['Form đăng ký','Cấu hình form xét tuyển trên website'],
+  dashboard:        ['Dashboard','Tổng quan hệ thống VCI'],
+  'ho-so':          ['Hồ sơ đăng ký','Quản lý danh sách xét tuyển'],
+  nganh:            ['Ngành học','Quản lý ngành đào tạo'],
+  articles:         ['Tin tức & SEO','Quản lý bài viết và nội dung tuyển sinh'],
+  report:           ['Báo cáo','Thống kê tuyển sinh'],
+  users:            ['Tài khoản','Quản lý người dùng hệ thống'],
+  perm:             ['Phân quyền','Cấu hình quyền truy cập'],
+  settings:         ['Cài đặt','Bảo trì · SMTP · Railway & Supabase'],
+  content:          ['Nội dung Website','Quản lý nội dung giao diện frontend'],
+  banners:          ['Banner & Slider','Quản lý banner hiển thị trang chủ'],
+  media:            ['Thư viện Media','Upload và quản lý ảnh / video'],
+  chatbot:          ['Chatbot','Cấu hình chatbot tư vấn tự động'],
+  'chat-history':   ['Lịch sử Chat','Xem lịch sử các cuộc hội thoại'],
+  form:             ['Form đăng ký','Cấu hình form xét tuyển trên website'],
 };
 
 /* ============================================================
@@ -907,6 +1073,13 @@ async function doLogin() {
     document.getElementById('loginWrap').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     initApp();
+    if (user.must_change_pwd) {
+      setTimeout(() => {
+        showPage('settings');
+        toast('⚠️ Vui lòng đổi mật khẩu ngay để bảo mật tài khoản!', 'warn');
+        document.getElementById('oldPwd')?.scrollIntoView({behavior:'smooth',block:'center'});
+      }, 400);
+    }
   } catch(e) {
     document.getElementById('loginErr').textContent = e.message;
     btn.disabled = false; txt.textContent = 'Đăng nhập';
@@ -965,14 +1138,19 @@ async function showPage(id) {
   document.getElementById('tbTitle').textContent = t;
   document.getElementById('tbSub').textContent   = s;
   if (window.innerWidth < 900) document.getElementById('sidebar').classList.remove('mob-open');
-  if (id === 'dashboard') loadDash();
-  else if (id === 'ho-so') loadHS();
-  else if (id === 'nganh') loadNganh();
-  else if (id === 'users') loadUsers();
-  else if (id === 'report') loadReport();
+  if (id === 'dashboard')    loadDash();
+  else if (id === 'ho-so')   loadHS();
+  else if (id === 'nganh')   loadNganh();
+  else if (id === 'users')   loadUsers();
+  else if (id === 'report')  loadReport();
   else if (id === 'content') loadContent();
   else if (id === 'chatbot') loadChatbot();
   else if (id === 'form')    loadFormConfig();
+  else if (id === 'banners') loadBanners();
+  else if (id === 'media')   loadMedia();
+  else if (id === 'articles') loadArticles();
+  else if (id === 'chat-history') loadChatHistory();
+  else if (id === 'settings')    loadSettings();
 }
 
 /* ============================================================
@@ -1017,6 +1195,23 @@ async function loadDash() {
       <td><span class="bdg bdg-${r.status}">${STATUS_VN[r.status]||r.status}</span></td>
       <td><button class="ab ab-call" onclick="window.open('tel:${r.phone}')">📞</button></td></tr>`).join('')
       || '<tr><td colspan="5" class="empty">Chưa có hồ sơ nào</td></tr>';
+    // Funnel
+    const fTotal = total || 1;
+    const fNew = s.new || 0, fConsult = (s.contacted||0)+(s.consulting||0), fWin = s.success||0;
+    const funnelData = [
+      {lbl:'Hồ sơ mới', n:fNew,     pct:Math.round(fNew/fTotal*100),     clr:'var(--blue)'},
+      {lbl:'Đang tư vấn',n:fConsult,pct:Math.round(fConsult/fTotal*100), clr:'var(--orange)'},
+      {lbl:'Đã nhập học',n:fWin,    pct:Math.round(fWin/fTotal*100),     clr:'var(--green)'},
+    ];
+    document.getElementById('funnelChart').innerHTML = '<div class="funnel">' + funnelData.map(f=>`
+      <div class="funnel-step" style="background:${f.clr}15">
+        <span style="font-size:11px;font-weight:700;color:${f.clr};min-width:90px">${f.lbl}</span>
+        <div style="flex:1;background:var(--bg);height:10px;border-radius:5px;overflow:hidden">
+          <div class="funnel-bar" style="width:${f.pct}%;background:${f.clr};height:100%"></div>
+        </div>
+        <span class="funnel-num" style="color:${f.clr}">${f.n}</span>
+        <span style="font-size:11px;color:var(--muted);min-width:36px;text-align:right">${f.pct}%</span>
+      </div>`).join('') + '</div>';
     // Activity
     document.getElementById('dashAct').innerHTML = recent.slice(0,5).map(r => `
       <div class="tl-item"><div class="tl-dot" style="background:var(--blue-lt)">📋</div>
@@ -1169,7 +1364,25 @@ async function deleteHS(id, name) {
   try { await api('DELETE','/api/hoso/'+id); toast('Đã xóa hồ sơ!'); loadHS(); }
   catch(e) { toast(e.message,'err'); }
 }
-function exportCSV() { window.open(BASE+'/api/hoso/export/csv'); toast('Đang xuất CSV...','info'); }
+async function exportExcel() {
+  toast('Đang xuất Excel...','info');
+  try {
+    const { data } = await api('GET', '/api/hoso?limit=5000&page=1');
+    const rows = data.map(r => ({
+      'Họ tên': r.name, 'SĐT': r.phone, 'Email': r.email || '',
+      'Năm sinh': r.dob || '', 'Trình độ': r.level || '',
+      'Hệ đào tạo': r.he_dao_tao, 'Ngành': r.nganh || '',
+      'Cơ sở': r.coso || '', 'Trạng thái': STATUS_VN[r.status] || r.status,
+      'Nguồn': r.source || '', 'Địa chỉ': r.address || '',
+      'Ghi chú': r.note || '',
+      'Ngày đăng ký': r.created_at ? new Date(r.created_at).toLocaleDateString('vi-VN') : ''
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Hồ sơ');
+    XLSX.writeFile(wb, `VCI_HoSo_${new Date().toISOString().split('T')[0]}.xlsx`);
+  } catch(e) { toast('Lỗi xuất Excel: ' + e.message, 'err'); }
+}
 async function syncSheets() {
   toast('Đang đồng bộ lên Google Sheets...','info');
   try { const d = await api('POST','/api/sheets/sync'); toast(d.message); }
@@ -1535,9 +1748,15 @@ let chatbotData = {};
 
 async function loadChatbot() {
   try {
-    const {data} = await api('GET', '/api/content');
-    chatbotData = data.chatbot || {};
+    const [contentRes, aiRes] = await Promise.all([
+      api('GET', '/api/content'),
+      api('GET', '/api/settings').catch(() => ({ data: {} }))
+    ]);
+    chatbotData = contentRes.data.chatbot || {};
     fillChatbotForm();
+    const ai = aiRes.data?.ai || {};
+    if (document.getElementById('aiProvider')) document.getElementById('aiProvider').value = ai.provider || 'gemini';
+    if (document.getElementById('aiApiKey'))   document.getElementById('aiApiKey').value   = ai.apiKey   || '';
     toast('Đã tải cấu hình chatbot');
   } catch(e) {
     fillChatbotForm();
@@ -1772,6 +1991,7 @@ function toast(msg, type='ok') {
   setTimeout(() => { d.style.opacity='0'; d.style.transform='translateX(20px)'; d.style.transition='all .3s'; setTimeout(()=>d.remove(),320); }, 3500);
 }
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(()=>fn(...a), ms); }; };
+const debouncedLoadHS = debounce(() => loadHS(), 500);
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('mob-open'); }
 window.addEventListener('resize', () => { if(window.innerWidth>=900) document.getElementById('sidebar').classList.remove('mob-open'); });
 
@@ -1787,13 +2007,319 @@ window.addEventListener('DOMContentLoaded', async () => {
       CU = user; localStorage.setItem('vci_user', JSON.stringify(user));
       document.getElementById('loginWrap').classList.add('hidden');
       document.getElementById('app').classList.remove('hidden');
-      initApp(); return;
+      initApp();
+      if (user.must_change_pwd) {
+        setTimeout(() => {
+          showPage('settings');
+          toast('⚠️ Vui lòng đổi mật khẩu ngay để bảo mật tài khoản!', 'warn');
+          document.getElementById('oldPwd')?.scrollIntoView({behavior:'smooth',block:'center'});
+        }, 400);
+      }
+      return;
     } catch(e) {
       TOKEN = ''; localStorage.removeItem('vci_token'); localStorage.removeItem('vci_user');
     }
   }
   checkHealth();
 });
+
+/* ============================================================
+   BANNERS
+============================================================ */
+let _bannerEdit = null;
+async function loadBanners() {
+  try {
+    const { data } = await api('GET', '/api/banners/all');
+    document.getElementById('bannerTbl').innerHTML = data.length
+      ? data.map((b,i) => `<tr>
+          <td>${i+1}</td>
+          <td><strong>${b.title||'–'}</strong></td>
+          <td style="font-size:12px;color:var(--muted)">${b.subtitle||'–'}</td>
+          <td style="font-size:12px"><a href="${b.link_url}" target="_blank" style="color:var(--blue)">${b.link_url}</a></td>
+          <td>${b.sort_order??0}</td>
+          <td><span class="bdg ${b.active?'bdg-active':'bdg-inactive'}">${b.active?'Hiển thị':'Ẩn'}</span></td>
+          <td style="display:flex;gap:4px">
+            <button class="ab ab-edit" onclick="openBannerModal('${b.id}')">Sửa</button>
+            <button class="ab ab-del" onclick="deleteBanner('${b.id}')">Xóa</button>
+          </td></tr>`).join('')
+      : '<tr><td colspan="7" class="empty">Chưa có banner nào.</td></tr>';
+  } catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+async function openBannerModal(id) {
+  _bannerEdit = id || null;
+  document.getElementById('mBannerTitle').textContent = id ? '🖼️ Sửa banner' : '🖼️ Thêm banner';
+  document.getElementById('bId').value       = id || '';
+  document.getElementById('bTitle').value    = '';
+  document.getElementById('bSubtitle').value = '';
+  document.getElementById('bImageUrl').value = '';
+  document.getElementById('bLinkUrl').value  = '#';
+  document.getElementById('bBtnText').value  = 'Tìm hiểu thêm';
+  document.getElementById('bSortOrder').value= '0';
+  document.getElementById('bActive').checked = true;
+  if (id) {
+    try {
+      const { data } = await api('GET', '/api/banners/all');
+      const b = data.find(x => x.id === id);
+      if (b) {
+        document.getElementById('bTitle').value    = b.title    || '';
+        document.getElementById('bSubtitle').value = b.subtitle || '';
+        document.getElementById('bImageUrl').value = b.image_url|| '';
+        document.getElementById('bLinkUrl').value  = b.link_url || '#';
+        document.getElementById('bBtnText').value  = b.btn_text || '';
+        document.getElementById('bSortOrder').value= b.sort_order ?? 0;
+        document.getElementById('bActive').checked = !!b.active;
+      }
+    } catch(e) {}
+  }
+  openModal('mBanner');
+}
+async function submitBanner() {
+  const btn = document.getElementById('mBannerBtn');
+  btn.disabled = true; btn.textContent = '⏳ Đang lưu...';
+  const body = {
+    title:      document.getElementById('bTitle').value.trim(),
+    subtitle:   document.getElementById('bSubtitle').value.trim(),
+    image_url:  document.getElementById('bImageUrl').value.trim(),
+    link_url:   document.getElementById('bLinkUrl').value.trim() || '#',
+    btn_text:   document.getElementById('bBtnText').value.trim(),
+    sort_order: Number(document.getElementById('bSortOrder').value) || 0,
+    active:     document.getElementById('bActive').checked,
+  };
+  try {
+    const id = document.getElementById('bId').value;
+    if (id) await api('PUT', '/api/banners/' + id, body);
+    else    await api('POST', '/api/banners', body);
+    toast('Đã lưu banner ✅'); closeModal('mBanner'); loadBanners();
+  } catch(e) { toast('Lỗi: '+e.message,'err'); }
+  btn.disabled = false; btn.textContent = '💾 Lưu';
+}
+async function deleteBanner(id) {
+  if (!confirm('Xóa banner này?')) return;
+  try { await api('DELETE', '/api/banners/'+id); toast('Đã xóa banner.'); loadBanners(); }
+  catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+
+/* ============================================================
+   MEDIA
+============================================================ */
+async function loadMedia() {
+  document.getElementById('mediaGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">Đang tải...</div>';
+  try {
+    const { data } = await api('GET', '/api/media');
+    if (!data.length) { document.getElementById('mediaGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">Thư viện trống. Hãy upload ảnh đầu tiên!</div>'; return; }
+    document.getElementById('mediaGrid').innerHTML = data.map(f => {
+      const isVid = f.mimetype && f.mimetype.startsWith('video');
+      const thumb = isVid
+        ? `<div class="media-thumb-vid">🎬</div>`
+        : `<img class="media-thumb" src="${f.url}" loading="lazy" onerror="this.style.background='#eee'">`;
+      const kb = f.size ? (f.size/1024).toFixed(0) + ' KB' : '';
+      return `<div class="media-card">
+        ${thumb}
+        <div class="media-info" title="${f.name}">${f.name}</div>
+        <div class="media-info" style="color:var(--muted);font-size:10px">${kb}</div>
+        <div class="media-actions">
+          <button class="ab ab-view" style="font-size:10px;padding:3px 7px" onclick="copyMediaUrl('${f.url}')">🔗 Copy</button>
+          <button class="ab ab-del" style="font-size:10px;padding:3px 7px" onclick="deleteMedia('${f.name}')">🗑</button>
+        </div></div>`;
+    }).join('');
+  } catch(e) { toast('Lỗi media: '+e.message,'err'); }
+}
+async function uploadMedia(input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 5*1024*1024) { toast('File quá 5MB!','err'); input.value=''; return; }
+  document.getElementById('mediaUploadProg').style.display = 'block';
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const base64 = e.target.result.split(',')[1];
+    try {
+      const { url } = await api('POST', '/api/media/upload', { filename: file.name, base64, mimetype: file.type });
+      toast('Upload thành công! ✅'); loadMedia();
+    } catch(err) { toast('Lỗi upload: '+err.message,'err'); }
+    document.getElementById('mediaUploadProg').style.display = 'none';
+    input.value = '';
+  };
+  reader.readAsDataURL(file);
+}
+async function deleteMedia(filename) {
+  if (!confirm('Xóa file này?')) return;
+  try { await api('DELETE', '/api/media/'+encodeURIComponent(filename)); toast('Đã xóa.'); loadMedia(); }
+  catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+function copyMediaUrl(url) {
+  navigator.clipboard.writeText(url).then(()=>toast('Đã copy URL ✅','info')).catch(()=>{
+    const el = document.createElement('textarea'); el.value = url;
+    document.body.appendChild(el); el.select(); document.execCommand('copy');
+    document.body.removeChild(el); toast('Đã copy URL','info');
+  });
+}
+
+/* ============================================================
+   ARTICLES
+============================================================ */
+let articlePage = 1, articlePages = 1;
+async function loadArticles() {
+  try {
+    const { data, total, pages } = await api('GET', `/api/articles/admin/all?page=${articlePage}&limit=20`);
+    articlePages = pages || 1;
+    document.getElementById('articlePagInfo').textContent = `Tổng ${total||0} bài – Trang ${articlePage}/${articlePages}`;
+    document.getElementById('articleTbl').innerHTML = data.length
+      ? data.map((a,i) => `<tr>
+          <td>${(articlePage-1)*20+i+1}</td>
+          <td><strong>${a.title}</strong></td>
+          <td style="font-size:11px;color:var(--muted)">${a.slug}</td>
+          <td style="font-size:12px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.excerpt||'–'}</td>
+          <td><span class="bdg ${a.published?'bdg-success':'bdg-pending'}">${a.published?'Đã xuất bản':'Nháp'}</span></td>
+          <td style="font-size:12px">${a.created_at?new Date(a.created_at).toLocaleDateString('vi-VN'):''}</td>
+          <td style="display:flex;gap:4px">
+            <button class="ab ab-edit" onclick="openArticleModal('${a.id}')">Sửa</button>
+            <button class="ab ab-del" onclick="deleteArticle('${a.id}')">Xóa</button>
+          </td></tr>`).join('')
+      : '<tr><td colspan="7" class="empty">Chưa có bài viết nào.</td></tr>';
+  } catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+async function openArticleModal(id) {
+  document.getElementById('mArticleTitle').textContent = id ? '📰 Sửa bài viết' : '📰 Viết bài viết';
+  document.getElementById('artId').value         = id || '';
+  document.getElementById('artTitle').value      = '';
+  document.getElementById('artExcerpt').value    = '';
+  document.getElementById('artContent').value    = '';
+  document.getElementById('artCoverUrl').value   = '';
+  document.getElementById('artMetaTitle').value  = '';
+  document.getElementById('artMetaDesc').value   = '';
+  document.getElementById('artPublished').checked= false;
+  if (id) {
+    try {
+      const { data: arts } = await api('GET', '/api/articles/admin/all?limit=200&page=1');
+      const a = arts.find(x => x.id === id);
+      if (a) {
+        document.getElementById('artTitle').value     = a.title||'';
+        document.getElementById('artExcerpt').value   = a.excerpt||'';
+        document.getElementById('artContent').value   = a.content||'';
+        document.getElementById('artCoverUrl').value  = a.cover_url||'';
+        document.getElementById('artMetaTitle').value = a.meta_title||'';
+        document.getElementById('artMetaDesc').value  = a.meta_desc||'';
+        document.getElementById('artPublished').checked = !!a.published;
+      }
+    } catch(e) {}
+  }
+  openModal('mArticle');
+}
+async function submitArticle() {
+  const btn = document.getElementById('mArticleBtn');
+  btn.disabled = true; btn.textContent = '⏳ Đang lưu...';
+  const body = {
+    title:      document.getElementById('artTitle').value.trim(),
+    excerpt:    document.getElementById('artExcerpt').value.trim(),
+    content:    document.getElementById('artContent').value,
+    cover_url:  document.getElementById('artCoverUrl').value.trim(),
+    meta_title: document.getElementById('artMetaTitle').value.trim(),
+    meta_desc:  document.getElementById('artMetaDesc').value.trim(),
+    published:  document.getElementById('artPublished').checked,
+  };
+  if (!body.title) { toast('Tiêu đề không được để trống!','err'); btn.disabled=false; btn.textContent='💾 Lưu bài'; return; }
+  try {
+    const id = document.getElementById('artId').value;
+    if (id) await api('PUT', '/api/articles/'+id, body);
+    else    await api('POST', '/api/articles', body);
+    toast('Đã lưu bài viết ✅'); closeModal('mArticle'); loadArticles();
+  } catch(e) { toast('Lỗi: '+e.message,'err'); }
+  btn.disabled = false; btn.textContent = '💾 Lưu bài';
+}
+async function deleteArticle(id) {
+  if (!confirm('Xóa bài viết này?')) return;
+  try { await api('DELETE', '/api/articles/'+id); toast('Đã xóa bài viết.'); loadArticles(); }
+  catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+
+/* ============================================================
+   CHAT HISTORY
+============================================================ */
+let chatHistPage = 1, chatHistPages = 1;
+async function loadChatHistory(all) {
+  if (all) { document.getElementById('chFrom').value=''; document.getElementById('chTo').value=''; chatHistPage=1; }
+  try {
+    let q = `?page=${chatHistPage}&limit=50`;
+    const f = document.getElementById('chFrom')?.value, t = document.getElementById('chTo')?.value;
+    if (f) q += '&from_date='+f;
+    if (t) q += '&to_date='+t;
+    const { data, total, pages } = await api('GET', '/api/chat-history'+q);
+    chatHistPages = pages || 1;
+    document.getElementById('chatHistPagInfo').textContent = `Tổng ${total||0} cuộc – Trang ${chatHistPage}/${chatHistPages}`;
+    document.getElementById('chatHistTbl').innerHTML = data.length
+      ? data.map((c,i) => `<tr>
+          <td>${(chatHistPage-1)*50+i+1}</td>
+          <td style="font-size:12px;font-family:monospace">${(c.session_id||'–').slice(0,20)}</td>
+          <td style="font-size:12px">${c.visitor_ip||'–'}</td>
+          <td>${Array.isArray(c.messages)?c.messages.length:0}</td>
+          <td style="font-size:12px">${c.created_at?new Date(c.created_at).toLocaleString('vi-VN'):''}</td>
+          <td><button class="ab ab-view" onclick="viewChatLog(${JSON.stringify(c.messages||[]).replace(/"/g,'&quot;')})">Xem</button></td>
+          <td><button class="ab ab-del" onclick="deleteChatLog('${c.id}')">Xóa</button></td>
+        </tr>`).join('')
+      : '<tr><td colspan="7" class="empty">Chưa có dữ liệu.</td></tr>';
+  } catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+function viewChatLog(msgs) {
+  let messages = msgs;
+  if (typeof msgs === 'string') { try { messages = JSON.parse(msgs); } catch { messages = []; } }
+  document.getElementById('chatLogContent').innerHTML = (messages||[]).map(m => `
+    <div style="margin-bottom:12px;display:flex;gap:8px;${m.role==='bot'?'flex-direction:row-reverse':''}">
+      <div style="width:28px;height:28px;border-radius:50%;background:${m.role==='user'?'var(--blue)':'var(--red)'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">${m.role==='user'?'👤':'🤖'}</div>
+      <div style="background:${m.role==='user'?'var(--blue-lt)':'var(--red-lt)'};padding:9px 12px;border-radius:${m.role==='user'?'12px 12px 4px 12px':'12px 12px 12px 4px'};font-size:13px;max-width:80%">${m.text}</div>
+    </div>`).join('') || '<div class="empty">Không có nội dung.</div>';
+  openModal('mChatLog');
+}
+async function deleteChatLog(id) {
+  if (!confirm('Xóa log này?')) return;
+  try { await api('DELETE', '/api/chat-history/'+id); toast('Đã xóa.'); loadChatHistory(); }
+  catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+
+/* ============================================================
+   SETTINGS (maintenance, smtp, ai)
+============================================================ */
+async function loadSettings() {
+  try {
+    const { data } = await api('GET', '/api/settings');
+    const m = data.maintenance || {};
+    document.getElementById('maintEnabled').checked = !!m.enabled;
+    document.getElementById('maintMsg').value = m.message || '';
+    const s = data.smtp || {};
+    document.getElementById('smtpHost').value     = s.host || '';
+    document.getElementById('smtpPort').value     = s.port || 587;
+    document.getElementById('smtpUser').value     = s.user || '';
+    document.getElementById('smtpFromName').value = s.from_name || '';
+  } catch(e) { toast('Lỗi tải settings: '+e.message,'err'); }
+}
+async function saveMaintenanceSettings() {
+  try {
+    await api('PUT', '/api/settings/maintenance', {
+      enabled: document.getElementById('maintEnabled').checked,
+      message: document.getElementById('maintMsg').value.trim() || 'Hệ thống đang bảo trì. Vui lòng quay lại sau.',
+    });
+    toast('Đã lưu cấu hình bảo trì ✅');
+  } catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+async function saveSmtpSettings() {
+  try {
+    await api('PUT', '/api/settings/smtp', {
+      host:      document.getElementById('smtpHost').value.trim(),
+      port:      Number(document.getElementById('smtpPort').value) || 587,
+      user:      document.getElementById('smtpUser').value.trim(),
+      pass:      document.getElementById('smtpPass').value,
+      from_name: document.getElementById('smtpFromName').value.trim() || 'VCI Tuyển sinh',
+    });
+    toast('Đã lưu SMTP ✅');
+  } catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+async function saveAiConfig() {
+  try {
+    await api('PUT', '/api/settings/ai', {
+      provider: document.getElementById('aiProvider').value,
+      apiKey:   document.getElementById('aiApiKey').value.trim(),
+    });
+    toast('Đã lưu cấu hình AI ✅');
+  } catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
 </script>
 </body>
 </html>
