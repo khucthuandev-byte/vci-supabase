@@ -1,7 +1,7 @@
 const { google } = require('googleapis');
 
 const SHEET_TAB = 'HoSo';
-const HEADERS   = ['STT','Họ tên','SĐT','Email','Năm sinh','Hệ đào tạo','Ngành','Cơ sở','Trạng thái','Tư vấn viên','Nguồn','Ngày đăng ký','Ghi chú'];
+const HEADERS   = ['STT','Họ tên','SĐT','Email','Năm sinh','Hệ đào tạo','Ngành','Cơ sở','Địa chỉ','Trạng thái','Tư vấn viên','Nguồn','Ngày đăng ký','Ghi chú'];
 
 function auth() {
   return new google.auth.JWT({
@@ -15,7 +15,7 @@ const SID = () => process.env.GOOGLE_SHEET_ID;
 
 function toRow(r, idx='') {
   return [idx, r.name||'', r.phone||'', r.email||'', r.dob||'',
-    r.he_dao_tao||'', r.nganh||'', r.coso||'', r.status||'',
+    r.he_dao_tao||'', r.nganh||'', r.coso||'', r.address||'', r.status||'',
     r.tu_van_vien?.name||'', r.source||'website',
     r.created_at ? new Date(r.created_at).toLocaleDateString('vi-VN') : '',
     r.note||''];

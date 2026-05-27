@@ -72,6 +72,7 @@ try {
   app.use('/api/sheets', require('./routes/sheets'));
   app.use('/api/email', require('./routes/email'));
   app.use('/api/content', require('./routes/content'));
+  app.use('/api/chat',    require('./routes/chat'));
 } catch (err) {
   console.error('❌ ROUTE LOAD ERROR:', err.message);
 }

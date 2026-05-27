@@ -612,12 +612,14 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
           <div>
             <div class="card">
               <div class="ch"><span class="ch-title">❓ FAQ – Câu hỏi tự động</span>
-                <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveChatbotSection('faq')">💾 Lưu FAQ</button>
+                <div style="display:flex;gap:8px">
+                  <button class="btn-gray" style="padding:6px 14px;font-size:12.5px" onclick="openFaqItem(-1)">➕ Thêm câu</button>
+                  <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveChatbotSection('faq')">💾 Lưu FAQ</button>
+                </div>
               </div>
-              <div class="cb">
-                <p style="font-size:12px;color:var(--muted);margin-bottom:10px">JSON – mỗi phần tử: <code style="font-size:11px">{"keywords":["từ khóa"],"answer":"Câu trả lời"}</code></p>
-                <textarea id="cb-faq-json" style="width:100%;min-height:300px;font-family:monospace;font-size:12px;border:1.5px solid var(--border);border-radius:var(--r);padding:10px;resize:vertical"></textarea>
-                <p style="font-size:11.5px;color:var(--muted);margin-top:8px">💡 Keywords là mảng từ khóa kích hoạt. Bot khớp với tin nhắn của khách.</p>
+              <div class="cb" style="padding-top:6px">
+                <div id="faq-list" style="display:flex;flex-direction:column;gap:8px"></div>
+                <p id="faq-empty" style="font-size:12.5px;color:var(--muted);text-align:center;padding:24px 0">Chưa có câu hỏi nào. Nhấn ➕ Thêm câu để bắt đầu.</p>
               </div>
             </div>
           </div>
@@ -636,10 +638,12 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
     <div class="fg"><label>Số điện thoại *</label><input id="mfPhone" placeholder="0900 000 000"></div>
     <div class="fg"><label>Email</label><input id="mfEmail" type="email" placeholder="email@example.com"></div>
     <div class="fg"><label>Năm sinh</label><input id="mfDob" placeholder="2007"></div>
+    <div class="fg"><label>Trình độ hiện tại</label><select id="mfLevel"><option value="">Chọn...</option><option>Lớp 9</option><option>Lớp 10</option><option>Lớp 11</option><option>Lớp 12</option><option>Đã TN THPT</option><option>Đại học/CĐ</option></select></div>
     <div class="fg"><label>Hệ đào tạo *</label><select id="mfHe"><option value="">Chọn hệ...</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select></div>
     <div class="fg"><label>Ngành học</label><select id="mfNganh"><option value="">Chọn ngành...</option></select></div>
-    <div class="fg"><label>Cơ sở</label><select id="mfCoso"><option value="">Chọn cơ sở...</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. HCM</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select></div>
-    <div class="fg"><label>Nguồn</label><select id="mfSrc"><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="walk-in">Đến trực tiếp</option><option value="phone">Gọi điện</option></select></div>
+    <div class="fg"><label>Cơ sở</label><select id="mfCoso"><option value="">Chọn cơ sở...</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. Hồ Chí Minh</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select></div>
+    <div class="fg"><label>Nguồn</label><select id="mfSrc"><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="walk-in">Đến trực tiếp</option><option value="phone">Gọi điện</option><option value="referral">Giới thiệu</option></select></div>
+    <div class="fg full"><label>Địa chỉ</label><input id="mfAddress" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành..."></div>
     <div class="fg full"><label>Ghi chú</label><textarea id="mfNote" placeholder="Thông tin thêm..."></textarea></div>
   </div></div>
   <div class="mf"><button class="btn-gray" onclick="closeModal('mAddHS')">Hủy</button><button class="btn-red" id="mAddHSBtn" onclick="submitAddHS()">➕ Thêm hồ sơ</button></div>
@@ -655,7 +659,8 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
       <div class="fg"><label>Hệ đào tạo</label><select id="efHe"><option value="">– Giữ nguyên –</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select></div>
       <div class="fg"><label>Ngành học</label><select id="efNganh"><option value="">– Giữ nguyên –</option></select></div>
       <div class="fg"><label>Cơ sở</label><select id="efCoso"><option value="">– Giữ nguyên –</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. Hồ Chí Minh</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select></div>
-      <div class="fg"><label>Nguồn</label><select id="efSrc"><option value="">– Giữ nguyên –</option><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="walk-in">Đến trực tiếp</option><option value="phone">Gọi điện</option><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="referral">Giới thiệu</option></select></div>
+      <div class="fg"><label>Nguồn</label><select id="efSrc"><option value="">– Giữ nguyên –</option><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="walk-in">Đến trực tiếp</option><option value="phone">Gọi điện</option><option value="referral">Giới thiệu</option></select></div>
+      <div class="fg full"><label>Địa chỉ</label><input id="efAddress" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành..."></div>
       <div class="fg full"><label>Ghi chú lần cập nhật này (lưu vào lịch sử)</label><textarea id="efNote" placeholder="VD: Đã gọi điện, khách hẹn gặp trực tiếp ngày..."></textarea></div>
     </div>
     <div id="efHistory" style="margin-top:12px"></div>
@@ -675,6 +680,19 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
     <div class="fg full"><label>Mô tả</label><textarea id="nfMota" placeholder="Mô tả ngắn về ngành..."></textarea></div>
   </div></div>
   <div class="mf"><button class="btn-gray" onclick="closeModal('mAddNganh')">Hủy</button><button class="btn-red" onclick="submitAddNganh()">➕ Thêm ngành</button></div>
+</div></div>
+
+<div class="overlay" id="mFaqItem"><div class="modal" style="max-width:500px">
+  <div class="mh"><h3 id="mFaqTitle">➕ Thêm câu hỏi</h3><button class="mc" onclick="closeModal('mFaqItem')">✕</button></div>
+  <div class="mb"><div class="fgrid">
+    <div class="fg full"><label>Từ khóa kích hoạt <span style="color:var(--muted);font-weight:400;font-size:11px">(phân cách bằng dấu phẩy)</span></label>
+      <input id="faqKeywords" placeholder="học phí, phí, tiền học...">
+    </div>
+    <div class="fg full"><label>Câu trả lời</label>
+      <textarea id="faqAnswer" style="min-height:100px" placeholder="Học phí từ 525,000đ/tín chỉ..."></textarea>
+    </div>
+  </div></div>
+  <div class="mf"><button class="btn-gray" onclick="closeModal('mFaqItem')">Hủy</button><button class="btn-red" onclick="saveFaqItem()">💾 Lưu</button></div>
 </div></div>
 
 <div class="overlay" id="mAddUser"><div class="modal">
@@ -698,6 +716,7 @@ let TOKEN  = localStorage.getItem('vci_token') || '';
 let CU     = null;
 let hsPage = 1, hsPages = 1;
 let ngAll  = [], usersCache = [], editingHSId = null;
+let faqData = [], editingFaqIdx = -1;
 
 const STATUS_VN = {new:'Mới',contacted:'Đang tư vấn',consulting:'Tư vấn chi tiết',success:'Đã nhập học',cancel:'Đã hủy',pending:'Đang chờ'};
 const ROLE_VN   = {admin:'Quản trị viên',staff:'Nhân viên tư vấn',viewer:'Xem báo cáo'};
@@ -916,7 +935,9 @@ async function loadHS() {
       <tr>
         <td style="color:var(--muted)">${from+i}</td>
         <td><div style="display:flex;align-items:center;gap:7px"><div class="av">${r.name[0]}</div>
-          <div><div style="font-weight:600;font-size:13px">${r.name}</div><div style="font-size:11px;color:var(--muted)">${r.email||''}</div></div></div></td>
+          <div><div style="font-weight:600;font-size:13px">${r.name}</div>
+          <div style="font-size:11px;color:var(--muted)">${r.email||''}</div>
+          ${r.address?`<div style="font-size:11px;color:var(--muted)">📍 ${r.address}</div>`:''}</div></div></td>
         <td><a href="tel:${r.phone}" style="color:var(--blue);font-weight:600">${r.phone}</a></td>
         <td style="font-size:12.5px">${r.he_dao_tao}</td>
         <td style="font-size:12.5px">${r.nganh||'–'}</td>
@@ -969,7 +990,7 @@ function openEditHS(id, r) {
     ${r.level?`<div><span style="color:var(--muted);font-size:11px">Trình độ</span><div>${r.level}</div></div>`:''}
     ${r.coso?`<div><span style="color:var(--muted);font-size:11px">Cơ sở</span><div>${r.coso}</div></div>`:''}
     ${r.source?`<div><span style="color:var(--muted);font-size:11px">Nguồn</span><div>${r.source}</div></div>`:''}
-    ${r.address?`<div style="grid-column:span 2"><span style="color:var(--muted);font-size:11px">Địa chỉ</span><div>${r.address}</div></div>`:''}
+    <div style="grid-column:span 2"><span style="color:var(--muted);font-size:11px">Địa chỉ</span><div>${r.address||'<span style="color:#ccc">Chưa có</span>'}</div></div>
     ${r.note?`<div style="grid-column:span 2"><span style="color:var(--muted);font-size:11px">Ghi chú ban đầu</span><div>${r.note}</div></div>`:''}
   `;
   document.getElementById('efStatus').value = r.status || 'new';
@@ -982,6 +1003,7 @@ function openEditHS(id, r) {
     (ngAll||[]).map(n => `<option value="${n.name}" ${n.name===r.nganh?'selected':''}>${n.name}</option>`).join('');
   _setSelectVal('efCoso', r.coso || '');
   _setSelectVal('efSrc',  r.source || '');
+  document.getElementById('efAddress').value = r.address || '';
   document.getElementById('efNote').value = '';
   // Lịch sử – hiển thị toàn bộ, mới nhất lên đầu
   const hist = (r.history || []).slice().reverse();
@@ -1002,14 +1024,16 @@ async function submitEditHS() {
       action:       'Cập nhật hồ sơ',
     };
     // Chỉ gửi các trường đã chọn (khác "Giữ nguyên")
-    const he    = document.getElementById('efHe').value;
-    const nganh = document.getElementById('efNganh').value;
-    const coso  = document.getElementById('efCoso').value;
-    const src   = document.getElementById('efSrc').value;
-    if (he)    payload.he_dao_tao = he;
-    if (nganh) payload.nganh     = nganh;
-    if (coso)  payload.coso      = coso;
-    if (src)   payload.source    = src;
+    const he      = document.getElementById('efHe').value;
+    const nganh   = document.getElementById('efNganh').value;
+    const coso    = document.getElementById('efCoso').value;
+    const src     = document.getElementById('efSrc').value;
+    const address = document.getElementById('efAddress').value.trim();
+    if (he)      payload.he_dao_tao = he;
+    if (nganh)   payload.nganh     = nganh;
+    if (coso)    payload.coso      = coso;
+    if (src)     payload.source    = src;
+    payload.address = address;
     await api('PUT', '/api/hoso/' + editingHSId, payload);
     closeModal('mEditHS'); toast('✅ Đã cập nhật hồ sơ!'); loadHS();
   } catch(e) { toast(e.message,'err'); }
@@ -1395,23 +1419,79 @@ function fillChatbotForm() {
   const cbPhone = document.getElementById('cb-phone');
   if (cbPhone) cbPhone.value = cb.phone || '0966 670 100';
   const cbSugs = document.getElementById('cb-suggestions');
-  if (cbSugs) cbSugs.value = (cb.suggestions || ['Học phí bao nhiêu?','Đăng ký xét tuyển thế nào?','Cơ sở ở đâu?','Ngành nào đang tuyển?']).join('
-');
-  const cbFaq = document.getElementById('cb-faq-json');
-  if (cbFaq) cbFaq.value = JSON.stringify(cb.faqs || [
-    {keywords:['học phí','phí','tiền'],answer:'Học phí từ 525,000đ – 590,000đ/tín chỉ. Gọi <b>0966 670 100</b> để tư vấn!'},
+  if (cbSugs) cbSugs.value = (cb.suggestions || ['Học phí bao nhiêu?','Đăng ký xét tuyển thế nào?','Cơ sở ở đâu?','Ngành nào đang tuyển?']).join('\n');
+  faqData = cb.faqs || [
+    {keywords:['học phí','phí','tiền'],answer:'Học phí từ 525,000đ – 590,000đ/tín chỉ. Gọi 0966 670 100 để tư vấn!'},
     {keywords:['ngành','ngành học'],answer:'VCI đào tạo: Tiếp viên HK, CNTT, Điện, Thiết kế đồ họa... Bạn quan tâm ngành nào?'},
     {keywords:['cơ sở','địa chỉ','ở đâu'],answer:'VCI có cơ sở tại Cần Thơ, TP.HCM, Hà Nội, Đắk Lắk, Thái Nguyên. Bạn ở đâu?'},
-    {keywords:['đăng ký','xét tuyển','nộp hồ sơ'],answer:'Đăng ký ngay trên website hoặc gọi <b>0966 670 100</b>!'}
-  ], null, 2);
+    {keywords:['đăng ký','xét tuyển','nộp hồ sơ'],answer:'Đăng ký ngay trên website hoặc gọi 0966 670 100!'}
+  ];
+  renderFaqList();
+}
+
+function renderFaqList() {
+  const list = document.getElementById('faq-list');
+  const empty = document.getElementById('faq-empty');
+  if (!list) return;
+  if (!faqData.length) {
+    list.innerHTML = '';
+    if (empty) empty.style.display = '';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  list.innerHTML = faqData.map((f, i) => `
+    <div style="border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;background:#fff;display:flex;gap:10px;align-items:flex-start">
+      <div style="flex:1;min-width:0">
+        <div style="margin-bottom:5px;display:flex;flex-wrap:wrap;gap:4px">
+          ${f.keywords.map(k => `<span style="background:var(--red);color:#fff;border-radius:20px;padding:2px 8px;font-size:11px">${k}</span>`).join('')}
+        </div>
+        <div style="font-size:12.5px;color:var(--ink);line-height:1.5">${f.answer}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button onclick="openFaqItem(${i})" style="border:1px solid var(--border);background:#fff;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px">✏️</button>
+        <button onclick="deleteFaqItem(${i})" style="border:1px solid #fca5a5;background:#fff8f8;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+function openFaqItem(idx) {
+  editingFaqIdx = idx;
+  document.getElementById('mFaqTitle').textContent = idx === -1 ? '➕ Thêm câu hỏi' : '✏️ Sửa câu hỏi';
+  if (idx === -1) {
+    document.getElementById('faqKeywords').value = '';
+    document.getElementById('faqAnswer').value = '';
+  } else {
+    const f = faqData[idx];
+    document.getElementById('faqKeywords').value = f.keywords.join(', ');
+    document.getElementById('faqAnswer').value = f.answer;
+  }
+  openModal('mFaqItem');
+}
+
+function deleteFaqItem(idx) {
+  if (!confirm('Xóa câu hỏi này?')) return;
+  faqData.splice(idx, 1);
+  renderFaqList();
+}
+
+function saveFaqItem() {
+  const keywords = document.getElementById('faqKeywords').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const answer   = document.getElementById('faqAnswer').value.trim();
+  if (!keywords.length || !answer) { toast('Vui lòng điền từ khóa và câu trả lời!', 'warn'); return; }
+  if (editingFaqIdx === -1) {
+    faqData.push({ keywords, answer });
+  } else {
+    faqData[editingFaqIdx] = { keywords, answer };
+  }
+  renderFaqList();
+  closeModal('mFaqItem');
 }
 
 async function saveChatbotSection(section) {
   try {
     let value = Object.assign({}, chatbotData);
     if (section === 'general') {
-      const suggs = document.getElementById('cb-suggestions').value.split('
-').map(s=>s.trim()).filter(Boolean).slice(0,4);
+      const suggs = document.getElementById('cb-suggestions').value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,4);
       value = Object.assign(value, {
         enabled: document.getElementById('cb-enabled').checked,
         greeting: document.getElementById('cb-greeting').value.trim(),
@@ -1419,8 +1499,7 @@ async function saveChatbotSection(section) {
         suggestions: suggs
       });
     } else if (section === 'faq') {
-      const faqs = JSON.parse(document.getElementById('cb-faq-json').value);
-      value = Object.assign(value, { faqs });
+      value = Object.assign(value, { faqs: faqData });
     }
     await api('PUT', '/api/content/chatbot', { value });
     chatbotData = value;
