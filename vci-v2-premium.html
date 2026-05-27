@@ -1923,8 +1923,8 @@ button{cursor:pointer;font-family:var(--fh)}
       </ul></div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Trường Cao đẳng Công thương Việt Nam. Mã trường C98. Bộ GD-ĐT.</span>
-      <span>Thiết kế bởi <a href="#">VCI Web</a> · <a href="https://vci-supabase-production.up.railway.app/api/health" target="_blank">API Status</a></span>
+      <span>Copyright © 2026. Trường Cao đẳng Công thương Việt Nam (VCI). All rights reserved. Designed by Khuc Thuan.</span>
+      <span>Thiết kế bởi <a href="#">VKhúc Thuận</a> · <a href="https://vci-supabase-production.up.railway.app/api/health" target="_blank">API Status</a></span>
     </div>
   </div>
 </footer>
@@ -2078,13 +2078,15 @@ const COSO = [
   {city:'Đắk Lắk',icon:'🌳',addr:'349 Lê Duẩn, phường Ea Kao, tỉnh Đắk Lắk',phone:'0262.383.1111 | 0826.391.189',lat:12.6803,lng:108.0377},
   {city:'Thái Nguyên',icon:'🏔️',addr:'Tổ dân phố Đình Cả 2, Xã Phú Bình · Xã Phú Bình, Tỉnh Thái Nguyên',phone:'02083.567.555 | 0972.161.822',lat:21.5943,lng:105.8412},
 ];
-let activeCs=2;
-function gmapEmbed(lat,lng,zoom=14){
-  // Google Maps embed URL không cần API key
-  return `https://www.google.com/maps?q=${lat},${lng}&z=${zoom}&hl=vi&output=embed`;
-}
+let map, markers=[], activeCs=2;
 function initMap(){
-  selectCoso(activeCs);
+  map = L.map('map',{scrollWheelZoom:false}).setView([16,107],5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+  COSO.forEach((cs,i)=>{
+    const m=L.marker([cs.lat,cs.lng]).addTo(map).bindPopup(`<strong>${cs.city}</strong><br>${cs.addr}<br><b>📞 ${cs.phone}</b>`);
+    markers.push(m);
+  });
+  selectCoso(2);
 }
 function renderCosoList(){
   document.getElementById('cosoList').innerHTML=COSO.map((cs,i)=>`
@@ -2095,13 +2097,7 @@ function renderCosoList(){
       <div class="coso-phone">📞 ${cs.phone}</div></div>
     </div>`).join('');
 }
-function selectCoso(i){
-  activeCs=i;
-  renderCosoList();
-  const cs=COSO[i];
-  const fr=document.getElementById('mapFrame');
-  if(fr && cs) fr.src=gmapEmbed(cs.lat,cs.lng);
-}
+function selectCoso(i){activeCs=i;renderCosoList();if(map){map.setView([COSO[i].lat,COSO[i].lng],13,{animate:true});markers[i].openPopup();}}
 renderCosoList();
 window.addEventListener('load',()=>setTimeout(initMap,300));
 
