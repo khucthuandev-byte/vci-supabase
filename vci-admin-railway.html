@@ -633,6 +633,55 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
             <div class="fg full"><label>Địa chỉ cơ sở chính</label><input id="cms-ct-address" placeholder="Số 1 đường..."></div>
           </div></div>
         </div>
+
+        <!-- LOGO & BRAND -->
+        <div class="card">
+          <div class="ch"><span class="ch-title">🖼️ Logo &amp; ảnh thương hiệu</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('theme')">💾 Lưu</button>
+          </div>
+          <div class="cb"><div class="fgrid">
+            <div class="fg"><label>Tên trường (hiển thị trên navbar)</label><input id="cms-theme-school-name" placeholder="VCI – Tuyển sinh 2026"></div>
+            <div class="fg"><label>Slogan ngắn</label><input id="cms-theme-slogan" placeholder="Cao đẳng Công thương Việt Nam"></div>
+
+            <div class="fg full">
+              <label>🏷️ Logo (hiển thị navbar + footer)</label>
+              <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">
+                <img id="cms-theme-logo-preview" src="" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--border);background:var(--bg);flex-shrink:0;display:none">
+                <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:8px">
+                  <input id="cms-theme-logo" placeholder="https://... hoặc bấm Upload bên phải" oninput="updatePreview('cms-theme-logo','cms-theme-logo-preview')">
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <label class="hbtn hbtn-out" style="cursor:pointer;padding:7px 12px;font-size:12px">📤 Upload từ máy
+                      <input type="file" accept="image/*" style="display:none" onchange="uploadBrandImage(this,'cms-theme-logo','cms-theme-logo-preview')">
+                    </label>
+                    <button type="button" class="hbtn hbtn-out" style="padding:7px 12px;font-size:12px" onclick="pickFromMedia('cms-theme-logo','cms-theme-logo-preview')">🗂️ Chọn từ thư viện</button>
+                    <button type="button" class="hbtn hbtn-out" style="padding:7px 12px;font-size:12px" onclick="clearBrandField('cms-theme-logo','cms-theme-logo-preview')">✕ Xóa</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fg full">
+              <label>🖼️ Ảnh banner Hero (cột phải trang chủ)</label>
+              <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">
+                <img id="cms-theme-hero-img-preview" src="" alt="" style="width:140px;height:90px;border-radius:8px;object-fit:cover;border:2px solid var(--border);background:var(--bg);flex-shrink:0;display:none">
+                <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:8px">
+                  <input id="cms-theme-hero-img" placeholder="https://... ảnh sinh viên / khuôn viên (khuyến nghị 900×600)" oninput="updatePreview('cms-theme-hero-img','cms-theme-hero-img-preview')">
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <label class="hbtn hbtn-out" style="cursor:pointer;padding:7px 12px;font-size:12px">📤 Upload từ máy
+                      <input type="file" accept="image/*" style="display:none" onchange="uploadBrandImage(this,'cms-theme-hero-img','cms-theme-hero-img-preview')">
+                    </label>
+                    <button type="button" class="hbtn hbtn-out" style="padding:7px 12px;font-size:12px" onclick="pickFromMedia('cms-theme-hero-img','cms-theme-hero-img-preview')">🗂️ Chọn từ thư viện</button>
+                    <button type="button" class="hbtn hbtn-out" style="padding:7px 12px;font-size:12px" onclick="clearBrandField('cms-theme-hero-img','cms-theme-hero-img-preview')">✕ Xóa</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <input type="hidden" id="cms-theme-red">
+            <input type="hidden" id="cms-theme-navy">
+            <input type="hidden" id="cms-theme-gold">
+          </div></div>
+        </div>
       </div>
 
       <!-- BANNER & SLIDER -->
@@ -1745,6 +1794,9 @@ function fillCmsForm() {
   document.getElementById('cms-theme-logo').value        = th.logo || '';
   document.getElementById('cms-theme-school-name').value = th.schoolName || '';
   document.getElementById('cms-theme-slogan').value      = th.slogan || '';
+  document.getElementById('cms-theme-hero-img').value    = th.heroImage || '';
+  updatePreview('cms-theme-logo','cms-theme-logo-preview');
+  updatePreview('cms-theme-hero-img','cms-theme-hero-img-preview');
 }
 
 async function saveContent(key) {
@@ -1792,6 +1844,7 @@ async function saveContent(key) {
           navy:  document.getElementById('cms-theme-navy').value.trim() || '#0D2137',
           gold:  document.getElementById('cms-theme-gold').value.trim() || '#F57F17',
           logo:  document.getElementById('cms-theme-logo').value.trim(),
+          heroImage: document.getElementById('cms-theme-hero-img').value.trim(),
           schoolName: document.getElementById('cms-theme-school-name').value.trim(),
           slogan: document.getElementById('cms-theme-slogan').value.trim()
         };
@@ -1808,6 +1861,80 @@ async function saveContent(key) {
   } catch(e) {
     toast('Lỗi lưu nội dung: ' + e.message, 'err');
   }
+}
+
+/* ---------- Brand image helpers (logo + hero image) ---------- */
+function updatePreview(inputId, imgId) {
+  const inp = document.getElementById(inputId);
+  const img = document.getElementById(imgId);
+  if (!inp || !img) return;
+  const v = (inp.value || '').trim();
+  if (v) { img.src = v; img.style.display = 'block'; }
+  else   { img.removeAttribute('src'); img.style.display = 'none'; }
+}
+function clearBrandField(inputId, imgId) {
+  document.getElementById(inputId).value = '';
+  updatePreview(inputId, imgId);
+}
+async function uploadBrandImage(fileInput, inputId, imgId) {
+  const file = fileInput.files && fileInput.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { toast('File quá 5MB', 'err'); fileInput.value=''; return; }
+  try {
+    toast('Đang tải ảnh lên...', 'info');
+    const base64 = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(String(r.result).split(',')[1]);
+      r.onerror = () => reject(new Error('Đọc file lỗi'));
+      r.readAsDataURL(file);
+    });
+    const { url } = await api('POST', '/api/media/upload', { filename: file.name, base64, mimetype: file.type });
+    document.getElementById(inputId).value = url;
+    updatePreview(inputId, imgId);
+    toast('Đã upload ✅. Nhớ bấm Lưu để áp dụng.');
+  } catch (e) {
+    toast('Lỗi upload: ' + e.message, 'err');
+  } finally {
+    fileInput.value = '';
+  }
+}
+async function pickFromMedia(inputId, imgId) {
+  try {
+    const { data } = await api('GET', '/api/media');
+    const images = (data || []).filter(f => (f.mimetype||'').startsWith('image/'));
+    if (!images.length) { toast('Thư viện trống. Hãy upload ảnh vào mục "Thư viện Media".', 'warn'); return; }
+    openMediaPicker(images, (url) => {
+      document.getElementById(inputId).value = url;
+      updatePreview(inputId, imgId);
+    });
+  } catch (e) { toast('Lỗi: ' + e.message, 'err'); }
+}
+function openMediaPicker(images, onPick) {
+  let modal = document.getElementById('mediaPickerModal');
+  if (modal) modal.remove();
+  modal = document.createElement('div');
+  modal.id = 'mediaPickerModal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:24px';
+  modal.innerHTML = `
+    <div style="background:var(--card);border-radius:12px;width:min(880px,96vw);max-height:88vh;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)">
+        <strong>Chọn ảnh từ thư viện (${images.length})</strong>
+        <button class="hbtn hbtn-out" style="padding:6px 12px" onclick="document.getElementById('mediaPickerModal').remove()">✕</button>
+      </div>
+      <div id="mediaPickerGrid" style="padding:14px;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px"></div>
+    </div>`;
+  document.body.appendChild(modal);
+  const grid = modal.querySelector('#mediaPickerGrid');
+  images.forEach(f => {
+    const cell = document.createElement('div');
+    cell.style.cssText = 'cursor:pointer;border:2px solid var(--border);border-radius:8px;overflow:hidden;aspect-ratio:1;background:var(--bg);transition:border-color .15s';
+    cell.onmouseenter = () => cell.style.borderColor = 'var(--red)';
+    cell.onmouseleave = () => cell.style.borderColor = 'var(--border)';
+    cell.innerHTML = `<img src="${f.url}" alt="" style="width:100%;height:100%;object-fit:cover;display:block">`;
+    cell.onclick = () => { onPick(f.url); modal.remove(); };
+    grid.appendChild(cell);
+  });
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
 }
 
 /* ============================================================
