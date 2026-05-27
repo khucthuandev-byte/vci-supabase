@@ -1,39 +1,71 @@
 const express = require('express');
 const router  = express.Router();
-const { getSupabase }      = require('../config/supabase');
-const { protect, perm }    = require('../middleware/auth');
+const { getSupabase }   = require('../config/supabase');
+const { protect, perm } = require('../middleware/auth');
 
 router.use(protect, perm('baoCao'));
 
+// Simple in-memory cache (TTL 60s)
+const _cache = {};
+const CACHE_TTL = 60_000;
+const getCached = (k) => { const e = _cache[k]; return (e && Date.now() - e.at < CACHE_TTL) ? e.data : null; };
+const setCache  = (k, d) => { _cache[k] = { data: d, at: Date.now() }; };
+
 router.get('/summary', async (req, res) => {
+  const cached = getCached('summary');
+  if (cached) return res.json({ success: true, cached: true, data: cached });
+
   try {
     const sb = getSupabase();
-    const [total, byStatus, byHe, byCoso] = await Promise.all([
-      sb.from('ho_so').select('id', { count:'exact', head:true }),
+    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    const weekStart  = new Date(); weekStart.setDate(weekStart.getDate()-7); weekStart.setHours(0,0,0,0);
+
+    const [total, byStatus, byHe, byCoso, todayCount, weekCount] = await Promise.all([
+      sb.from('ho_so').select('id', { count: 'exact', head: true }),
       sb.from('ho_so').select('status'),
       sb.from('ho_so').select('he_dao_tao'),
       sb.from('ho_so').select('coso'),
+      sb.from('ho_so').select('id', { count: 'exact', head: true }).gte('created_at', todayStart.toISOString()),
+      sb.from('ho_so').select('id', { count: 'exact', head: true }).gte('created_at', weekStart.toISOString()),
     ]);
-    // Group manually
-    const group = (arr, key) => arr.data.reduce((acc, r) => {
-      const v = r[key]||'Khác'; acc[v] = (acc[v]||0)+1; return acc;
+
+    const group = (result, key) => (result.data || []).reduce((acc, r) => {
+      const v = r[key] || 'Khác'; acc[v] = (acc[v] || 0) + 1; return acc;
     }, {});
-    res.json({ success:true, data: {
-      total: total.count,
-      byStatus: group(byStatus,'status'),
-      byHe: group(byHe,'he_dao_tao'),
-      byCoso: group(byCoso,'coso'),
-    }});
-  } catch(err) { res.status(500).json({ success:false, message:err.message }); }
+
+    const data = {
+      total:    total.count,
+      today:    todayCount.count || 0,
+      week:     weekCount.count  || 0,
+      byStatus: group(byStatus, 'status'),
+      byHe:     group(byHe, 'he_dao_tao'),
+      byCoso:   group(byCoso, 'coso'),
+    };
+
+    setCache('summary', data);
+    return res.json({ success: true, cached: false, data });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 router.get('/nganh', async (req, res) => {
+  const cached = getCached('nganh');
+  if (cached) return res.json({ success: true, cached: true, data: cached });
+
   try {
-    const { data } = await getSupabase().from('ho_so').select('nganh');
-    const counts = data.reduce((acc,r) => { if(r.nganh){ acc[r.nganh]=(acc[r.nganh]||0)+1; } return acc; }, {});
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([name,count])=>({ name, count }));
-    res.json({ success:true, data:sorted });
-  } catch(err) { res.status(500).json({ success:false, message:err.message }); }
+    const { data, error } = await getSupabase().from('ho_so').select('nganh');
+    if (error) throw error;
+
+    const counts = data.reduce((acc, r) => { if (r.nganh) { acc[r.nganh] = (acc[r.nganh] || 0) + 1; } return acc; }, {});
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([name, count]) => ({ name, count }));
+
+    setCache('nganh', sorted);
+    return res.json({ success: true, cached: false, data: sorted });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 module.exports = router;
+

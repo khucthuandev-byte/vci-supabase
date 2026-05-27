@@ -4,15 +4,26 @@ const bcrypt  = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const { getSupabase }      = require('../config/supabase');
 const { protect, role }    = require('../middleware/auth');
+const emailCtrl            = require('../controllers/emailController');
 
 router.use(protect, role('admin'));
 
 router.get('/', async (req, res) => {
   try {
-    const { data, error } = await getSupabase().from('users').select('id,name,email,role,coso,active,permissions,last_login,created_at').order('created_at', { ascending:false });
+    const page  = Math.max(1, Number(req.query.page)  || 1);
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 50));
+    const from  = (page - 1) * limit;
+    const to    = from + limit - 1;
+
+    const { data, error, count } = await getSupabase()
+      .from('users')
+      .select('id,name,email,role,coso,active,permissions,last_login,created_at', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
     if (error) throw error;
-    res.json({ success:true, data });
-  } catch(err) { res.status(500).json({ success:false, message:err.message }); }
+    res.json({ success: true, total: count, page, pages: Math.ceil(count / limit), data });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
 router.post('/',
@@ -65,11 +76,24 @@ router.put('/:id/toggle', async (req, res) => {
 
 router.put('/:id/reset-password', async (req, res) => {
   try {
-    const newPwd = req.body.newPassword || ('VCI@'+Math.random().toString(36).slice(-6).toUpperCase());
+    const sb = getSupabase();
+    const { data: targetUser } = await sb.from('users').select('id,name,email').eq('id', req.params.id).maybeSingle();
+    if (!targetUser) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+
+    // Generate a stronger temp password
+    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#';
+    const newPwd = req.body.newPassword || (
+      'VCI@' + Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+    );
     const hashed = await bcrypt.hash(newPwd, 12);
-    await getSupabase().from('users').update({ password:hashed, must_change_pwd:true }).eq('id', req.params.id);
-    res.json({ success:true, message:'Đã đặt lại mật khẩu.', tempPassword: newPwd });
-  } catch(err) { res.status(500).json({ success:false, message:err.message }); }
+    await sb.from('users').update({ password: hashed, must_change_pwd: true }).eq('id', req.params.id);
+
+    // Send via email, do not expose in response
+    emailCtrl.sendTempPassword({ email: targetUser.email, name: targetUser.name, tempPassword: newPwd })
+      .catch(err => console.error('RESET PWD EMAIL ERROR:', err.message));
+
+    res.json({ success: true, message: `Đã đặt lại mật khẩu. Mật khẩu tạm đã được gửi tới ${targetUser.email}.` });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
 router.put('/:id/permissions', async (req, res) => {

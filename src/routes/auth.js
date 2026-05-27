@@ -3,8 +3,8 @@ const router   = express.Router();
 const bcrypt   = require('bcryptjs');
 const jwt      = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const { getSupabase } = require('../config/supabase');
-const { protect }     = require('../middleware/auth');
+const { getSupabase }          = require('../config/supabase');
+const { protect, invalidateUser } = require('../middleware/auth');
 
 const sign = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES || '8h' });
 
@@ -37,6 +37,19 @@ router.post('/login',
 router.get('/me', protect, (req, res) => {
   const { password:_, ...safeUser } = req.user;
   res.json({ success:true, user: safeUser });
+});
+
+// POST /api/auth/logout
+router.post('/logout', protect, async (req, res) => {
+  try {
+    invalidateUser(req.user.id);
+    await getSupabase().from('audit_logs').insert({
+      user_id: req.user.id, action: 'logout', detail: { email: req.user.email }, ip: req.ip
+    });
+    res.json({ success: true, message: 'Đăng xuất thành công.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // POST /api/auth/change-password

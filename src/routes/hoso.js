@@ -27,19 +27,21 @@ router.get(
 
       const sb = getSupabase();
 
-      const {
-        page = 1,
-        limit = 20,
-        status,
-        he_dao_tao,
-        coso,
-        q,
-        sort = '-created_at'
-      } = req.query;
+      const ALLOWED_SORT_COLS = ['created_at','updated_at','name','phone','status','coso','nganh','he_dao_tao'];
+      const ALLOWED_STATUSES  = ['new','contacted','confirmed','enrolled','rejected','cancelled'];
 
-      const from = (Number(page) - 1) * Number(limit);
+      const rawSort  = req.query.sort || '-created_at';
+      const sortKey  = rawSort.startsWith('-') ? rawSort.slice(1) : rawSort;
+      const sort     = ALLOWED_SORT_COLS.includes(sortKey) ? rawSort : '-created_at';
+      const page     = Math.max(1, Number(req.query.page)  || 1);
+      const limit    = Math.min(100, Math.max(1, Number(req.query.limit) || 20));
+      const { status, he_dao_tao, coso, q } = req.query;
 
-      const to = from + Number(limit) - 1;
+      if (status && !ALLOWED_STATUSES.includes(status))
+        return res.status(400).json({ success: false, message: 'Trạng thái không hợp lệ.' });
+
+      const from = (page - 1) * limit;
+      const to   = from + limit - 1;
 
       let query = sb
         .from('ho_so')
@@ -72,36 +74,23 @@ router.get(
       }
 
       if (q) {
-        query = query.or(
-          `name.ilike.%${q}%,phone.ilike.%${q}%,email.ilike.%${q}%`
-        );
+        const safe = q.replace(/[%_\\]/g, '\\$&');
+        query = query.or(`name.ilike.%${safe}%,phone.ilike.%${safe}%,email.ilike.%${safe}%`);
       }
 
-      const sortCol = sort.startsWith('-')
-        ? sort.slice(1)
-        : sort;
-
+      const safeSortCol = sort.startsWith('-') ? sort.slice(1) : sort;
       const sortAsc = !sort.startsWith('-');
 
-      query = query
-        .order(sortCol, { ascending: sortAsc })
-        .range(from, to);
+      query = query.order(safeSortCol, { ascending: sortAsc }).range(from, to);
 
-      const {
-        data,
-        error,
-        count
-      } = await query;
-
-      if (error) {
-        throw error;
-      }
+      const { data, error, count } = await query;
+      if (error) throw error;
 
       return res.json({
         success: true,
         total: count,
-        page: Number(page),
-        pages: Math.ceil(count / Number(limit)),
+        page,
+        pages: Math.ceil(count / limit),
         data
       });
 

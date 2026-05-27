@@ -323,6 +323,8 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
           <div class="sc"><div class="sc-icon" style="background:var(--green-lt)">✅</div><div><div class="sc-num" id="dSuccess">–</div><div class="sc-lbl">Đã nhập học</div><div class="sc-delta up" id="dSuccessPct"></div></div></div>
           <div class="sc"><div class="sc-icon" style="background:var(--orange-lt)">⏳</div><div><div class="sc-num" id="dContacted">–</div><div class="sc-lbl">Đang tư vấn</div><div class="sc-delta" id="dContactedPct"></div></div></div>
           <div class="sc"><div class="sc-icon" style="background:var(--blue-lt)">🆕</div><div><div class="sc-num" id="dNew">–</div><div class="sc-lbl">Hồ sơ mới</div><div class="sc-delta info" id="dNewPct"></div></div></div>
+          <div class="sc"><div class="sc-icon" style="background:var(--gold-lt)">📅</div><div><div class="sc-num" id="dToday">–</div><div class="sc-lbl">Hôm nay</div><div class="sc-delta" id="dTodayLbl" style="color:var(--gold)"></div></div></div>
+          <div class="sc"><div class="sc-icon" style="background:var(--purple-lt)">📆</div><div><div class="sc-num" id="dWeek">–</div><div class="sc-lbl">7 ngày qua</div><div class="sc-delta info" id="dWeekLbl"></div></div></div>
         </div>
         <div class="g73">
           <div>
@@ -585,6 +587,89 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
         </div>
       </div>
 
+      <!-- FORM ĐĂNG KÝ -->
+      <div class="page" id="page-form">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <p style="font-size:13px;color:var(--muted)">Thay đổi hiển thị ngay trên website sau khi lưu.</p>
+          <button class="hbtn hbtn-red" onclick="loadFormConfig()">↻ Tải lại</button>
+        </div>
+        <div class="g2">
+          <div>
+            <div class="card">
+              <div class="ch"><span class="ch-title">📝 Nội dung form</span>
+                <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveFormConfig('text')">💾 Lưu</button>
+              </div>
+              <div class="cb"><div class="fgrid">
+                <div class="fg full"><label>Tiêu đề form</label><input id="frm-title" placeholder="Đăng ký xét tuyển 2026"></div>
+                <div class="fg full"><label>Mô tả phụ</label><input id="frm-subtitle" placeholder="Điền thông tin – chúng tôi liên hệ trong 24h"></div>
+                <div class="fg full"><label>Nút gửi</label><input id="frm-cta" placeholder="Gửi đăng ký – Nhận tư vấn miễn phí 🎓"></div>
+                <div class="fg full"><label>Thông báo sau khi gửi thành công</label><textarea id="frm-success" style="min-height:70px"></textarea></div>
+              </div></div>
+            </div>
+            <div class="card" style="margin-top:16px">
+              <div class="ch"><span class="ch-title">👁️ Hiển thị trường</span>
+                <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveFormConfig('fields')">💾 Lưu</button>
+              </div>
+              <div class="cb">
+                <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Họ tên, SĐT, Hệ đào tạo, Cơ sở luôn hiển thị và bắt buộc.</p>
+                <table style="width:100%;font-size:13px;border-collapse:collapse">
+                  <thead><tr style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em">
+                    <th style="text-align:left;padding:6px 0;font-weight:600">Trường</th>
+                    <th style="text-align:center;padding:6px 12px;font-weight:600">Hiển thị</th>
+                    <th style="text-align:center;padding:6px 12px;font-weight:600">Bắt buộc</th>
+                  </tr></thead>
+                  <tbody>
+                    <tr style="border-top:1px solid var(--border)">
+                      <td style="padding:10px 0">Email</td>
+                      <td style="text-align:center"><input type="checkbox" id="frm-f-email-show" style="accent-color:var(--red)"></td>
+                      <td style="text-align:center"><input type="checkbox" id="frm-f-email-req" style="accent-color:var(--red)"></td>
+                    </tr>
+                    <tr style="border-top:1px solid var(--border)">
+                      <td style="padding:10px 0">Địa chỉ</td>
+                      <td style="text-align:center"><input type="checkbox" id="frm-f-address-show" style="accent-color:var(--red)"></td>
+                      <td style="text-align:center"><input type="checkbox" id="frm-f-address-req" style="accent-color:var(--red)"></td>
+                    </tr>
+                    <tr style="border-top:1px solid var(--border)">
+                      <td style="padding:10px 0">Năm sinh + Trình độ</td>
+                      <td style="text-align:center"><input type="checkbox" id="frm-f-dob-show" style="accent-color:var(--red)"></td>
+                      <td style="text-align:center"><span style="color:var(--muted);font-size:11px">–</span></td>
+                    </tr>
+                    <tr style="border-top:1px solid var(--border)">
+                      <td style="padding:10px 0">Ghi chú</td>
+                      <td style="text-align:center"><input type="checkbox" id="frm-f-note-show" style="accent-color:var(--red)"></td>
+                      <td style="text-align:center"><span style="color:var(--muted);font-size:11px">–</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="ch"><span class="ch-title">🎓 Hệ đào tạo</span>
+                <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveFormConfig('he')">💾 Lưu</button>
+              </div>
+              <div class="cb">
+                <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Mỗi dòng một hệ đào tạo.</p>
+                <textarea id="frm-he-opts" style="width:100%;min-height:150px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--r);padding:10px;resize:vertical" placeholder="CĐ Chính quy&#10;Hệ Cam kết Nước ngoài&#10;Hệ 9+ (Từ lớp 9)"></textarea>
+              </div>
+            </div>
+            <div class="card" style="margin-top:16px">
+              <div class="ch"><span class="ch-title">🏫 Cơ sở đăng ký</span>
+                <div style="display:flex;gap:8px">
+                  <button class="btn-gray" style="padding:6px 14px;font-size:12.5px" onclick="openCosoItem(-1)">➕ Thêm</button>
+                  <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveFormConfig('coso')">💾 Lưu</button>
+                </div>
+              </div>
+              <div class="cb" style="padding-top:6px">
+                <div id="coso-list" style="display:flex;flex-direction:column;gap:8px"></div>
+                <p id="coso-empty" style="font-size:12.5px;color:var(--muted);text-align:center;padding:20px 0">Chưa có cơ sở nào.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- CHATBOT -->
       <div class="page" id="page-chatbot">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -682,6 +767,19 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
   <div class="mf"><button class="btn-gray" onclick="closeModal('mAddNganh')">Hủy</button><button class="btn-red" onclick="submitAddNganh()">➕ Thêm ngành</button></div>
 </div></div>
 
+<div class="overlay" id="mCosoItem"><div class="modal" style="max-width:400px">
+  <div class="mh"><h3 id="mCosoTitle">➕ Thêm cơ sở</h3><button class="mc" onclick="closeModal('mCosoItem')">✕</button></div>
+  <div class="mb"><div class="fgrid">
+    <div class="fg full"><label>Tên cơ sở <span style="color:var(--muted);font-weight:400;font-size:11px">(lưu vào DB, VD: Cần Thơ)</span></label>
+      <input id="cosoValue" placeholder="Cần Thơ">
+    </div>
+    <div class="fg full"><label>Nhãn hiển thị <span style="color:var(--muted);font-weight:400;font-size:11px">(có thể có emoji)</span></label>
+      <input id="cosoLabel" placeholder="🌊 Cần Thơ">
+    </div>
+  </div></div>
+  <div class="mf"><button class="btn-gray" onclick="closeModal('mCosoItem')">Hủy</button><button class="btn-red" onclick="saveCosoItem()">💾 Lưu</button></div>
+</div></div>
+
 <div class="overlay" id="mFaqItem"><div class="modal" style="max-width:500px">
   <div class="mh"><h3 id="mFaqTitle">➕ Thêm câu hỏi</h3><button class="mc" onclick="closeModal('mFaqItem')">✕</button></div>
   <div class="mb"><div class="fgrid">
@@ -717,6 +815,7 @@ let CU     = null;
 let hsPage = 1, hsPages = 1;
 let ngAll  = [], usersCache = [], editingHSId = null;
 let faqData = [], editingFaqIdx = -1;
+let formCfg = {}, cosoData = [], editingCosoIdx = -1;
 
 const STATUS_VN = {new:'Mới',contacted:'Đang tư vấn',consulting:'Tư vấn chi tiết',success:'Đã nhập học',cancel:'Đã hủy',pending:'Đang chờ'};
 const ROLE_VN   = {admin:'Quản trị viên',staff:'Nhân viên tư vấn',viewer:'Xem báo cáo'};
@@ -735,6 +834,7 @@ const NAV = [
   {id:'perm',     ico:'🔐',lbl:'Phân quyền',grp:'Hệ thống',perm:'phanQuyen'},
   {id:'settings', ico:'⚙️',lbl:'Cài đặt',grp:'Hệ thống',perm:'caiDat'},
   {id:'content',  ico:'🖊️',lbl:'Nội dung Website',grp:'Hệ thống',perm:'caiDat'},
+  {id:'form',     ico:'📝',lbl:'Form đăng ký',grp:'Hệ thống',perm:'caiDat'},
   {id:'chatbot',  ico:'🤖',lbl:'Quản lý Chatbot',grp:'Hệ thống',perm:'chatbot'},
 ];
 const PAGE_TITLES = {
@@ -747,6 +847,7 @@ const PAGE_TITLES = {
   settings: ['Cài đặt','Kết nối Railway & Supabase'],
   content:  ['Nội dung Website','Quản lý nội dung giao diện frontend'],
   chatbot:  ['Chatbot','Cấu hình chatbot tư vấn tự động'],
+  form:     ['Form đăng ký','Cấu hình form xét tuyển trên website'],
 };
 
 /* ============================================================
@@ -757,6 +858,7 @@ async function api(method, path, body) {
   if (body) opts.body = JSON.stringify(body);
   const r = await fetch(BASE + path, opts);
   const d = await r.json().catch(() => ({success:false,message:'Lỗi parse JSON'}));
+  if (r.status === 401) { doLogout(); throw new Error(d.message || 'Phiên đăng nhập hết hạn.'); }
   if (!r.ok) throw new Error(d.message || 'Lỗi ' + r.status);
   return d;
 }
@@ -810,7 +912,10 @@ async function doLogin() {
     btn.disabled = false; txt.textContent = 'Đăng nhập';
   }
 }
-function doLogout() {
+async function doLogout() {
+  if (TOKEN) {
+    try { await fetch(BASE + '/api/auth/logout', { method:'POST', headers:{'Authorization':'Bearer '+TOKEN} }); } catch(_) {}
+  }
   TOKEN = ''; CU = null;
   localStorage.removeItem('vci_token'); localStorage.removeItem('vci_user');
   document.getElementById('loginWrap').classList.remove('hidden');
@@ -867,6 +972,7 @@ async function showPage(id) {
   else if (id === 'report') loadReport();
   else if (id === 'content') loadContent();
   else if (id === 'chatbot') loadChatbot();
+  else if (id === 'form')    loadFormConfig();
 }
 
 /* ============================================================
@@ -876,12 +982,19 @@ async function loadDash() {
   try {
     const [sum, ng] = await Promise.all([api('GET','/api/reports/summary'), api('GET','/api/reports/nganh')]);
     const s = sum.data.byStatus || {}, total = sum.data.total || 0;
-    document.getElementById('dTotal').textContent     = total;
-    document.getElementById('dSuccess').textContent   = s.success || 0;
+    document.getElementById('dTotal').textContent      = total;
+    document.getElementById('dNewTxt').textContent     = sum.data.week ? `+${sum.data.week} trong 7 ngày` : '';
+    document.getElementById('dSuccess').textContent    = s.success || 0;
     document.getElementById('dSuccessPct').textContent = total ? Math.round((s.success||0)/total*100) + '% tỉ lệ nhập học' : '';
     document.getElementById('dContacted').textContent  = (s.contacted||0) + (s.consulting||0);
+    document.getElementById('dContactedPct').textContent = (s.pending||0) ? `${s.pending} đang chờ` : '';
     document.getElementById('dNew').textContent        = s.new || 0;
+    document.getElementById('dNewPct').textContent     = s.new ? `Chưa tư vấn` : '';
     document.getElementById('newBadge').textContent    = s.new || 0;
+    document.getElementById('dToday').textContent      = sum.data.today || 0;
+    document.getElementById('dTodayLbl').textContent   = sum.data.today ? 'đăng ký mới' : 'Chưa có hôm nay';
+    document.getElementById('dWeek').textContent       = sum.data.week  || 0;
+    document.getElementById('dWeekLbl').textContent    = sum.data.week  ? `trung bình ${Math.round(sum.data.week/7)}/ngày` : '';
     // He chart
     const he = sum.data.byHe || {}, heMax = Math.max(...Object.values(he), 1);
     document.getElementById('heChart').innerHTML = Object.entries(he).sort((a,b)=>b[1]-a[1])
@@ -930,7 +1043,19 @@ async function loadHS() {
     hsPages = pages || 1;
     const from = (hsPage-1)*20+1, to = Math.min(hsPage*20, total);
     document.getElementById('hsPagInfo').textContent = `Hiển thị ${from}–${to} / ${total} hồ sơ`;
-    if (!data.length) { document.getElementById('hoSoTbl').innerHTML = '<tr><td colspan="10" class="empty">📭 Không có hồ sơ nào</td></tr>'; return; }
+    if (!data.length) {
+      const hasFilter = q || st || he || cs;
+      document.getElementById('hoSoTbl').innerHTML = `<tr><td colspan="10" class="empty" style="padding:40px 20px">
+        <div style="font-size:36px;margin-bottom:10px">${hasFilter ? '🔍' : '📭'}</div>
+        <div style="font-weight:600;font-size:14px;margin-bottom:6px">${hasFilter ? 'Không tìm thấy hồ sơ nào' : 'Chưa có hồ sơ nào'}</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px">${hasFilter ? 'Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm' : 'Hồ sơ đăng ký từ website sẽ xuất hiện ở đây'}</div>
+        ${hasFilter
+          ? `<button onclick="document.getElementById('hsQ').value='';document.getElementById('hsSt').value='';document.getElementById('hsHe').value='';document.getElementById('hsCs').value='';hsPage=1;loadHS()" style="border:1.5px solid var(--border);background:#fff;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600">✕ Xóa bộ lọc</button>`
+          : `<button onclick="openModal('mAddHS')" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600">+ Thêm hồ sơ đầu tiên</button>`
+        }
+      </td></tr>`;
+      return;
+    }
     document.getElementById('hoSoTbl').innerHTML = data.map((r,i) => `
       <tr>
         <td style="color:var(--muted)">${from+i}</td>
@@ -1076,7 +1201,12 @@ function renderNganh(list) {
       <td><div style="display:flex;gap:3px">
         <button class="ab ${n.active?'ab-del':'ab-view'}" onclick="toggleNganh('${n.id}',${!n.active})">${n.active?'🔒 Ẩn':'▶ Hiện'}</button>
         ${CU.role==='admin'?`<button class="ab ab-del" onclick="deleteNganh('${n.id}','${n.name}')">🗑</button>`:''}</div></td>
-    </tr>`).join('') || '<tr><td colspan="8" class="empty">Chưa có ngành học nào</td></tr>';
+    </tr>`).join('') || `<tr><td colspan="8" class="empty" style="padding:40px 20px">
+    <div style="font-size:36px;margin-bottom:10px">📚</div>
+    <div style="font-weight:600;font-size:14px;margin-bottom:6px">Chưa có ngành học nào</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Thêm ngành đào tạo để hiển thị trên website và form đăng ký</div>
+    <button onclick="openModal('mAddNganh')" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600">+ Thêm ngành đầu tiên</button>
+  </td></tr>`;
 }
 async function submitAddNganh() {
   const name = document.getElementById('nfName').value.trim();
@@ -1128,7 +1258,12 @@ async function loadUsers() {
           <button class="ab ${u.active?'ab-del':'ab-view'}" onclick="toggleUser('${u.id}')">${u.active?'🔒 Khóa':'🔓 Mở'}</button>
           <button class="ab ab-edit" onclick="resetPwd('${u.id}','${u.name}')">🔑 Reset</button>
         </div></td>
-      </tr>`).join('') || '<tr><td colspan="8" class="empty">Chưa có tài khoản nào</td></tr>';
+      </tr>`).join('') || `<tr><td colspan="8" class="empty" style="padding:40px 20px">
+    <div style="font-size:36px;margin-bottom:10px">👤</div>
+    <div style="font-weight:600;font-size:14px;margin-bottom:6px">Chưa có tài khoản nào</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Tạo tài khoản cho nhân viên tư vấn để phân công hồ sơ</div>
+    <button onclick="openModal('mAddUser')" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600">+ Thêm tài khoản</button>
+  </td></tr>`;
   } catch(e) { toast('Lỗi tải users: '+e.message,'err'); }
 }
 async function loadUsersCache() {
@@ -1505,6 +1640,120 @@ async function saveChatbotSection(section) {
     chatbotData = value;
     toast('Đã lưu cấu hình chatbot!');
   } catch(e) { toast(e.message || 'Lỗi JSON', 'err'); }
+}
+
+/* ============================================================
+   FORM CONFIG
+============================================================ */
+async function loadFormConfig() {
+  try {
+    const {data} = await api('GET', '/api/content');
+    formCfg = data.form_config || {};
+    cosoData = formCfg.coso_options || [
+      {value:'Cần Thơ',        label:'🌊 Cần Thơ'},
+      {value:'TP. Hồ Chí Minh',label:'🏙️ TP. Hồ Chí Minh'},
+      {value:'Hà Nội',         label:'🏛️ Hà Nội'},
+      {value:'Đắk Lắk',        label:'🌳 Đắk Lắk'},
+      {value:'Thái Nguyên',    label:'🏔️ Thái Nguyên'},
+    ];
+    fillFormConfig();
+    toast('Đã tải cấu hình form');
+  } catch(e) { fillFormConfig(); toast('Dùng giá trị mặc định', 'warn'); }
+}
+
+function fillFormConfig() {
+  const f = formCfg;
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.value = val||''; };
+  const chk = (id, val) => { const el=document.getElementById(id); if(el) el.checked = !!val; };
+
+  set('frm-title',    f.title    || 'Đăng ký xét tuyển 2026');
+  set('frm-subtitle', f.subtitle || 'Điền thông tin – chúng tôi liên hệ trong 24h');
+  set('frm-cta',      f.cta_text || 'Gửi đăng ký – Nhận tư vấn miễn phí 🎓');
+  set('frm-success',  f.success_msg || 'Cảm ơn bạn đã đăng ký! Đội tư vấn VCI sẽ liên hệ trong vòng 24 giờ.');
+
+  const fields = f.fields || {};
+  chk('frm-f-email-show',   fields.email?.show   !== false);
+  chk('frm-f-email-req',    fields.email?.required === true);
+  chk('frm-f-address-show', fields.address?.show !== false);
+  chk('frm-f-address-req',  fields.address?.required !== false);
+  chk('frm-f-dob-show',     fields.dob?.show   !== false);
+  chk('frm-f-note-show',    fields.note?.show  !== false);
+
+  const heOpts = f.he_options || ['CĐ Chính quy','Hệ Cam kết Nước ngoài','Hệ 9+ (Từ lớp 9)','Liên thông Cao đẳng','Từ xa – E-Learning'];
+  set('frm-he-opts', heOpts.join('\n'));
+
+  renderCosoList();
+}
+
+function renderCosoList() {
+  const list  = document.getElementById('coso-list');
+  const empty = document.getElementById('coso-empty');
+  if (!list) return;
+  if (!cosoData.length) { list.innerHTML=''; if(empty) empty.style.display=''; return; }
+  if (empty) empty.style.display = 'none';
+  list.innerHTML = cosoData.map((c, i) => `
+    <div style="border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;background:#fff;display:flex;align-items:center;gap:10px">
+      <div style="flex:1;font-size:13px"><strong>${c.label}</strong><span style="margin-left:8px;font-size:11px;color:var(--muted)">(value: ${c.value})</span></div>
+      <button onclick="openCosoItem(${i})" style="border:1px solid var(--border);background:#fff;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px">✏️</button>
+      <button onclick="deleteCosoItem(${i})" style="border:1px solid #fca5a5;background:#fff8f8;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px">🗑️</button>
+    </div>`).join('');
+}
+
+function openCosoItem(idx) {
+  editingCosoIdx = idx;
+  document.getElementById('mCosoTitle').textContent = idx === -1 ? '➕ Thêm cơ sở' : '✏️ Sửa cơ sở';
+  if (idx === -1) {
+    document.getElementById('cosoValue').value = '';
+    document.getElementById('cosoLabel').value = '';
+  } else {
+    document.getElementById('cosoValue').value = cosoData[idx].value;
+    document.getElementById('cosoLabel').value = cosoData[idx].label;
+  }
+  openModal('mCosoItem');
+}
+
+function deleteCosoItem(idx) {
+  if (!confirm('Xóa cơ sở này?')) return;
+  cosoData.splice(idx, 1);
+  renderCosoList();
+}
+
+function saveCosoItem() {
+  const value = document.getElementById('cosoValue').value.trim();
+  const label = document.getElementById('cosoLabel').value.trim();
+  if (!value || !label) { toast('Vui lòng điền đầy đủ!', 'warn'); return; }
+  if (editingCosoIdx === -1) cosoData.push({ value, label });
+  else cosoData[editingCosoIdx] = { value, label };
+  renderCosoList();
+  closeModal('mCosoItem');
+}
+
+async function saveFormConfig(section) {
+  try {
+    const current = Object.assign({}, formCfg);
+    if (section === 'text') {
+      Object.assign(current, {
+        title:       document.getElementById('frm-title').value.trim(),
+        subtitle:    document.getElementById('frm-subtitle').value.trim(),
+        cta_text:    document.getElementById('frm-cta').value.trim(),
+        success_msg: document.getElementById('frm-success').value.trim(),
+      });
+    } else if (section === 'fields') {
+      current.fields = {
+        email:   { show: document.getElementById('frm-f-email-show').checked,   required: document.getElementById('frm-f-email-req').checked },
+        address: { show: document.getElementById('frm-f-address-show').checked, required: document.getElementById('frm-f-address-req').checked },
+        dob:     { show: document.getElementById('frm-f-dob-show').checked },
+        note:    { show: document.getElementById('frm-f-note-show').checked },
+      };
+    } else if (section === 'he') {
+      current.he_options = document.getElementById('frm-he-opts').value.split('\n').map(s=>s.trim()).filter(Boolean);
+    } else if (section === 'coso') {
+      current.coso_options = cosoData;
+    }
+    await api('PUT', '/api/content/form_config', { value: current });
+    formCfg = current;
+    toast('✅ Đã lưu cấu hình form!');
+  } catch(e) { toast(e.message, 'err'); }
 }
 
 /* ============================================================
