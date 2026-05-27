@@ -22,6 +22,11 @@ router.get('/', async (req, res) => {
 });
 
 // CREATE - ADMIN
+const ALLOWED_COLS = ['name','ma_nganh','grp','don_gia','tc_cao_dang','tc_trung_cap','cam_ket','mo_ta','active'];
+const pickCols = (body) => Object.fromEntries(
+  Object.entries(body).filter(([k]) => ALLOWED_COLS.includes(k))
+);
+
 router.post('/', protect, role('admin'),
   body('name').trim().notEmpty().withMessage('Vui lòng nhập tên ngành'),
   body('ma_nganh').optional({ nullable: true }).trim().isLength({ max: 20 }),
@@ -32,11 +37,16 @@ router.post('/', protect, role('admin'),
       const { data: existing } = await sb.from('nganh').select('id').eq('name', req.body.name).maybeSingle();
       if (existing) return res.status(400).json({ success: false, message: 'Tên ngành đã tồn tại.' });
 
-      const { name, ma_nganh, ...rest } = req.body;
-      const { data, error } = await sb.from('nganh').insert({ name, ma_nganh: ma_nganh || null, ...rest }).select().single();
-      if (error) throw error;
+      const payload = pickCols(req.body);
+      if (payload.ma_nganh === '') payload.ma_nganh = null;
+      const { data, error } = await sb.from('nganh').insert(payload).select().single();
+      if (error) {
+        console.error('[POST /api/nganh] Supabase error:', error);
+        return res.status(500).json({ success: false, message: error.message, details: error.details, hint: error.hint, code: error.code });
+      }
       return res.status(201).json({ success: true, data });
     } catch (err) {
+      console.error('[POST /api/nganh] Exception:', err);
       return res.status(500).json({ success: false, message: err.message });
     }
   }
@@ -53,15 +63,17 @@ router.put('/:id', protect, role('admin'),
       const { data: existing } = await sb.from('nganh').select('id').eq('id', req.params.id).maybeSingle();
       if (!existing) return res.status(404).json({ success: false, message: 'Không tìm thấy ngành.' });
 
-      const { name, ma_nganh, ...rest } = req.body;
-      const updateData = { ...rest };
-      if (name !== undefined) updateData.name = name;
-      if (ma_nganh !== undefined) updateData.ma_nganh = ma_nganh;
+      const updateData = pickCols(req.body);
+      if (updateData.ma_nganh === '') updateData.ma_nganh = null;
 
       const { data, error } = await sb.from('nganh').update(updateData).eq('id', req.params.id).select().single();
-      if (error) throw error;
+      if (error) {
+        console.error('[PUT /api/nganh/:id] Supabase error:', error);
+        return res.status(500).json({ success: false, message: error.message, details: error.details, hint: error.hint, code: error.code });
+      }
       return res.json({ success: true, data });
     } catch (err) {
+      console.error('[PUT /api/nganh/:id] Exception:', err);
       return res.status(500).json({ success: false, message: err.message });
     }
   }
