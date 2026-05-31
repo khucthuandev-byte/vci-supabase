@@ -2418,6 +2418,12 @@ async function fetchContent() {
     `<div class="hero-stat"><div class="hs-num">${s.num}<span>${s.unit||''}</span></div><div class="hs-lbl">${s.label||''}</div></div>`
    ).join('');
   }
+  if (Array.isArray(hero.trust) && hero.trust.length) {
+   const trustWrap = document.querySelector('.hero-trust');
+   if (trustWrap) trustWrap.innerHTML = hero.trust.map(t =>
+    `<div class="ht-item"><i class="ht-check">✓</i> <span>${t}</span></div>`
+   ).join('');
+  }
  }
 
  /* ---- STATS BAR ---- */
