@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
+<script src="common.js"></script>
 <style>
 /* TOKENS */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1936,7 +1937,7 @@ button{cursor:pointer;font-family:var(--fh)}
 /*
  CONFIG – Railway API
  */
-const RAILWAY_URL = location.hostname === '127.0.0.1' || location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://vci-supabase-production.up.railway.app';
+// RAILWAY_URL đã khai báo trong common.js
 
 async function apiGet(path) {
  try {

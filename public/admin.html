@@ -6,6 +6,7 @@
 <title>VCI Admin – Quản trị tuyển sinh</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script src="common.js"></script>
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
@@ -113,7 +114,7 @@
           <div class="sbox">🔍<input placeholder="Tìm tên, SĐT..." id="hsQ" oninput="debouncedLoadHS()"></div>
           <select class="fsel" id="hsSt" onchange="loadHS()"><option value="">Tất cả trạng thái</option><option value="new">Mới</option><option value="contacted">Đang tư vấn</option><option value="consulting">Tư vấn chi tiết</option><option value="success">Đã nhập học</option><option value="cancel">Đã hủy</option><option value="pending">Đang chờ</option></select>
           <select class="fsel" id="hsHe" onchange="loadHS()"><option value="">Tất cả hệ</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select>
-          <select class="fsel" id="hsCs" onchange="loadHS()"><option value="">Tất cả cơ sở</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. HCM</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select>
+          <select class="fsel" id="hsCs" onchange="loadHS()"></select>
           <div class="factions">
             <button class="hbtn hbtn-red" onclick="openModal('mAddHS')">+ Thêm hồ sơ</button>
             <button class="hbtn hbtn-out" onclick="exportExcel()">⬇ Excel</button>
@@ -962,7 +963,7 @@
     <div class="fg"><label>Trình độ hiện tại</label><select id="mfLevel"><option value="">Chọn...</option><option>Lớp 9</option><option>Lớp 10</option><option>Lớp 11</option><option>Lớp 12</option><option>Đã TN THPT</option><option>Đại học/CĐ</option></select></div>
     <div class="fg"><label>Hệ đào tạo *</label><select id="mfHe"><option value="">Chọn hệ...</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select></div>
     <div class="fg"><label>Ngành học</label><select id="mfNganh"><option value="">Chọn ngành...</option></select></div>
-    <div class="fg"><label>Cơ sở</label><select id="mfCoso"><option value="">Chọn cơ sở...</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. Hồ Chí Minh</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select></div>
+    <div class="fg"><label>Cơ sở</label><select id="mfCoso"></select></div>
     <div class="fg"><label>Nguồn</label><select id="mfSrc"><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="walk-in">Đến trực tiếp</option><option value="phone">Gọi điện</option><option value="referral">Giới thiệu</option></select></div>
     <div class="fg full"><label>Địa chỉ</label><input id="mfAddress" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành..."></div>
     <div class="fg full"><label>Ghi chú</label><textarea id="mfNote" placeholder="Thông tin thêm..."></textarea></div>
@@ -979,7 +980,7 @@
       <div class="fg"><label>Tư vấn viên</label><select id="efTvv"><option value="">Chưa phân công</option></select></div>
       <div class="fg"><label>Hệ đào tạo</label><select id="efHe"><option value="">– Giữ nguyên –</option><option>CĐ Chính quy</option><option>Hệ Cam kết Nước ngoài</option><option>Hệ 9+ (Từ lớp 9)</option><option>Liên thông Cao đẳng</option><option>Từ xa – E-Learning</option></select></div>
       <div class="fg"><label>Ngành học</label><select id="efNganh"><option value="">– Giữ nguyên –</option></select></div>
-      <div class="fg"><label>Cơ sở</label><select id="efCoso"><option value="">– Giữ nguyên –</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. Hồ Chí Minh</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select></div>
+      <div class="fg"><label>Cơ sở</label><select id="efCoso"></select></div>
       <div class="fg"><label>Nguồn</label><select id="efSrc"><option value="">– Giữ nguyên –</option><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="walk-in">Đến trực tiếp</option><option value="phone">Gọi điện</option><option value="referral">Giới thiệu</option></select></div>
       <div class="fg full"><label>Địa chỉ</label><input id="efAddress" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành..."></div>
       <div class="fg full"><label>Ghi chú lần cập nhật này (lưu vào lịch sử)</label><textarea id="efNote" placeholder="VD: Đã gọi điện, khách hẹn gặp trực tiếp ngày..."></textarea></div>
@@ -1051,16 +1052,16 @@
     <div class="fg"><label>Email *</label><input type="email" id="ufEmail" placeholder="user@vci.edu.vn"></div>
     <div class="fg"><label>Mật khẩu * (≥8 ký tự)</label><input type="password" id="ufPass" placeholder="••••••••"></div>
     <div class="fg"><label>Vai trò *</label><select id="ufRole"><option value="staff">Nhân viên tư vấn</option><option value="viewer">Xem báo cáo</option><option value="admin">Quản trị viên</option></select></div>
-    <div class="fg full"><label>Cơ sở phụ trách</label><select id="ufCoso"><option value="Tất cả">Tất cả cơ sở</option><option>Cần Thơ</option><option>Hà Nội</option><option>TP. HCM</option><option>Đắk Lắk</option><option>Thái Nguyên</option></select></div>
+    <div class="fg full"><label>Cơ sở phụ trách</label><select id="ufCoso"></select></div>
   </div></div>
   <div class="mf"><button class="btn-gray" onclick="closeModal('mAddUser')">Hủy</button><button class="btn-red" onclick="submitAddUser()">➕ Tạo tài khoản</button></div>
 </div></div>
 
 <script>
 /* ============================================================
-   CONFIG – Railway URL cố định
+   CONFIG – BASE từ common.js (RAILWAY_URL)
 ============================================================ */
-const BASE = location.hostname === '127.0.0.1' || location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://vci-supabase-production.up.railway.app';
+const BASE = RAILWAY_URL; // đã khai báo trong common.js
 let TOKEN  = localStorage.getItem('vci_token') || '';
 let CU     = null;
 let hsPage = 1, hsPages = 1;
@@ -1069,7 +1070,7 @@ let faqData = [], editingFaqIdx = -1;
 let formCfg = {}, cosoData = [], editingCosoIdx = -1;
 const _hsStore = {};
 
-const STATUS_VN = {new:'Mới',contacted:'Đang tư vấn',consulting:'Tư vấn chi tiết',success:'Đã nhập học',cancel:'Đã hủy',pending:'Đang chờ'};
+// STATUS_VN đã khai báo trong common.js
 const ROLE_VN   = {admin:'Quản trị viên',staff:'Nhân viên tư vấn',viewer:'Xem báo cáo'};
 const PERM_LBL  = {dashboard:'Dashboard',hoSo:'Hồ sơ',nganh:'Ngành học',taiKhoan:'Tài khoản',phanQuyen:'Phân quyền',caiDat:'Cài đặt',baoCao:'Báo cáo',chatbot:'Chatbot',benefits:'Quyền lợi',templates:'Templates',theme:'Theme'};
 const PERM_DEF  = {
@@ -1214,6 +1215,15 @@ function initApp() {
   loadNganhCache(); loadUsersCache();
   document.getElementById('rTo').value = new Date().toISOString().split('T')[0];
   buildSysInfo(); setConnStatus('ok','🟢 Railway · Đã kết nối');
+  // Inject cơ sở từ common.js — đảm bảo nhất quán giữa index & admin
+  const selAll  = document.getElementById('hsCs');
+  const selAdd  = document.getElementById('mfCoso');
+  const selEdit = document.getElementById('efCoso');
+  const selUser = document.getElementById('ufCoso');
+  if (selAll)  selAll.innerHTML  = cosoOptions('Tất cả cơ sở', true);
+  if (selAdd)  selAdd.innerHTML  = cosoOptions('Chọn cơ sở...');
+  if (selEdit) selEdit.innerHTML = '<option value="">– Giữ nguyên –</option>' + COSO_LIST.map(c=>`<option value="${c.value}">${c.label}</option>`).join('');
+  if (selUser) selUser.innerHTML = '<option value="Tất cả">Tất cả cơ sở</option>' + COSO_LIST.map(c=>`<option value="${c.value}">${c.label}</option>`).join('');
 }
 function buildNav() {
   const perms = CU.permissions || PERM_DEF[CU.role] || {};
@@ -1319,7 +1329,7 @@ async function loadDash() {
     document.getElementById('dashAct').innerHTML = recent.slice(0,5).map(r => `
       <div class="tl-item"><div class="tl-dot" style="background:var(--blue-lt)">📋</div>
       <div><div class="tl-text">Hồ sơ mới: <strong>${r.name}</strong> – ${r.he_dao_tao}</div>
-      <div class="tl-time">${new Date(r.created_at).toLocaleString('vi-VN')}</div></div></div>`).join('')
+      <div class="tl-time">${fmtDTime(r.created_at)}</div></div></div>`).join('')
       || '<div class="empty">Chưa có hoạt động</div>';
   } catch(e) { toast('Lỗi tải dashboard: ' + e.message, 'err'); }
 }
@@ -1367,7 +1377,7 @@ async function loadHS() {
         <td style="font-size:12.5px">${r.he_dao_tao}</td>
         <td style="font-size:12.5px">${r.nganh||'–'}</td>
         <td style="font-size:12.5px">${r.coso||'–'}</td>
-        <td style="font-size:11.5px"><div>${new Date(r.created_at).toLocaleDateString('vi-VN')}</div><div style="color:var(--muted);margin-top:2px">${r.source ? (() => { const icons={'website':'🌐','facebook':'📘','zalo':'💬','walk-in':'🚶','phone':'📞','tiktok':'🎵','youtube':'▶️','referral':'👥'}; return (icons[r.source]||'📌')+' '+r.source; })() : ''}</div></td>
+        <td style="font-size:11.5px"><div>${fmtDate(r.created_at)}</div><div style="color:var(--muted);margin-top:2px">${srcIcon(r.source)}</div></td>
         <td><span class="bdg bdg-${r.status}">${STATUS_VN[r.status]||r.status}</span></td>
         <td style="font-size:12px">${r.tu_van_vien?.name||'Chưa phân công'}</td>
         <td><div style="display:flex;gap:3px">
@@ -1439,7 +1449,7 @@ function openEditHS(id) {
     '<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:.08em;margin-bottom:8px">Lịch sử liên hệ (' + hist.length + ')</div>' +
     hist.map(h => `<div style="font-size:12px;padding:7px 0;border-bottom:1px solid #f3f4f6;color:var(--muted)">
       <strong style="color:var(--ink)">${h.action}</strong>${h.note?' – '+h.note:''}
-      <br><span style="font-size:11px">${new Date(h.at).toLocaleString('vi-VN')}</span></div>`).join('') : '';
+      <br><span style="font-size:11px">${fmtDTime(h.at)}</span></div>`).join('') : '';
   openModal('mEditHS');
 }
 async function submitEditHS() {
@@ -1483,7 +1493,7 @@ async function exportExcel() {
       'Cơ sở': r.coso || '', 'Trạng thái': STATUS_VN[r.status] || r.status,
       'Nguồn': r.source || '', 'Địa chỉ': r.address || '',
       'Ghi chú': r.note || '',
-      'Ngày đăng ký': r.created_at ? new Date(r.created_at).toLocaleDateString('vi-VN') : ''
+      'Ngày đăng ký': r.created_at ? fmtDate(r.created_at) : ''
     }));
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
@@ -1515,8 +1525,8 @@ function renderNganh(list) {
       <td style="color:var(--muted)">${i+1}</td>
       <td><strong>${n.name}</strong></td>
       <td><span style="background:var(--bg);padding:2px 8px;border-radius:12px;font-size:11px;color:var(--muted)">${n.grp||'–'}</span></td>
-      <td>${(n.don_gia||0).toLocaleString('vi-VN')}đ</td>
-      <td>${((n.don_gia||0)*(n.tc_cao_dang||100)).toLocaleString('vi-VN')}đ</td>
+      <td>${fmtMoney(n.don_gia)}</td>
+      <td>${fmtMoney((n.don_gia||0)*(n.tc_cao_dang||100))}</td>
       <td>${n.cam_ket?'<span class="bdg bdg-success">★ Có</span>':'<span class="bdg bdg-cancel">✗ Không</span>'}</td>
       <td>${n.active?'<span class="bdg bdg-active">Hoạt động</span>':'<span class="bdg bdg-inactive">Ẩn</span>'}</td>
       <td><div style="display:flex;gap:3px">
@@ -1606,7 +1616,7 @@ async function loadUsers() {
         <td><span class="bdg bdg-${u.role}">${ROLE_VN[u.role]||u.role}</span></td>
         <td style="font-size:12.5px">${u.coso||'–'}</td>
         <td><span class="bdg ${u.active?'bdg-active':'bdg-inactive'}">${u.active?'Hoạt động':'Đã khóa'}</span></td>
-        <td style="font-size:11.5px;color:var(--muted)">${u.last_login?new Date(u.last_login).toLocaleString('vi-VN'):'Chưa đăng nhập'}</td>
+        <td style="font-size:11.5px;color:var(--muted)">${u.last_login?fmtDTime(u.last_login):'Chưa đăng nhập'}</td>
         <td><div style="display:flex;gap:3px">
           <button class="ab ${u.active?'ab-del':'ab-view'}" onclick="toggleUser('${u.id}')">${u.active?'🔒 Khóa':'🔓 Mở'}</button>
           <button class="ab ab-edit" onclick="resetPwd('${u.id}','${u.name}')">🔑 Reset</button>
@@ -2521,7 +2531,7 @@ async function loadArticles() {
           <td style="font-size:11px;color:var(--muted)">${a.slug}</td>
           <td style="font-size:12px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.excerpt||'–'}</td>
           <td><span class="bdg ${a.published?'bdg-success':'bdg-pending'}">${a.published?'Đã xuất bản':'Nháp'}</span></td>
-          <td style="font-size:12px">${a.created_at?new Date(a.created_at).toLocaleDateString('vi-VN'):''}</td>
+          <td style="font-size:12px">${a.created_at?fmtDate(a.created_at):''}</td>
           <td style="display:flex;gap:4px">
             <button class="ab ab-edit" onclick="openArticleModal('${a.id}')">Sửa</button>
             <button class="ab ab-del" onclick="deleteArticle('${a.id}')">Xóa</button>
@@ -2602,7 +2612,7 @@ async function loadChatHistory(all) {
           <td style="font-size:12px;font-family:monospace">${(c.session_id||'–').slice(0,20)}</td>
           <td style="font-size:12px">${c.visitor_ip||'–'}</td>
           <td>${Array.isArray(c.messages)?c.messages.length:0}</td>
-          <td style="font-size:12px">${c.created_at?new Date(c.created_at).toLocaleString('vi-VN'):''}</td>
+          <td style="font-size:12px">${c.created_at?fmtDTime(c.created_at):''}</td>
           <td><button class="ab ab-view" onclick="viewChatLog(${JSON.stringify(c.messages||[]).replace(/"/g,'&quot;')})">Xem</button></td>
           <td><button class="ab ab-del" onclick="deleteChatLog('${c.id}')">Xóa</button></td>
         </tr>`).join('')
@@ -2675,9 +2685,7 @@ async function saveAiConfig() {
 /* ============================================================
    REPEATER HELPERS – CMS Content
 ============================================================ */
-function _esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+const _esc = esc; // alias → dùng esc() từ common.js
 
 /* ---- Stat Repeater (hero stats + stats bar) ---- */
 function addStatRow(repId, data={}) {
