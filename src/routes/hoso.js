@@ -28,7 +28,7 @@ router.get(
       const sb = getSupabase();
 
       const ALLOWED_SORT_COLS = ['created_at','updated_at','name','phone','status','coso','nganh','he_dao_tao'];
-      const ALLOWED_STATUSES  = ['new','contacted','confirmed','enrolled','rejected','cancelled'];
+      const ALLOWED_STATUSES  = ['new','contacted','consulting','success','cancel','pending'];
 
       const rawSort  = req.query.sort || '-created_at';
       const sortKey  = rawSort.startsWith('-') ? rawSort.slice(1) : rawSort;

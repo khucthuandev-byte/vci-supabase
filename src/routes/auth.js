@@ -17,8 +17,8 @@ router.post('/login',
     if (!errs.isEmpty()) return res.status(400).json({ success:false, errors: errs.array() });
     try {
       const sb = getSupabase();
-      const { data:user } = await sb.from('users').select('*').eq('email', req.body.email).single();
-      if (!user) return res.status(401).json({ success:false, message:'Email hoặc mật khẩu không đúng.' });
+      const { data:user, error:userErr } = await sb.from('users').select('*').eq('email', req.body.email).maybeSingle();
+      if (userErr || !user) return res.status(401).json({ success:false, message:'Email hoặc mật khẩu không đúng.' });
       if (!user.active) return res.status(403).json({ success:false, message:'Tài khoản đã bị khóa.' });
 
       const ok = await bcrypt.compare(req.body.password, user.password);
@@ -61,7 +61,8 @@ router.post('/change-password', protect,
     if (!errs.isEmpty()) return res.status(400).json({ success:false, errors: errs.array() });
     try {
       const sb = getSupabase();
-      const { data:user } = await sb.from('users').select('password').eq('id', req.user.id).single();
+      const { data:user, error:pwdErr } = await sb.from('users').select('password').eq('id', req.user.id).maybeSingle();
+      if (pwdErr || !user) return res.status(404).json({ success:false, message:'Không tìm thấy tài khoản.' });
       const ok = await bcrypt.compare(req.body.oldPassword, user.password);
       if (!ok) return res.status(401).json({ success:false, message:'Mật khẩu cũ không đúng.' });
       const hashed = await bcrypt.hash(req.body.newPassword, 12);

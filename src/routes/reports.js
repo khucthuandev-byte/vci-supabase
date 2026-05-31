@@ -5,7 +5,6 @@ const { protect, perm } = require('../middleware/auth');
 
 router.use(protect, perm('baoCao'));
 
-// Simple in-memory cache (TTL 60s)
 const _cache = {};
 const CACHE_TTL = 60_000;
 const getCached = (k) => { const e = _cache[k]; return (e && Date.now() - e.at < CACHE_TTL) ? e.data : null; };
@@ -20,16 +19,14 @@ router.get('/summary', async (req, res) => {
     const todayStart = new Date(); todayStart.setHours(0,0,0,0);
     const weekStart  = new Date(); weekStart.setDate(weekStart.getDate()-7); weekStart.setHours(0,0,0,0);
 
-    const [total, byStatus, byHe, byCoso, todayCount, weekCount] = await Promise.all([
+    const [total, todayCount, weekCount, allRows] = await Promise.all([
       sb.from('ho_so').select('id', { count: 'exact', head: true }),
-      sb.from('ho_so').select('status'),
-      sb.from('ho_so').select('he_dao_tao'),
-      sb.from('ho_so').select('coso'),
       sb.from('ho_so').select('id', { count: 'exact', head: true }).gte('created_at', todayStart.toISOString()),
       sb.from('ho_so').select('id', { count: 'exact', head: true }).gte('created_at', weekStart.toISOString()),
+      sb.from('ho_so').select('status,he_dao_tao,coso'),
     ]);
 
-    const group = (result, key) => (result.data || []).reduce((acc, r) => {
+    const group = (key) => (allRows.data || []).reduce((acc, r) => {
       const v = r[key] || 'Khác'; acc[v] = (acc[v] || 0) + 1; return acc;
     }, {});
 
@@ -37,9 +34,9 @@ router.get('/summary', async (req, res) => {
       total:    total.count,
       today:    todayCount.count || 0,
       week:     weekCount.count  || 0,
-      byStatus: group(byStatus, 'status'),
-      byHe:     group(byHe, 'he_dao_tao'),
-      byCoso:   group(byCoso, 'coso'),
+      byStatus: group('status'),
+      byHe:     group('he_dao_tao'),
+      byCoso:   group('coso'),
     };
 
     setCache('summary', data);
@@ -68,4 +65,3 @@ router.get('/nganh', async (req, res) => {
 });
 
 module.exports = router;
-

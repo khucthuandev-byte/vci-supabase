@@ -16,7 +16,7 @@ app.use(helmet({ contentSecurityPolicy: false }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 app.use(cors({
-  origin: '*',
+  origin: process.env.FRONTEND_URL || '*',
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -65,6 +65,9 @@ app.get('/api/health', (req, res) => {
 ========================= */
 const { getSupabase } = require('./config/supabase');
 
+let _maintCache = null, _maintAt = 0;
+const MAINT_TTL = 30_000;
+
 app.use('/api', async (req, res, next) => {
   const skip = req.path === '/health'
     || req.path.startsWith('/auth')
@@ -73,10 +76,14 @@ app.use('/api', async (req, res, next) => {
     || req.path.startsWith('/articles');
   if (skip) return next();
   try {
-    const { data } = await getSupabase()
-      .from('system_settings').select('value').eq('key', 'maintenance').single();
-    if (data?.value?.enabled) {
-      return res.status(503).json({ success: false, message: data.value.message || 'Hệ thống đang bảo trì.' });
+    if (!_maintCache || Date.now() - _maintAt > MAINT_TTL) {
+      const { data } = await getSupabase()
+        .from('system_settings').select('value').eq('key', 'maintenance').maybeSingle();
+      _maintCache = data?.value || { enabled: false };
+      _maintAt = Date.now();
+    }
+    if (_maintCache?.enabled) {
+      return res.status(503).json({ success: false, message: _maintCache.message || 'Hệ thống đang bảo trì.' });
     }
   } catch (_) {}
   next();

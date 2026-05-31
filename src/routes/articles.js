@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// GET /api/articles/admin/all  — admin
+// GET /api/articles/admin/all  — admin (phải đứng trước /:slug)
 router.get('/admin/all', protect, role('admin'), async (req, res) => {
   try {
     const page  = Math.max(1, Number(req.query.page) || 1);
@@ -48,6 +48,15 @@ router.get('/admin/all', protect, role('admin'), async (req, res) => {
       .range(from, to);
     if (error) throw error;
     res.json({ success: true, total: count, page, pages: Math.ceil(count / limit), data });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
+// GET /api/articles/admin/:id  — admin, single by id (phải đứng trước /:slug)
+router.get('/admin/:id', protect, role('admin'), async (req, res) => {
+  try {
+    const { data, error } = await getSupabase().from('articles').select('*').eq('id', req.params.id).maybeSingle();
+    if (error || !data) return res.status(404).json({ success: false, message: 'Không tìm thấy bài viết.' });
+    res.json({ success: true, data });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 

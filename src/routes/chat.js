@@ -47,8 +47,8 @@ router.post('/', async (req, res) => {
 
     // 1. Lấy FAQ + cấu hình AI song song
     const [contentRes, aiRes] = await Promise.all([
-      sb.from('site_content').select('value').eq('key', 'chatbot').single(),
-      sb.from('system_settings').select('value').eq('key', 'ai').single(),
+      sb.from('site_content').select('value').eq('key', 'chatbot').maybeSingle(),
+      sb.from('system_settings').select('value').eq('key', 'ai').maybeSingle(),
     ]);
 
     const faqs   = contentRes.data?.value?.faqs || [];
@@ -94,8 +94,9 @@ router.post('/', async (req, res) => {
     return res.json({ success: true, reply });
 
   } catch (err) {
-    return res.json({
-      success: true,
+    console.error('Chat error:', err.message);
+    return res.status(500).json({
+      success: false,
       reply: 'Cảm ơn bạn! Vui lòng gọi hotline <b>0965 670 100</b> để được tư vấn trực tiếp!'
     });
   }

@@ -1240,6 +1240,7 @@ let hsPage = 1, hsPages = 1;
 let ngAll  = [], usersCache = [], editingHSId = null;
 let faqData = [], editingFaqIdx = -1;
 let formCfg = {}, cosoData = [], editingCosoIdx = -1;
+const _hsStore = {};
 
 const STATUS_VN = {new:'Mới',contacted:'Đang tư vấn',consulting:'Tư vấn chi tiết',success:'Đã nhập học',cancel:'Đã hủy',pending:'Đang chờ'};
 const ROLE_VN   = {admin:'Quản trị viên',staff:'Nhân viên tư vấn',viewer:'Xem báo cáo'};
@@ -1523,7 +1524,9 @@ async function loadHS() {
       </td></tr>`;
       return;
     }
-    document.getElementById('hoSoTbl').innerHTML = data.map((r,i) => `
+    document.getElementById('hoSoTbl').innerHTML = data.map((r,i) => {
+      _hsStore[r.id] = r;
+      return `
       <tr>
         <td style="color:var(--muted)">${from+i}</td>
         <td><div style="display:flex;align-items:center;gap:7px"><div class="av">${r.name[0]}</div>
@@ -1539,9 +1542,10 @@ async function loadHS() {
         <td style="font-size:12px">${r.tu_van_vien?.name||'Chưa phân công'}</td>
         <td><div style="display:flex;gap:3px">
           <button class="ab ab-call" onclick="window.open('tel:${r.phone}')">📞</button>
-          <button class="ab ab-edit" onclick='openEditHS("${r.id}", ${JSON.stringify(r)})'>✏️</button>
+          <button class="ab ab-edit" onclick='openEditHS("${r.id}")'>✏️</button>
           ${CU.role==='admin'?`<button class="ab ab-del" onclick="deleteHS('${r.id}','${r.name}')">🗑</button>`:''}</div></td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
   } catch(e) { toast('Lỗi tải hồ sơ: ' + e.message, 'err'); }
 }
 async function submitAddHS() {
@@ -1570,7 +1574,9 @@ async function submitAddHS() {
   } catch(e) { toast(e.message, 'err'); }
   finally { btn.disabled = false; btn.textContent = '➕ Thêm hồ sơ'; }
 }
-function openEditHS(id, r) {
+function openEditHS(id) {
+  const r = _hsStore[id];
+  if (!r) { toast('Không tìm thấy dữ liệu hồ sơ', 'err'); return; }
   editingHSId = id;
   document.getElementById('efInfo').innerHTML = `
     <div><span style="color:var(--muted);font-size:11px">Họ tên</span><div style="font-weight:600">${r.name}</div></div>
@@ -2447,8 +2453,7 @@ async function openBannerModal(id) {
   document.getElementById('bannerPreview').style.display = 'none';
   if (id) {
     try {
-      const { data } = await api('GET', '/api/banners/all');
-      const b = data.find(x => x.id === id);
+      const { data: b } = await api('GET', '/api/banners/' + id);
       if (b) {
         document.getElementById('bTitle').value    = b.title    || '';
         document.getElementById('bSubtitle').value = b.subtitle || '';
@@ -2596,8 +2601,7 @@ async function openArticleModal(id) {
   document.getElementById('artPublished').checked= false;
   if (id) {
     try {
-      const { data: arts } = await api('GET', '/api/articles/admin/all?limit=200&page=1');
-      const a = arts.find(x => x.id === id);
+      const { data: a } = await api('GET', '/api/articles/admin/' + id);
       if (a) {
         document.getElementById('artTitle').value     = a.title||'';
         document.getElementById('artExcerpt').value   = a.excerpt||'';

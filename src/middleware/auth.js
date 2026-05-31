@@ -24,7 +24,7 @@ exports.protect = async (req, res, next) => {
       return res.status(401).json({ success:false, message:'Phiên đăng nhập đã bị đăng xuất. Vui lòng đăng nhập lại.' });
 
     const sb = getSupabase();
-    const { data:user, error } = await sb.from('users').select('*').eq('id', decoded.id).single();
+    const { data:user, error } = await sb.from('users').select('*').eq('id', decoded.id).maybeSingle();
     if (error || !user || !user.active)
       return res.status(401).json({ success:false, message:'Tài khoản không tồn tại hoặc đã bị khóa.' });
 

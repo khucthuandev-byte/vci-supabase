@@ -33,14 +33,17 @@ router.post('/upload', protect, role('admin'), async (req, res) => {
     const { filename, base64, mimetype } = req.body;
     if (!filename || !base64) return res.status(400).json({ success: false, message: 'Thiếu filename hoặc base64.' });
 
+    const ALLOWED_TYPES = ['image/jpeg','image/png','image/gif','image/webp','image/svg+xml','video/mp4','application/pdf'];
+    const mt = mimetype || 'application/octet-stream';
+    if (!ALLOWED_TYPES.includes(mt)) return res.status(400).json({ success: false, message: 'Loại file không được phép.' });
+
     const buf = Buffer.from(base64, 'base64');
     if (buf.length > 5 * 1024 * 1024) return res.status(400).json({ success: false, message: 'File quá 5MB.' });
 
-    const ext   = filename.split('.').pop().toLowerCase();
     const safeName = Date.now() + '-' + filename.replace(/[^a-zA-Z0-9._-]/g, '_');
 
     const { error } = await getSupabase().storage.from(BUCKET).upload(safeName, buf, {
-      contentType: mimetype || 'application/octet-stream',
+      contentType: mt,
       upsert: false,
     });
     if (error) throw error;

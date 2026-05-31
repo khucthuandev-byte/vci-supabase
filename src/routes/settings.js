@@ -26,7 +26,7 @@ router.get('/:key', async (req, res) => {
       .from('system_settings')
       .select('value')
       .eq('key', req.params.key)
-      .single();
+      .maybeSingle();
     if (error || !data) return res.status(404).json({ success: false, message: 'Không tìm thấy key.' });
     res.json({ success: true, key: req.params.key, value: data.value });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }

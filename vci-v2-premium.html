@@ -7,6 +7,7 @@
 <title>VCI – Cao đẳng Công thương Việt Nam | Tuyển sinh 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
 <style>
 /* TOKENS */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1840,7 +1841,7 @@ button{cursor:pointer;font-family:var(--fh)}
  </div>
  <div class="coso-layout reveal">
  <div class="coso-list" id="cosoList"></div>
- <iframe id="mapFrame" src="" style="border:0;width:100%;height:100%;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+ <div id="map" style="width:100%;height:100%;display:block"></div>
  </div>
  </div>
 </section>
@@ -2127,11 +2128,29 @@ const COSO = [
 ];
 let map, markers=[], activeCs=2;
 function initMap(){
- map = L.map('map',{scrollWheelZoom:false}).setView([16,107],5);
- L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+ if(!window.google){console.error('Google Maps not loaded');return;}
+ map = new google.maps.Map(document.getElementById('map'),{
+  center:{lat:16,lng:107},
+  zoom:5,
+  gestureHandling:'cooperative',
+  styles:[{featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]}]
+ });
  COSO.forEach((cs,i)=>{
- const m=L.marker([cs.lat,cs.lng]).addTo(map).bindPopup(`<strong>${cs.city}</strong><br>${cs.addr}<br><b>📞 ${cs.phone}</b>`);
- markers.push(m);
+  const marker = new google.maps.Marker({
+   position:{lat:cs.lat,lng:cs.lng},
+   map:map,
+   title:cs.city,
+   animation:google.maps.Animation.DROP
+  });
+  const infoWindow = new google.maps.InfoWindow({
+   content:`<div style="padding:8px"><strong style="font-size:14px">${cs.city}</strong><br><span style="font-size:12px">${cs.addr}</span><br><b style="color:#16A34A">📞 ${cs.phone}</b></div>`
+  });
+  marker.addListener('click',()=>{
+   markers.forEach(m=>m.infoWindow.close());
+   infoWindow.open(map,marker);
+   selectCoso(i);
+  });
+  markers.push({marker,infoWindow});
  });
  selectCoso(2);
 }
@@ -2144,9 +2163,28 @@ function renderCosoList(){
  <div class="coso-phone">📞 ${cs.phone}</div></div>
  </div>`).join('');
 }
-function selectCoso(i){activeCs=i;renderCosoList();if(map){map.setView([COSO[i].lat,COSO[i].lng],13,{animate:true});markers[i].openPopup();}}
+function selectCoso(i){
+ activeCs=i;
+ renderCosoList();
+ if(map && markers[i]){
+  map.panTo({lat:COSO[i].lat,lng:COSO[i].lng});
+  map.setZoom(13);
+  markers.forEach(m=>m.infoWindow.close());
+  markers[i].infoWindow.open(map,markers[i].marker);
+ }
+}
 renderCosoList();
-window.addEventListener('load',()=>setTimeout(initMap,300));
+(function(){
+ const mapEl = document.getElementById('map');
+ const script = document.querySelector('script[src*="maps.googleapis.com"]');
+ const hasKey = script && !script.src.includes('YOUR_GOOGLE_MAPS_API_KEY');
+ if(!hasKey && mapEl){
+  mapEl.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#f3f4f6;color:#6b7280;font-size:14px;flex-direction:column;gap:8px"><span style="font-size:32px">🗺️</span><span>Bản đồ chưa được cấu hình</span><span style="font-size:12px">Vui lòng thêm Google Maps API key</span></div>';
+  return;
+ }
+ window.initMap=initMap;
+ if(typeof google!=='undefined') window.addEventListener('load',()=>setTimeout(initMap,300));
+})();
 
 /*
  TÍNH HỌC PHÍ

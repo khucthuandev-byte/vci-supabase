@@ -28,6 +28,15 @@ router.get('/all', protect, role('admin'), async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
+// GET /api/banners/:id  — admin, single
+router.get('/:id', protect, role('admin'), async (req, res) => {
+  try {
+    const { data, error } = await getSupabase().from('banners').select('*').eq('id', req.params.id).maybeSingle();
+    if (error || !data) return res.status(404).json({ success: false, message: 'Không tìm thấy banner.' });
+    res.json({ success: true, data });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
 // POST /api/banners  — admin
 router.post('/', protect, role('admin'), async (req, res) => {
   try {
