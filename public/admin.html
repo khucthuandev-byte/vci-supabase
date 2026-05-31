@@ -3022,7 +3022,7 @@ async function loadTemplates() {
     _selSet('tpl-hero-bg',     t.heroBg||'gradient');
     _selSet('tpl-stats-layout',t.statsLayout||'grid');
     _selSet('tpl-stats-anim',  t.statsAnim||'fade');
-  } catch(e) { console.error('Load templates error:', e); }
+  } catch(e) { toast('Lỗi tải templates: '+e.message,'err'); }
 }
 
 async function saveTemplates() {
@@ -3067,7 +3067,7 @@ async function loadTheme() {
     setColor('theme-navy',  t.navy  || '#1E40AF');
     setColor('theme-gold',  t.gold  || '#F59E0B');
     updateThemePreview();
-  } catch(e) { console.error('Load theme error:', e); }
+  } catch(e) { toast('Lỗi tải theme: '+e.message,'err'); }
 }
 
 async function saveTheme() {
