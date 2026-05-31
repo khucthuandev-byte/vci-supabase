@@ -617,6 +617,11 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
               <div class="rep-container" id="rep-hero-stats"></div>
               <button class="rep-add" onclick="addStatRow('hero-stats')">+ Thêm số liệu</button>
             </div>
+            <div class="fg full">
+              <label>Dòng trust (✓ bên dưới nút)</label>
+              <div id="rep-hero-trust" style="display:flex;flex-direction:column;gap:8px"></div>
+              <button class="rep-add" style="margin-top:8px" onclick="addTrustRow()">+ Thêm dòng</button>
+            </div>
           </div></div>
         </div>
 
@@ -2127,6 +2132,7 @@ function fillCmsForm() {
   document.getElementById('cms-hero-bg2').value = bg2;
   document.getElementById('cms-hero-bg2-picker').value = bg2;
   renderStatRep('hero-stats', hero.stats || CMS_DEFAULTS.hero.stats);
+  renderTrustRows(hero.trust || ['Được Bộ LĐTBXH cấp phép','Kiểm định chất lượng Bộ GDĐT','Hỗ trợ vay vốn Ngân hàng Nhà nước']);
 
   const sb = cmsData.stats_bar || CMS_DEFAULTS.stats_bar;
   renderStatRep('stats-bar', sb.items || CMS_DEFAULTS.stats_bar.items);
@@ -2207,7 +2213,8 @@ async function saveContent(key) {
           person_img: document.getElementById('cms-hero-person-img').value.trim(),
           bg1:        document.getElementById('cms-hero-bg1').value.trim(),
           bg2:        document.getElementById('cms-hero-bg2').value.trim(),
-          stats:      getStatRows('hero-stats')
+          stats:      getStatRows('hero-stats'),
+          trust:      getTrustRows()
         };
         break;
       case 'stats_bar':
@@ -3201,7 +3208,23 @@ function getBenefitRows() {
   })).filter(r=>r.title);
 }
 
-/* ============================================================
+/* ============================================================ HERO TRUST */
+function renderTrustRows(arr) {
+  const c = document.getElementById('rep-hero-trust');
+  c.innerHTML = '';
+  (arr||[]).forEach(t => addTrustRow(t));
+}
+function addTrustRow(text='') {
+  const c = document.getElementById('rep-hero-trust');
+  const d = document.createElement('div');
+  d.style = 'display:flex;gap:8px;align-items:center';
+  d.innerHTML = `<input class="trust-text" value="${text}" placeholder="Được Bộ LĐTBXH cấp phép" style="flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px">
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button>`;
+  c.appendChild(d);
+}
+function getTrustRows() {
+  return [...document.querySelectorAll('#rep-hero-trust .trust-text')].map(i=>i.value.trim()).filter(Boolean);
+}
    BENEFITS MANAGEMENT
 ============================================================ */
 let benefitsData = [];
