@@ -720,6 +720,144 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
         </div><!-- /PANE 3 -->
       </div>
 
+      <!-- QUYỀN LỢI -->
+      <div class="page" id="page-benefits">
+        <div class="fbar">
+          <p style="font-size:13px;color:var(--muted);flex:1">Quản lý các quyền lợi sinh viên hiển thị trên website.</p>
+          <div class="factions">
+            <button class="hbtn hbtn-red" onclick="addBenefit()">+ Thêm quyền lợi</button>
+            <button class="hbtn hbtn-out" onclick="loadBenefits()">↻ Tải lại</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="cb">
+            <div id="benefitsList" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+              <div class="empty">Đang tải...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEMPLATES -->
+      <div class="page" id="page-templates">
+        <div class="fbar">
+          <p style="font-size:13px;color:var(--muted);flex:1">Quản lý templates sections và layouts.</p>
+          <div class="factions">
+            <button class="hbtn hbtn-red" onclick="saveTemplates()">💾 Lưu thay đổi</button>
+            <button class="hbtn hbtn-out" onclick="loadTemplates()">↻ Tải lại</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ch-title">🎨 Hero Section Template</div></div>
+          <div class="cb">
+            <div class="fgrid">
+              <div class="fg"><label>Layout</label>
+                <select id="tpl-hero-layout">
+                  <option value="centered">Centered - Full Width</option>
+                  <option value="split">Split - 2 Columns</option>
+                  <option value="minimal">Minimal - Text Only</option>
+                </select>
+              </div>
+              <div class="fg"><label>Background Style</label>
+                <select id="tpl-hero-bg">
+                  <option value="gradient">Gradient Overlay</option>
+                  <option value="image">Image Background</option>
+                  <option value="video">Video Background</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ch-title">📊 Stats Section Template</div></div>
+          <div class="cb">
+            <div class="fgrid">
+              <div class="fg"><label>Layout</label>
+                <select id="tpl-stats-layout">
+                  <option value="grid">Grid - 4 Columns</option>
+                  <option value="cards">Cards with Shadow</option>
+                  <option value="minimal">Minimal - Inline</option>
+                </select>
+              </div>
+              <div class="fg"><label>Animation</label>
+                <select id="tpl-stats-anim">
+                  <option value="fade">Fade In</option>
+                  <option value="slide">Slide Up</option>
+                  <option value="scale">Scale</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÀU SẮC THEME -->
+      <div class="page" id="page-theme">
+        <div class="fbar">
+          <p style="font-size:13px;color:var(--muted);flex:1">Tùy chỉnh màu sắc theme toàn trang website.</p>
+          <div class="factions">
+            <button class="hbtn hbtn-red" onclick="saveTheme()">💾 Lưu & Áp dụng</button>
+            <button class="hbtn hbtn-out" onclick="resetTheme()">↻ Reset mặc định</button>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="ch"><div class="ch-title">🎨 Màu chính</div></div>
+            <div class="cb">
+              <div class="fg"><label>Đỏ chính (Primary Red)</label>
+                <div style="display:flex;gap:10px;align-items:center">
+                  <input type="color" id="theme-red" value="#DC2626" style="width:60px;height:40px;border:none;border-radius:8px;cursor:pointer">
+                  <input type="text" id="theme-red-hex" value="#DC2626" style="flex:1;font-family:monospace">
+                </div>
+              </div>
+              <div class="fg"><label>Xanh lá (Green)</label>
+                <div style="display:flex;gap:10px;align-items:center">
+                  <input type="color" id="theme-green" value="#16A34A" style="width:60px;height:40px;border:none;border-radius:8px;cursor:pointer">
+                  <input type="text" id="theme-green-hex" value="#16A34A" style="flex:1;font-family:monospace">
+                </div>
+              </div>
+              <div class="fg"><label>Navy (Blue)</label>
+                <div style="display:flex;gap:10px;align-items:center">
+                  <input type="color" id="theme-navy" value="#1E40AF" style="width:60px;height:40px;border:none;border-radius:8px;cursor:pointer">
+                  <input type="text" id="theme-navy-hex" value="#1E40AF" style="flex:1;font-family:monospace">
+                </div>
+              </div>
+              <div class="fg"><label>Vàng (Gold)</label>
+                <div style="display:flex;gap:10px;align-items:center">
+                  <input type="color" id="theme-gold" value="#F59E0B" style="width:60px;height:40px;border:none;border-radius:8px;cursor:pointer">
+                  <input type="text" id="theme-gold-hex" value="#F59E0B" style="flex:1;font-family:monospace">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ch-title">👁️ Preview</div></div>
+            <div class="cb">
+              <div id="theme-preview" style="padding:20px;border-radius:12px;background:var(--bg)">
+                <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)">
+                  <h3 style="margin-bottom:12px;color:#DC2626">Trường Cao đẳng Công thương Việt Nam</h3>
+                  <p style="margin-bottom:16px;color:#6B7280">Đào tạo chất lượng cao, cam kết việc làm 100%</p>
+                  <div style="display:flex;gap:10px">
+                    <button style="padding:10px 20px;background:#DC2626;color:#fff;border:none;border-radius:8px;font-weight:600">Đăng ký ngay</button>
+                    <button style="padding:10px 20px;background:#16A34A;color:#fff;border:none;border-radius:8px;font-weight:600">Tư vấn</button>
+                  </div>
+                  <div style="margin-top:16px;display:flex;gap:16px">
+                    <div style="flex:1;padding:12px;background:#FEE2E2;border-radius:8px;text-align:center">
+                      <div style="font-size:24px;font-weight:800;color:#DC2626">1000+</div>
+                      <div style="font-size:12px;color:#6B7280">Sinh viên</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#DCFCE7;border-radius:8px;text-align:center">
+                      <div style="font-size:24px;font-weight:800;color:#16A34A">50+</div>
+                      <div style="font-size:12px;color:#6B7280">Ngành học</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- BANNER & SLIDER -->
       <div class="page" id="page-banners">
         <div class="fbar">
@@ -940,18 +1078,24 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
   <div class="mh"><h3 id="mBannerTitle">🖼️ Thêm banner</h3><button class="mc" onclick="closeModal('mBanner')">✕</button></div>
   <div class="mb"><div class="fgrid">
     <input type="hidden" id="bId">
-    <div class="fg full"><label>Tiêu đề</label><input id="bTitle" placeholder="Tuyển sinh 2026"></div>
-    <div class="fg full"><label>Phụ đề</label><input id="bSubtitle" placeholder="Đăng ký sớm nhận học bổng"></div>
-    <div class="fg full"><label>URL Ảnh</label><input id="bImageUrl" placeholder="https://..."></div>
-    <div class="fg"><label>URL Đích (link)</label><input id="bLinkUrl" placeholder="#form-dk"></div>
-    <div class="fg"><label>Nút CTA</label><input id="bBtnText" placeholder="Đăng ký ngay"></div>
-    <div class="fg"><label>Thứ tự hiển thị</label><input id="bSortOrder" type="number" placeholder="0"></div>
+    <div class="fg full"><label>Tiêu đề *</label><input id="bTitle" placeholder="Trường Cao đẳng Công thương Việt Nam" required></div>
+    <div class="fg full"><label>Phụ đề / Tagline *</label><textarea id="bSubtitle" placeholder="Đào tạo gắn kết doanh nghiệp · Cam kết 100% việc làm" style="min-height:60px" required></textarea></div>
+    <div class="fg full">
+      <label>URL Ảnh Banner * <small style="color:var(--muted);font-weight:400">(Khuyến nghị: 1920x1080px)</small></label>
+      <input id="bImageUrl" placeholder="https://images.unsplash.com/photo-..." oninput="previewBannerImage()" required>
+      <div id="bannerPreview" style="margin-top:12px;border-radius:8px;overflow:hidden;display:none;border:2px solid var(--border)">
+        <img id="bannerPreviewImg" src="" style="width:100%;height:200px;object-fit:cover;display:block">
+      </div>
+    </div>
+    <div class="fg"><label>Text Nút CTA</label><input id="bBtnText" placeholder="📋 Đăng ký xét tuyển ngay"></div>
+    <div class="fg"><label>Link Nút CTA</label><input id="bLinkUrl" placeholder="#dang-ky hoặc https://..."></div>
+    <div class="fg"><label>Thứ tự hiển thị</label><input id="bSortOrder" type="number" placeholder="0" value="0"></div>
     <div class="fg full" style="flex-direction:row;align-items:center;gap:10px">
       <input type="checkbox" id="bActive" checked style="accent-color:var(--red);width:16px;height:16px">
-      <label style="margin:0;font-size:13.5px;cursor:pointer" for="bActive">Hiển thị banner này</label>
+      <label style="margin:0;font-size:13.5px;cursor:pointer" for="bActive">✓ Kích hoạt banner này (hiển thị trên trang chủ)</label>
     </div>
   </div></div>
-  <div class="mf"><button class="btn-gray" onclick="closeModal('mBanner')">Hủy</button><button class="btn-red" id="mBannerBtn" onclick="submitBanner()">💾 Lưu</button></div>
+  <div class="mf"><button class="btn-gray" onclick="closeModal('mBanner')">Hủy</button><button class="btn-red" id="mBannerBtn" onclick="submitBanner()">💾 Lưu Banner</button></div>
 </div></div>
 
 <!-- Modal Article -->
@@ -1099,11 +1243,11 @@ let formCfg = {}, cosoData = [], editingCosoIdx = -1;
 
 const STATUS_VN = {new:'Mới',contacted:'Đang tư vấn',consulting:'Tư vấn chi tiết',success:'Đã nhập học',cancel:'Đã hủy',pending:'Đang chờ'};
 const ROLE_VN   = {admin:'Quản trị viên',staff:'Nhân viên tư vấn',viewer:'Xem báo cáo'};
-const PERM_LBL  = {dashboard:'Dashboard',hoSo:'Hồ sơ',nganh:'Ngành học',taiKhoan:'Tài khoản',phanQuyen:'Phân quyền',caiDat:'Cài đặt',baoCao:'Báo cáo',chatbot:'Chatbot'};
+const PERM_LBL  = {dashboard:'Dashboard',hoSo:'Hồ sơ',nganh:'Ngành học',taiKhoan:'Tài khoản',phanQuyen:'Phân quyền',caiDat:'Cài đặt',baoCao:'Báo cáo',chatbot:'Chatbot',benefits:'Quyền lợi',templates:'Templates',theme:'Theme'};
 const PERM_DEF  = {
-  admin: {dashboard:true,hoSo:true,nganh:true,taiKhoan:true,phanQuyen:true,caiDat:true,baoCao:true,chatbot:true},
-  staff: {dashboard:true,hoSo:true,nganh:false,taiKhoan:false,phanQuyen:false,caiDat:false,baoCao:true,chatbot:false},
-  viewer: {dashboard:true,hoSo:false,nganh:false,taiKhoan:false,phanQuyen:false,caiDat:false,baoCao:true,chatbot:false},
+  admin: {dashboard:true,hoSo:true,nganh:true,taiKhoan:true,phanQuyen:true,caiDat:true,baoCao:true,chatbot:true,benefits:true,templates:true,theme:true},
+  staff: {dashboard:true,hoSo:true,nganh:false,taiKhoan:false,phanQuyen:false,caiDat:false,baoCao:true,chatbot:false,benefits:false,templates:false,theme:false},
+  viewer: {dashboard:true,hoSo:false,nganh:false,taiKhoan:false,phanQuyen:false,caiDat:false,baoCao:true,chatbot:false,benefits:false,templates:false,theme:false},
 };
 const NAV = [
   {id:'dashboard',    ico:'🏠',lbl:'Dashboard',          grp:'Tổng quan',  perm:'dashboard'},
@@ -1115,6 +1259,9 @@ const NAV = [
   {id:'perm',         ico:'🔐',lbl:'Phân quyền',          grp:'Hệ thống',   perm:'phanQuyen'},
   {id:'settings',     ico:'⚙️',lbl:'Cài đặt',            grp:'Hệ thống',   perm:'caiDat'},
   {id:'content',      ico:'🖊️',lbl:'Nội dung Website',   grp:'Giao diện',  perm:'caiDat'},
+  {id:'benefits',     ico:'🎁',lbl:'Quyền lợi',           grp:'Giao diện',  perm:'benefits'},
+  {id:'templates',    ico:'📄',lbl:'Templates',           grp:'Giao diện',  perm:'templates'},
+  {id:'theme',        ico:'🎨',lbl:'Màu sắc Theme',       grp:'Giao diện',  perm:'theme'},
   {id:'banners',      ico:'🖼️',lbl:'Banner & Slider',    grp:'Giao diện',  perm:'caiDat'},
   {id:'media',        ico:'📁',lbl:'Thư viện Media',      grp:'Giao diện',  perm:'caiDat'},
   {id:'form',         ico:'📝',lbl:'Form đăng ký',        grp:'Giao diện',  perm:'caiDat'},
@@ -1131,6 +1278,9 @@ const PAGE_TITLES = {
   perm:             ['Phân quyền','Cấu hình quyền truy cập'],
   settings:         ['Cài đặt','Bảo trì · SMTP · Railway & Supabase'],
   content:          ['Nội dung Website','Quản lý nội dung giao diện frontend'],
+  benefits:         ['Quyền lợi','Quản lý các quyền lợi sinh viên'],
+  templates:        ['Templates','Quản lý templates sections'],
+  theme:            ['Màu sắc Theme','Tùy chỉnh màu sắc toàn trang'],
   banners:          ['Banner & Slider','Quản lý banner hiển thị trang chủ'],
   media:            ['Thư viện Media','Upload và quản lý ảnh / video'],
   chatbot:          ['Chatbot','Cấu hình chatbot tư vấn tự động'],
@@ -2294,6 +2444,7 @@ async function openBannerModal(id) {
   document.getElementById('bBtnText').value  = 'Tìm hiểu thêm';
   document.getElementById('bSortOrder').value= '0';
   document.getElementById('bActive').checked = true;
+  document.getElementById('bannerPreview').style.display = 'none';
   if (id) {
     try {
       const { data } = await api('GET', '/api/banners/all');
@@ -2306,6 +2457,9 @@ async function openBannerModal(id) {
         document.getElementById('bBtnText').value  = b.btn_text || '';
         document.getElementById('bSortOrder').value= b.sort_order ?? 0;
         document.getElementById('bActive').checked = !!b.active;
+        if (b.image_url) {
+          previewBannerImage();
+        }
       }
     } catch(e) {}
   }
@@ -2335,6 +2489,21 @@ async function deleteBanner(id) {
   if (!confirm('Xóa banner này?')) return;
   try { await api('DELETE', '/api/banners/'+id); toast('Đã xóa banner.'); loadBanners(); }
   catch(e) { toast('Lỗi: '+e.message,'err'); }
+}
+function previewBannerImage() {
+  const url = document.getElementById('bImageUrl').value.trim();
+  const preview = document.getElementById('bannerPreview');
+  const img = document.getElementById('bannerPreviewImg');
+  if (url) {
+    img.src = url;
+    preview.style.display = 'block';
+    img.onerror = () => {
+      preview.style.display = 'none';
+      toast('Không thể tải ảnh từ URL này', 'err');
+    };
+  } else {
+    preview.style.display = 'none';
+  }
 }
 
 /* ============================================================
@@ -2736,6 +2905,205 @@ function getTestiRows() {
     text:   r.querySelector('.ti-text').value.trim()
   })).filter(r => r.author||r.text);
 }
+
+/* ============================================================
+   BENEFITS MANAGEMENT
+============================================================ */
+let benefitsData = [];
+
+async function loadBenefits() {
+  try {
+    const r = await apiGet('/api/benefits');
+    if (r && r.success) {
+      benefitsData = r.data || [];
+      renderBenefits();
+    }
+  } catch (e) {
+    console.error('Load benefits error:', e);
+    benefitsData = [
+      {id:1, icon:'🎓', title:'Học bổng hấp dẫn', desc:'Học bổng lên đến 50% học phí cho sinh viên xuất sắc'},
+      {id:2, icon:'💼', title:'Cam kết việc làm', desc:'100% sinh viên có việc làm sau tốt nghiệp'},
+      {id:3, icon:'🌍', title:'Cơ hội đi nước ngoài', desc:'Thực tập và làm việc tại Nhật, Hàn, Đức, Úc'}
+    ];
+    renderBenefits();
+  }
+}
+
+function renderBenefits() {
+  const html = benefitsData.map(b => `
+    <div class="card" style="padding:20px">
+      <div style="display:flex;gap:12px;align-items:start">
+        <div style="font-size:32px">${b.icon}</div>
+        <div style="flex:1">
+          <h4 style="margin-bottom:6px;font-weight:700">${_esc(b.title)}</h4>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:12px">${_esc(b.desc)}</p>
+          <div style="display:flex;gap:6px">
+            <button class="ab ab-edit" onclick="editBenefit(${b.id})">✏️ Sửa</button>
+            <button class="ab ab-del" onclick="deleteBenefit(${b.id})">🗑️ Xóa</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('benefitsList').innerHTML = html || '<div class="empty" style="grid-column:1/-1">Chưa có quyền lợi nào</div>';
+}
+
+function addBenefit() {
+  const icon = prompt('Icon (emoji):', '🎁');
+  const title = prompt('Tiêu đề:', '');
+  const desc = prompt('Mô tả:', '');
+  if (!title) return;
+  const newId = Math.max(0, ...benefitsData.map(b => b.id)) + 1;
+  benefitsData.push({id: newId, icon: icon || '🎁', title, desc});
+  renderBenefits();
+  saveBenefits();
+}
+
+function editBenefit(id) {
+  const b = benefitsData.find(x => x.id === id);
+  if (!b) return;
+  const icon = prompt('Icon:', b.icon);
+  const title = prompt('Tiêu đề:', b.title);
+  const desc = prompt('Mô tả:', b.desc);
+  if (title) {
+    b.icon = icon || b.icon;
+    b.title = title;
+    b.desc = desc || b.desc;
+    renderBenefits();
+    saveBenefits();
+  }
+}
+
+function deleteBenefit(id) {
+  if (!confirm('Xóa quyền lợi này?')) return;
+  benefitsData = benefitsData.filter(b => b.id !== id);
+  renderBenefits();
+  saveBenefits();
+}
+
+async function saveBenefits() {
+  try {
+    await apiPost('/api/benefits', {benefits: benefitsData});
+    toast('Đã lưu quyền lợi', 'ok');
+  } catch (e) {
+    toast('Lỗi lưu quyền lợi: ' + e.message, 'err');
+  }
+}
+
+/* ============================================================
+   TEMPLATES MANAGEMENT
+============================================================ */
+async function loadTemplates() {
+  try {
+    const r = await apiGet('/api/templates');
+    if (r && r.success) {
+      const t = r.data || {};
+      set('tpl-hero-layout', t.heroLayout || 'centered');
+      set('tpl-hero-bg', t.heroBg || 'gradient');
+      set('tpl-stats-layout', t.statsLayout || 'grid');
+      set('tpl-stats-anim', t.statsAnim || 'fade');
+    }
+  } catch (e) {
+    console.error('Load templates error:', e);
+  }
+}
+
+async function saveTemplates() {
+  const data = {
+    heroLayout: get('tpl-hero-layout'),
+    heroBg: get('tpl-hero-bg'),
+    statsLayout: get('tpl-stats-layout'),
+    statsAnim: get('tpl-stats-anim')
+  };
+  try {
+    await apiPost('/api/templates', data);
+    toast('Đã lưu templates', 'ok');
+  } catch (e) {
+    toast('Lỗi lưu templates: ' + e.message, 'err');
+  }
+}
+
+/* ============================================================
+   THEME COLORS MANAGEMENT
+============================================================ */
+async function loadTheme() {
+  try {
+    const r = await apiGet('/api/theme');
+    if (r && r.success) {
+      const t = r.data || {};
+      setColor('theme-red', t.red || '#DC2626');
+      setColor('theme-green', t.green || '#16A34A');
+      setColor('theme-navy', t.navy || '#1E40AF');
+      setColor('theme-gold', t.gold || '#F59E0B');
+      updateThemePreview();
+    }
+  } catch (e) {
+    console.error('Load theme error:', e);
+  }
+}
+
+function setColor(id, color) {
+  document.getElementById(id).value = color;
+  document.getElementById(id + '-hex').value = color;
+}
+
+function updateThemePreview() {
+  const red = get('theme-red');
+  const green = get('theme-green');
+  const preview = document.getElementById('theme-preview');
+  if (preview) {
+    preview.querySelector('h3').style.color = red;
+    preview.querySelectorAll('button')[0].style.background = red;
+    preview.querySelectorAll('button')[1].style.background = green;
+    preview.querySelectorAll('[style*="background:#FEE2E2"]')[0].style.background = red + '20';
+    preview.querySelectorAll('[style*="color:#DC2626"]')[0].style.color = red;
+    preview.querySelectorAll('[style*="background:#DCFCE7"]')[0].style.background = green + '20';
+    preview.querySelectorAll('[style*="color:#16A34A"]')[0].style.color = green;
+  }
+}
+
+async function saveTheme() {
+  const data = {
+    red: get('theme-red'),
+    green: get('theme-green'),
+    navy: get('theme-navy'),
+    gold: get('theme-gold')
+  };
+  try {
+    await apiPost('/api/theme', data);
+    toast('Đã lưu theme colors', 'ok');
+  } catch (e) {
+    toast('Lỗi lưu theme: ' + e.message, 'err');
+  }
+}
+
+function resetTheme() {
+  if (!confirm('Reset về màu mặc định?')) return;
+  setColor('theme-red', '#DC2626');
+  setColor('theme-green', '#16A34A');
+  setColor('theme-navy', '#1E40AF');
+  setColor('theme-gold', '#F59E0B');
+  updateThemePreview();
+}
+
+// Sync color picker with hex input
+['red','green','navy','gold'].forEach(c => {
+  const picker = document.getElementById('theme-' + c);
+  const hex = document.getElementById('theme-' + c + '-hex');
+  if (picker && hex) {
+    picker.addEventListener('input', () => {
+      hex.value = picker.value;
+      updateThemePreview();
+    });
+    hex.addEventListener('input', () => {
+      if (/^#[0-9A-F]{6}$/i.test(hex.value)) {
+        picker.value = hex.value;
+        updateThemePreview();
+      }
+    });
+  }
+});
+
 </script>
 </body>
 </html>
