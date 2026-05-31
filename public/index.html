@@ -2597,6 +2597,56 @@ async function fetchContent() {
   }
  }
 
+ /* ---- GALLERY ---- */
+ const gal = c.gallery;
+ if (gal) {
+  const gt = document.querySelector('.gallery-section .gallery-intro h2');
+  if (gt && gal.title) gt.textContent = gal.title;
+  const gd = document.querySelector('.gallery-section .gallery-intro .lead');
+  if (gd && gal.desc) gd.textContent = gal.desc;
+  if (Array.isArray(gal.items) && gal.items.length) {
+   const grid = document.querySelector('.gallery-grid');
+   if (grid) {
+    const items = grid.querySelectorAll('.gal-item');
+    gal.items.forEach((it, i) => {
+     if (!items[i]) return;
+     const img = items[i].querySelector('img');
+     const cap = items[i].querySelector('.gal-caption');
+     if (img && it.url) img.src = it.url;
+     if (cap && it.caption) cap.textContent = it.caption;
+    });
+   }
+  }
+ }
+
+ /* ---- BENEFITS ---- */
+ const ben = c.benefits;
+ if (ben) {
+  const bey = document.querySelector('.benefit-section .eyebrow');
+  if (bey && ben.eyebrow) { bey.textContent = ben.eyebrow; bey.removeAttribute('data-i18n'); }
+  const bh2 = document.querySelector('.benefit-section h2');
+  if (bh2 && ben.title) { bh2.textContent = ben.title; bh2.removeAttribute('data-i18n'); }
+  const blead = document.querySelector('.benefit-section .lead');
+  if (blead && ben.desc) { blead.textContent = ben.desc; blead.removeAttribute('data-i18n'); }
+  const bimg = document.querySelector('.benefit-img img');
+  if (bimg && ben.img) bimg.src = ben.img;
+  if (Array.isArray(ben.cards) && ben.cards.length) {
+   const grid = document.querySelector('.benefit-grid');
+   if (grid) {
+    const cards = grid.querySelectorAll('.benefit-card');
+    ben.cards.forEach((card, i) => {
+     if (!cards[i]) return;
+     const ico = cards[i].querySelector('.bc-icon-v2');
+     const ttl = cards[i].querySelector('.bc-title');
+     const dsc = cards[i].querySelector('.bc-desc');
+     if (ico && card.icon) ico.textContent = card.icon;
+     if (ttl && card.title) ttl.textContent = card.title;
+     if (dsc && card.desc) dsc.textContent = card.desc;
+    });
+   }
+  }
+ }
+
  /* ---- CONTACT ---- */
  const ct = c.contact;
  if (ct) {

@@ -564,6 +564,8 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
           <button class="cms-tab active" data-cms-tab="homepage" onclick="switchCmsTab('homepage')"><span class="cms-tab-ico">🏠</span> Trang chủ</button>
           <button class="cms-tab" data-cms-tab="content" onclick="switchCmsTab('content')"><span class="cms-tab-ico">📚</span> Nội dung</button>
           <button class="cms-tab" data-cms-tab="about" onclick="switchCmsTab('about')"><span class="cms-tab-ico">🏫</span> Giới thiệu</button>
+          <button class="cms-tab" data-cms-tab="gallery" onclick="switchCmsTab('gallery')"><span class="cms-tab-ico">🖼</span> Gallery</button>
+          <button class="cms-tab" data-cms-tab="benefits" onclick="switchCmsTab('benefits')"><span class="cms-tab-ico">🎁</span> Quyền lợi</button>
           <button class="cms-tab" data-cms-tab="brand" onclick="switchCmsTab('brand')"><span class="cms-tab-ico">🎨</span> Liên hệ &amp; Thương hiệu</button>
         </div>
 
@@ -709,6 +711,53 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
         </div>
 
         </div><!-- /PANE ABOUT -->
+
+        <!-- ====== PANE: GALLERY ====== -->
+        <div class="cms-pane" data-cms-pane="gallery">
+        <div class="card">
+          <div class="ch"><span class="ch-title">🖼 Trải nghiệm tại VCI (Gallery)</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('gallery')">💾 Lưu</button>
+          </div>
+          <div class="cb"><div class="fgrid">
+            <div class="fg full"><label>Tiêu đề section</label><input id="cms-gal-title" placeholder="Trải nghiệm tại VCI"></div>
+            <div class="fg full"><label>Mô tả</label><input id="cms-gal-desc" placeholder="Môi trường học tập hiện đại..."></div>
+          </div>
+          <div id="cms-gal-items" style="margin-top:16px;display:flex;flex-direction:column;gap:12px"></div>
+          <button class="rep-add" style="margin-top:10px" onclick="addGalleryItemRow()">+ Thêm ảnh</button>
+          </div>
+        </div>
+        </div><!-- /PANE GALLERY -->
+
+        <!-- ====== PANE: QUYỀN LỢI ====== -->
+        <div class="cms-pane" data-cms-pane="benefits">
+        <div class="card">
+          <div class="ch"><span class="ch-title">🎁 Quyền lợi sinh viên</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('benefits')">💾 Lưu</button>
+          </div>
+          <div class="cb"><div class="fgrid">
+            <div class="fg full"><label>Tiêu đề nhỏ (eyebrow)</label><input id="cms-ben-eyebrow" placeholder="Quyền lợi sinh viên"></div>
+            <div class="fg full"><label>Tiêu đề chính</label><input id="cms-ben-title" placeholder="Sinh viên VCI được gì?"></div>
+            <div class="fg full"><label>Mô tả</label><textarea id="cms-ben-desc" rows="3" style="width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;font-family:inherit;resize:vertical"></textarea></div>
+            <div class="fg full">
+              <label>Ảnh minh họa (bên phải)</label>
+              <div style="display:flex;gap:8px">
+                <input id="cms-ben-img" placeholder="https://..." style="flex:1" oninput="updatePreview('cms-ben-img','cms-ben-img-preview')">
+                <label class="btn-outline" style="cursor:pointer;padding:8px 12px;font-size:12px;white-space:nowrap">📁 Upload<input type="file" accept="image/*" style="display:none" onchange="uploadBrandImage(this,'cms-ben-img','cms-ben-img-preview')"></label>
+                <button class="btn-outline" style="padding:8px 12px;font-size:12px" onclick="pickFromMedia('cms-ben-img','cms-ben-img-preview')">🗂 Thư viện</button>
+              </div>
+              <img id="cms-ben-img-preview" style="display:none;margin-top:8px;max-height:100px;border-radius:8px;object-fit:cover">
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <strong style="font-size:13px">Các thẻ quyền lợi</strong>
+              <button class="btn-outline" style="padding:5px 12px;font-size:12px" onclick="addBenefitRow()">+ Thêm thẻ</button>
+            </div>
+            <div id="rep-benefits" style="display:flex;flex-direction:column;gap:8px"></div>
+          </div>
+          </div>
+        </div>
+        </div><!-- /PANE BENEFITS -->
         <div class="cms-pane" data-cms-pane="brand">
 
         <!-- LIÊN HỆ -->
@@ -1994,7 +2043,31 @@ const CMS_DEFAULTS = {
     {stars:5,text:'Chương trình 9+ giúp tôi tiết kiệm thời gian và có 2 bằng cùng lúc.',author:'Trần Văn Minh',role:'CNTT – Hệ 9+',img:''},
     {stars:5,text:'Học bổng du học rất tốt, VCI hỗ trợ tận tình từ đầu đến cuối.',author:'Lê Thị Lan',role:'Tiếng Nhật – Du học Nhật Bản',img:''}
   ],
-  contact: { phone:'0966 670 100', email:'tuyensinh@vci.edu.vn', facebook:'https://facebook.com/vci.edu.vn', website:'https://vci.edu.vn', address:'Số 1 Nguyễn Bỉnh Khiêm, Ninh Kiều, Cần Thơ' }
+  contact: { phone:'0966 670 100', email:'tuyensinh@vci.edu.vn', facebook:'https://facebook.com/vci.edu.vn', website:'https://vci.edu.vn', address:'Số 1 Nguyễn Bỉnh Khiêm, Ninh Kiều, Cần Thơ' },
+  gallery: {
+    title:'Trải nghiệm tại VCI', desc:'Môi trường học tập hiện đại, thực hành đúng nghề, cơ hội trải nghiệm quốc tế',
+    items:[
+      {url:'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=80&auto=format&fit=crop',caption:'🏫 Khuôn viên VCI Cần Thơ'},
+      {url:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80&auto=format&fit=crop',caption:'🔬 Phòng thực hành hiện đại'},
+      {url:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80&auto=format&fit=crop',caption:'🏥 Thực hành ngành Y tế'},
+      {url:'https://images.unsplash.com/photo-1627556704302-624286467c65?w=800&q=80&auto=format&fit=crop',caption:'🎓 Lễ tốt nghiệp VCI 2024'},
+      {url:'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&q=80&auto=format&fit=crop',caption:'✈️ Thực tập tại Nhật Bản'},
+      {url:'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=800&q=80&auto=format&fit=crop',caption:'📚 Học nhóm tại thư viện'}
+    ]
+  },
+  benefits: {
+    eyebrow:'Quyền lợi sinh viên', title:'Sinh viên VCI được gì?',
+    desc:'Hơn 12 quyền lợi vượt trội dành cho sinh viên — từ học bổng, thực tập có lương đến cam kết việc làm và hoàn phí nếu thất nghiệp.',
+    img:'https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=800&q=80&auto=format&fit=crop',
+    cards:[
+      {icon:'💰',title:'Học bổng 2 triệu',desc:'Nhập học trước 30/5 nhận ngay học bổng 2.000.000đ tiền mặt.'},
+      {icon:'🌐',title:'Học bổng ngoại ngữ 30 triệu',desc:'Học Nhật, Anh, Hàn, Trung – thi lấy chứng chỉ quốc tế miễn phí.'},
+      {icon:'✈️',title:'Thực tập nước ngoài có lương',desc:'6–12 tháng tại Nhật, Hàn, Đức, Úc với thu nhập 15–25 triệu/tháng.'},
+      {icon:'💼',title:'Cam kết 100% việc làm',desc:'Ký hợp đồng trực tiếp. Không bố trí được việc – hoàn toàn bộ học phí!'},
+      {icon:'📜',title:'Bằng Trung cấp Cao đẳng',desc:'THPT + Trung cấp Cao đẳng sau 4–5 năm từ lớp 9 (Hệ 9+).'},
+      {icon:'🎓',title:'Liên thông Cao đẳng',desc:'Lên ĐH chính quy danh tiếng trong nước và nước ngoài.'}
+    ]
+  }
 };
 
 let cmsData = {};
@@ -2055,6 +2128,19 @@ function fillCmsForm() {
     document.getElementById('cms-about-p'+i+'-title').value = p.title || '';
     document.getElementById('cms-about-p'+i+'-desc').value  = p.desc || '';
   });
+
+  const gal = cmsData.gallery || CMS_DEFAULTS.gallery;
+  document.getElementById('cms-gal-title').value = gal.title || '';
+  document.getElementById('cms-gal-desc').value  = gal.desc  || '';
+  renderGalleryItems(gal.items || CMS_DEFAULTS.gallery.items);
+
+  const ben = cmsData.benefits || CMS_DEFAULTS.benefits;
+  document.getElementById('cms-ben-eyebrow').value = ben.eyebrow || '';
+  document.getElementById('cms-ben-title').value   = ben.title   || '';
+  document.getElementById('cms-ben-desc').value    = ben.desc    || '';
+  document.getElementById('cms-ben-img').value     = ben.img     || '';
+  updatePreview('cms-ben-img','cms-ben-img-preview');
+  renderBenefitRows(ben.cards || CMS_DEFAULTS.benefits.cards);
 
   const ct = cmsData.contact || CMS_DEFAULTS.contact;
   document.getElementById('cms-ct-phone').value    = ct.phone || '';
@@ -2119,6 +2205,22 @@ async function saveContent(key) {
             title: document.getElementById('cms-about-p'+i+'-title').value.trim(),
             desc:  document.getElementById('cms-about-p'+i+'-desc').value.trim(),
           }))
+        };
+        break;
+      case 'gallery':
+        value = {
+          title: document.getElementById('cms-gal-title').value.trim(),
+          desc:  document.getElementById('cms-gal-desc').value.trim(),
+          items: getGalleryItems()
+        };
+        break;
+      case 'benefits':
+        value = {
+          eyebrow: document.getElementById('cms-ben-eyebrow').value.trim(),
+          title:   document.getElementById('cms-ben-title').value.trim(),
+          desc:    document.getElementById('cms-ben-desc').value.trim(),
+          img:     document.getElementById('cms-ben-img').value.trim(),
+          cards:   getBenefitRows()
         };
         break;
       case 'contact':
@@ -3002,6 +3104,73 @@ function getTestiRows() {
     img:    r.querySelector('.ti-img').value.trim(),
     text:   r.querySelector('.ti-text').value.trim()
   })).filter(r => r.author||r.text);
+}
+
+/* ============================================================ GALLERY CMS */
+function renderGalleryItems(arr) {
+  const c = document.getElementById('cms-gal-items');
+  c.innerHTML = '';
+  (arr||[]).forEach((it,i) => addGalleryItemRow(it,i));
+}
+function addGalleryItemRow(it={}, idx) {
+  const c = document.getElementById('cms-gal-items');
+  const n = idx !== undefined ? idx : c.children.length;
+  const d = document.createElement('div');
+  d.className = 'rep-block';
+  d.style = 'background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:12px';
+  d.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+    <strong style="font-size:12px;color:var(--muted)">Ảnh ${n+1}</strong>
+    <button onclick="this.closest('.rep-block').remove()" style="margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:6px">
+    <input class="gal-url" placeholder="URL ảnh" value="${it.url||''}" style="flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px">
+    <label class="btn-outline" style="cursor:pointer;padding:7px 10px;font-size:12px;white-space:nowrap">📁<input type="file" accept="image/*" style="display:none" onchange="uploadGalImg(this)"></label>
+  </div>
+  <input class="gal-caption" placeholder="Caption (vd: 🏫 Khuôn viên VCI)" value="${it.caption||''}" style="width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;box-sizing:border-box">`;
+  c.appendChild(d);
+}
+async function uploadGalImg(input) {
+  const file = input.files&&input.files[0]; if(!file) return;
+  if(file.size>5*1024*1024){toast('File quá 5MB','err');return;}
+  try {
+    toast('Đang tải ảnh...','info');
+    const base64 = await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=()=>rej(new Error('Lỗi'));r.readAsDataURL(file);});
+    const {url} = await api('POST','/api/media/upload',{filename:file.name,base64,mimetype:file.type});
+    input.closest('.rep-block').querySelector('.gal-url').value = url;
+    toast('Đã upload ✅');
+  } catch(e){toast('Lỗi: '+e.message,'err');}
+  finally{input.value='';}
+}
+function getGalleryItems() {
+  return [...document.querySelectorAll('#cms-gal-items .rep-block')].map(r=>({
+    url:     r.querySelector('.gal-url').value.trim(),
+    caption: r.querySelector('.gal-caption').value.trim()
+  })).filter(r=>r.url);
+}
+
+/* ============================================================ BENEFITS CMS */
+function renderBenefitRows(arr) {
+  const c = document.getElementById('rep-benefits');
+  c.innerHTML = '';
+  (arr||[]).forEach(it => addBenefitRow(it));
+}
+function addBenefitRow(it={}) {
+  const c = document.getElementById('rep-benefits');
+  const d = document.createElement('div');
+  d.className = 'rep-block';
+  d.style = 'display:grid;grid-template-columns:60px 1fr 2fr auto;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:10px';
+  d.innerHTML = `<input class="ben-icon" placeholder="💰" value="${it.icon||''}" style="padding:7px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;text-align:center">
+    <input class="ben-title" placeholder="Tiêu đề" value="${it.title||''}" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px">
+    <input class="ben-desc" placeholder="Mô tả" value="${it.desc||''}" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px">
+    <button onclick="this.closest('.rep-block').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button>`;
+  c.appendChild(d);
+}
+function getBenefitRows() {
+  return [...document.querySelectorAll('#rep-benefits .rep-block')].map(r=>({
+    icon:  r.querySelector('.ben-icon').value.trim(),
+    title: r.querySelector('.ben-title').value.trim(),
+    desc:  r.querySelector('.ben-desc').value.trim()
+  })).filter(r=>r.title);
 }
 
 /* ============================================================
