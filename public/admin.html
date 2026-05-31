@@ -596,11 +596,24 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
           </div>
           <div class="cb"><div class="fgrid">
             <div class="fg full"><label>Badge nhỏ phía trên (tuỳ chọn)</label><input id="cms-hero-badge" placeholder="🏆 Top 1 Cao đẳng..."></div>
-            <div class="fg"><label>Tiêu đề – Dòng 1</label><input id="cms-hero-h1_1" placeholder="Trường Cao đẳng"></div>
-            <div class="fg"><label>Tiêu đề – Dòng 2 <small style="color:var(--muted);font-weight:400">(nhấn đỏ gradient)</small></label><input id="cms-hero-h1_2" placeholder="Công thương Việt Nam"></div>
-            <div class="fg full"><label>Mô tả ngắn dưới tiêu đề</label><textarea id="cms-hero-desc" style="min-height:60px" placeholder="Đào tạo gắn kết doanh nghiệp..."></textarea></div>
+            <div class="fg"><label>Tiêu đề – Dòng 1</label><input id="cms-hero-h1_1" placeholder="Thông tin tuyển sinh"></div>
+            <div class="fg"><label>Tiêu đề – Dòng 2 <small style="color:var(--muted);font-weight:400">(nhấn đỏ gradient)</small></label><input id="cms-hero-h1_2" placeholder="Trường CĐ Công thương VN"></div>
+            <div class="fg full"><label>Tagline (in nghiêng dưới tiêu đề)</label><textarea id="cms-hero-desc" style="min-height:60px" placeholder="Đào tạo gắn kết doanh nghiệp..."></textarea></div>
+            <div class="fg"><label>Nút CTA chính</label><input id="cms-hero-cta1" placeholder="Đăng ký nhận tư vấn"></div>
+            <div class="fg"><label>Nút CTA phụ</label><input id="cms-hero-cta2" placeholder="Khám phá ngành học →"></div>
             <div class="fg full">
-              <label>Số liệu overlay trên ảnh hero <small style="color:var(--muted);font-weight:400">(tối đa 4)</small></label>
+              <label>Ảnh người (cutout, nền trong suốt PNG tốt nhất)</label>
+              <div style="display:flex;gap:8px">
+                <input id="cms-hero-person-img" placeholder="https://..." style="flex:1" oninput="updatePreview('cms-hero-person-img','cms-hero-person-preview')">
+                <label class="btn-outline" style="cursor:pointer;padding:8px 12px;font-size:12px;white-space:nowrap">📁 Upload<input type="file" accept="image/*" style="display:none" onchange="uploadBrandImage(this,'cms-hero-person-img','cms-hero-person-preview')"></label>
+                <button class="btn-outline" style="padding:8px 12px;font-size:12px" onclick="pickFromMedia('cms-hero-person-img','cms-hero-person-preview')">🗂 Thư viện</button>
+              </div>
+              <img id="cms-hero-person-preview" style="display:none;margin-top:8px;max-height:120px;border-radius:8px;object-fit:contain">
+            </div>
+            <div class="fg"><label>Màu nền – Trái <small style="color:var(--muted)">(hex)</small></label><div style="display:flex;gap:8px;align-items:center"><input type="color" id="cms-hero-bg1-picker" style="width:40px;height:36px;padding:2px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer" oninput="document.getElementById('cms-hero-bg1').value=this.value"><input id="cms-hero-bg1" placeholder="#064e3b" style="flex:1" oninput="this.previousElementSibling.value=this.value"></div></div>
+            <div class="fg"><label>Màu nền – Giữa</label><div style="display:flex;gap:8px;align-items:center"><input type="color" id="cms-hero-bg2-picker" style="width:40px;height:36px;padding:2px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer" oninput="document.getElementById('cms-hero-bg2').value=this.value"><input id="cms-hero-bg2" placeholder="#16a34a" style="flex:1" oninput="this.previousElementSibling.value=this.value"></div></div>
+            <div class="fg full">
+              <label>Số liệu KPI (dưới hero, tối đa 4)</label>
               <div class="rep-container" id="rep-hero-stats"></div>
               <button class="rep-add" onclick="addStatRow('hero-stats')">+ Thêm số liệu</button>
             </div>
@@ -2103,6 +2116,16 @@ function fillCmsForm() {
   document.getElementById('cms-hero-h1_1').value   = hero.h1_1 || '';
   document.getElementById('cms-hero-h1_2').value   = hero.h1_2 || '';
   document.getElementById('cms-hero-desc').value   = hero.desc || '';
+  document.getElementById('cms-hero-cta1').value   = hero.cta1 || '';
+  document.getElementById('cms-hero-cta2').value   = hero.cta2 || '';
+  document.getElementById('cms-hero-person-img').value = hero.person_img || '';
+  updatePreview('cms-hero-person-img','cms-hero-person-preview');
+  const bg1 = hero.bg1 || '#064e3b';
+  const bg2 = hero.bg2 || '#16a34a';
+  document.getElementById('cms-hero-bg1').value = bg1;
+  document.getElementById('cms-hero-bg1-picker').value = bg1;
+  document.getElementById('cms-hero-bg2').value = bg2;
+  document.getElementById('cms-hero-bg2-picker').value = bg2;
   renderStatRep('hero-stats', hero.stats || CMS_DEFAULTS.hero.stats);
 
   const sb = cmsData.stats_bar || CMS_DEFAULTS.stats_bar;
@@ -2175,11 +2198,16 @@ async function saveContent(key) {
         break;
       case 'hero':
         value = {
-          badge: document.getElementById('cms-hero-badge').value.trim(),
-          h1_1:  document.getElementById('cms-hero-h1_1').value.trim(),
-          h1_2:  document.getElementById('cms-hero-h1_2').value.trim(),
-          desc:  document.getElementById('cms-hero-desc').value.trim(),
-          stats: getStatRows('hero-stats')
+          badge:      document.getElementById('cms-hero-badge').value.trim(),
+          h1_1:       document.getElementById('cms-hero-h1_1').value.trim(),
+          h1_2:       document.getElementById('cms-hero-h1_2').value.trim(),
+          desc:       document.getElementById('cms-hero-desc').value.trim(),
+          cta1:       document.getElementById('cms-hero-cta1').value.trim(),
+          cta2:       document.getElementById('cms-hero-cta2').value.trim(),
+          person_img: document.getElementById('cms-hero-person-img').value.trim(),
+          bg1:        document.getElementById('cms-hero-bg1').value.trim(),
+          bg2:        document.getElementById('cms-hero-bg2').value.trim(),
+          stats:      getStatRows('hero-stats')
         };
         break;
       case 'stats_bar':
