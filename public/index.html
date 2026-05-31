@@ -1207,7 +1207,7 @@ button{cursor:pointer;font-family:var(--fh)}
 <!-- TOPBAR -->
 <div class="topbar">
  <div class="container">
- <span data-i18n-html="topbar.tagline">🎓 Trường Cao đẳng Công thương Việt Nam – Mã trường <strong>C98</strong> – Tuyển sinh 2026</span>
+ <span>🎓 Trường Cao đẳng Công thương Việt Nam – Mã trường <strong>C98</strong> – Tuyển sinh 2026</span>
  <div class="topbar-links">
  <a href="https://facebook.com/CaodangCongThuongVietNam" target="_blank">📘 Facebook</a>
  <div class="lang-picker lang-picker-topbar" id="langPicker">
@@ -1234,16 +1234,16 @@ button{cursor:pointer;font-family:var(--fh)}
  </div>
  </div>
  <nav class="nav-links">
- <a href="#gioi-thieu" data-i18n="nav.about">Giới thiệu</a>
- <a href="#he-dao-tao" data-i18n="nav.programs">Hệ đào tạo</a>
- <a href="#nganh-hoc" data-i18n="nav.majors">Ngành học</a>
- <a href="#hoc-phi" data-i18n="nav.tuition">Học phí</a>
- <a href="#co-so" data-i18n="nav.campus">Cơ sở</a>
- <a href="#dang-ky" data-i18n="nav.register">Đăng ký</a>
+ <a href="#gioi-thieu">Giới thiệu</a>
+ <a href="#he-dao-tao">Hệ đào tạo</a>
+ <a href="#nganh-hoc">Ngành học</a>
+ <a href="#hoc-phi">Học phí</a>
+ <a href="#co-so">Cơ sở</a>
+ <a href="#dang-ky">Đăng ký</a>
  </nav>
  <div class="nav-actions">
  <a href="tel:0965 670 100" class="nav-btn-phone">📞 0965 670 100</a>
- <button class="btn btn-red" style="padding:10px 20px;font-size:13px" onclick="openRegModal()" data-i18n="nav.cta">Đăng ký ngay</button>
+ <button class="btn btn-red" style="padding:10px 20px;font-size:13px" onclick="openRegModal()">Đăng ký ngay</button>
  </div>
  <button class="ham" onclick="openMob()" aria-label="Menu">
  <span></span><span></span><span></span>
@@ -1255,14 +1255,14 @@ button{cursor:pointer;font-family:var(--fh)}
 <div class="mob-overlay" id="mobOverlay" onclick="closeMobOut(event)">
  <div class="mob-panel">
  <button class="mob-close" onclick="closeMob()">✕</button>
- <a href="#gioi-thieu" onclick="closeMob()" data-i18n="nav.about">Giới thiệu</a>
- <a href="#he-dao-tao" onclick="closeMob()" data-i18n="nav.programs">Hệ đào tạo</a>
- <a href="#nganh-hoc" onclick="closeMob()" data-i18n="nav.majors">Ngành học</a>
- <a href="#hoc-phi" onclick="closeMob()" data-i18n="nav.tuition">Tính học phí</a>
- <a href="#co-so" onclick="closeMob()" data-i18n="nav.campus">Cơ sở trường</a>
- <a href="#ho-so" onclick="closeMob()" data-i18n="nav.application">Hồ sơ xét tuyển</a>
+ <a href="#gioi-thieu" onclick="closeMob()">Giới thiệu</a>
+ <a href="#he-dao-tao" onclick="closeMob()">Hệ đào tạo</a>
+ <a href="#nganh-hoc" onclick="closeMob()">Ngành học</a>
+ <a href="#hoc-phi" onclick="closeMob()">Tính học phí</a>
+ <a href="#co-so" onclick="closeMob()">Cơ sở trường</a>
+ <a href="#ho-so" onclick="closeMob()">Hồ sơ xét tuyển</a>
  <a href="tel:0965 670 100" class="mob-phone">📞 0965 670 100</a>
- <a href="#dang-ky" class="mob-cta" onclick="closeMob()" data-i18n="nav.mobCta">📋 Đăng ký xét tuyển</a>
+ <a href="#dang-ky" class="mob-cta" onclick="closeMob()">📋 Đăng ký xét tuyển</a>
  </div>
 </div>
 
@@ -1276,26 +1276,26 @@ button{cursor:pointer;font-family:var(--fh)}
  <div class="container hero-inner">
  <!-- LEFT: text -->
  <div class="hero-text-col reveal">
- <h1 data-i18n-html="hero.title">Thông tin tuyển sinh<br><span class="h1-accent">Trường CĐ Công thương VN</span></h1>
+ <h1>Thông tin tuyển sinh<br><span class="h1-accent">Trường CĐ Công thương VN</span></h1>
 
- <p class="hero-tagline" id="heroTagline" data-i18n="hero.tagline">
+ <p class="hero-tagline" id="heroTagline">
  Đào tạo gắn kết doanh nghiệp · Cam kết 100% việc làm ·
  Thực tập lương cao tại Nhật, Hàn, Đức, Úc, Đài Loan
  </p>
 
  <div class="hero-actions">
- <button class="hcta-primary" onclick="openRegModal()" data-i18n="hero.ctaPrimary">
+ <button class="hcta-primary" onclick="openRegModal()">
  Đăng ký xét tuyển
  </button>
- <button class="hcta-secondary" onclick="document.getElementById('nganh-hoc').scrollIntoView({behavior:'smooth'})" data-i18n="hero.ctaSecondary">
+ <button class="hcta-secondary" onclick="document.getElementById('nganh-hoc').scrollIntoView({behavior:'smooth'})">
  Khám phá ngành học →
  </button>
  </div>
 
  <div class="hero-trust">
- <div class="ht-item"><i class="ht-check">✓</i> <span data-i18n="hero.trust1">Được Bộ LĐTBXH cấp phép</span></div>
- <div class="ht-item"><i class="ht-check">✓</i> <span data-i18n="hero.trust2">Kiểm định chất lượng Bộ GDĐT</span></div>
- <div class="ht-item"><i class="ht-check">✓</i> <span data-i18n="hero.trust3">Hỗ trợ vay vốn Ngân hàng Nhà nước</span></div>
+ <div class="ht-item"><i class="ht-check">✓</i> <span>Được Bộ LĐTBXH cấp phép</span></div>
+ <div class="ht-item"><i class="ht-check">✓</i> <span>Kiểm định chất lượng Bộ GDĐT</span></div>
+ <div class="ht-item"><i class="ht-check">✓</i> <span>Hỗ trợ vay vốn Ngân hàng Nhà nước</span></div>
  </div>
  </div>
 
@@ -1336,18 +1336,18 @@ button{cursor:pointer;font-family:var(--fh)}
 <!-- ANNOUNCEMENT BANNER -->
 <div class="announce">
  <div class="container">
- <span class="ann-tag" data-i18n="announce.tag">🔥 Ưu đãi</span>
- <span class="ann-txt" data-i18n-html="announce.text">Nhập học trước <strong>30/5/2026</strong> nhận ngay học bổng <strong>2.000.000đ</strong> + áo đồng phục miễn phí</span>
- <button class="ann-btn" onclick="document.getElementById('dang-ky').scrollIntoView({behavior:'smooth'})" data-i18n="announce.btn">Đăng ký ngay →</button>
+ <span class="ann-tag">🔥 Ưu đãi</span>
+ <span class="ann-txt">Nhập học trước <strong>30/5/2026</strong> nhận ngay học bổng <strong>2.000.000đ</strong> + áo đồng phục miễn phí</span>
+ <button class="ann-btn" onclick="document.getElementById('dang-ky').scrollIntoView({behavior:'smooth'})">Đăng ký ngay →</button>
  </div>
 </div>
 
 <!-- STATS BAR -->
 <div class="stats-bar">
  <div class="container stats-inner">
- <div class="stat-item"><div class="stat-num">100<span>%</span></div><div class="stat-lbl" data-i18n="stats.jobs">Cam kết việc làm</div></div>
- <div class="stat-item"><div class="stat-num">7–45<span>tr</span></div><div class="stat-lbl" data-i18n="stats.salary">Mức lương/tháng</div></div>
- <div class="stat-item"><div class="stat-num">54<span>+</span></div><div class="stat-lbl" data-i18n="stats.majors">Ngành đào tạo</div></div>
+ <div class="stat-item"><div class="stat-num">100<span>%</span></div><div class="stat-lbl">Cam kết việc làm</div></div>
+ <div class="stat-item"><div class="stat-num">7–45<span>tr</span></div><div class="stat-lbl">Mức lương/tháng</div></div>
+ <div class="stat-item"><div class="stat-num">54<span>+</span></div><div class="stat-lbl">Ngành đào tạo</div></div>
  <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl">Tỉnh thành</div></div>
  <div class="stat-item"><div class="stat-num">C98</div><div class="stat-lbl">Mã trường Bộ GD-ĐT</div></div>
  </div>
@@ -1369,8 +1369,8 @@ button{cursor:pointer;font-family:var(--fh)}
  </div>
  </div>
  <div class="reveal reveal-delay-2">
- <div class="eyebrow" data-i18n="about.eyebrow">Về chúng tôi</div>
- <h2 class="h-serif h2" style="color:var(--navy);margin-bottom:16px" data-i18n="about.title">
+ <div class="eyebrow">Về chúng tôi</div>
+ <h2 class="h-serif h2" style="color:var(--navy);margin-bottom:16px">
  Trường đào tạo chất lượng cao, đạt chuẩn quốc tế
  </h2>
  <p class="lead">
@@ -1410,9 +1410,9 @@ button{cursor:pointer;font-family:var(--fh)}
 <section class="section section-gray" id="he-dao-tao">
  <div class="container">
  <div class="reveal" style="text-align:center;margin-bottom:48px">
- <div class="eyebrow" style="justify-content:center" data-i18n="programs.eyebrow">Hệ đào tạo</div>
- <h2 class="h-serif h2" style="color:var(--navy)" data-i18n="programs.title">Hệ đào tạo đa dạng</h2>
- <p class="lead" style="max-width:580px;margin:12px auto 0" data-i18n="programs.lead">
+ <div class="eyebrow" style="justify-content:center">Hệ đào tạo</div>
+ <h2 class="h-serif h2" style="color:var(--navy)">Hệ đào tạo đa dạng</h2>
+ <p class="lead" style="max-width:580px;margin:12px auto 0">
  Chương trình linh hoạt phù hợp mọi đối tượng – từ học sinh lớp 9 đến người đi làm muốn nâng cao trình độ.
  </p>
  </div>
@@ -1505,9 +1505,9 @@ button{cursor:pointer;font-family:var(--fh)}
 <section class="section" id="nganh-hoc">
  <div class="container">
  <div class="reveal" style="text-align:center;margin-bottom:40px">
- <div class="eyebrow" style="justify-content:center" data-i18n="majors.eyebrow">Ngành đào tạo</div>
- <h2 class="h-serif h2" style="color:var(--navy)" data-i18n="majors.title">54+ Ngành học đa lĩnh vực</h2>
- <p class="lead" style="max-width:560px;margin:12px auto 0" data-i18n="majors.lead">
+ <div class="eyebrow" style="justify-content:center">Ngành đào tạo</div>
+ <h2 class="h-serif h2" style="color:var(--navy)">54+ Ngành học đa lĩnh vực</h2>
+ <p class="lead" style="max-width:560px;margin:12px auto 0">
  ★ Ngành có dấu sao được ký cam kết việc làm trong nước và quốc tế
  </p>
  </div>
@@ -1614,9 +1614,9 @@ button{cursor:pointer;font-family:var(--fh)}
  <div class="container">
  <div class="benefit-header reveal">
  <div>
- <div class="eyebrow" data-i18n="benefits.eyebrow">Quyền lợi sinh viên</div>
- <h2 class="h-serif h2" style="color:var(--navy);margin-bottom:14px" data-i18n="benefits.title">Sinh viên VCI được gì?</h2>
- <p class="lead" style="max-width:none" data-i18n="benefits.lead">
+ <div class="eyebrow">Quyền lợi sinh viên</div>
+ <h2 class="h-serif h2" style="color:var(--navy);margin-bottom:14px">Sinh viên VCI được gì?</h2>
+ <p class="lead" style="max-width:none">
  Hơn 12 quyền lợi vượt trội dành cho sinh viên — từ học bổng, thực tập có lương đến cam kết việc làm và hoàn phí nếu thất nghiệp.
  </p>
  </div>
@@ -1643,9 +1643,9 @@ button{cursor:pointer;font-family:var(--fh)}
  <div class="container">
  <div class="fee-layout">
  <div class="reveal">
- <div class="eyebrow" data-i18n="tuition.eyebrow">Học phí</div>
- <h2 class="h-serif h2" style="color:var(--navy);margin-bottom:16px" data-i18n="tuition.title">Tính học phí nhanh</h2>
- <p class="fee-intro" style="font-size:15px;color:var(--ink3);line-height:1.78;margin-bottom:20px" data-i18n-html="tuition.lead">
+ <div class="eyebrow">Học phí</div>
+ <h2 class="h-serif h2" style="color:var(--navy);margin-bottom:16px">Tính học phí nhanh</h2>
+ <p class="fee-intro" style="font-size:15px;color:var(--ink3);line-height:1.78;margin-bottom:20px">
  Chọn hệ và nhóm ngành để xem chi tiết học phí, số đợt đóng và các khoản phụ phí.
  Học phí trọn gói – <strong>không tăng theo năm học</strong>.
  </p>
@@ -1717,9 +1717,9 @@ button{cursor:pointer;font-family:var(--fh)}
 <section class="section" id="ho-so">
  <div class="container">
  <div class="reveal" style="text-align:center;margin-bottom:48px">
- <div class="eyebrow" style="justify-content:center" data-i18n="hoso.eyebrow">Hồ sơ & Thủ tục</div>
- <h2 class="h-serif h2" style="color:var(--navy)" data-i18n="hoso.title">Hồ sơ xét tuyển 2026</h2>
- <p class="lead" style="max-width:520px;margin:10px auto 0" data-i18n="hoso.lead">Nộp trực tiếp, qua bưu điện hoặc đăng ký trực tuyến tại vci.edu.vn</p>
+ <div class="eyebrow" style="justify-content:center">Hồ sơ & Thủ tục</div>
+ <h2 class="h-serif h2" style="color:var(--navy)">Hồ sơ xét tuyển 2026</h2>
+ <p class="lead" style="max-width:520px;margin:10px auto 0">Nộp trực tiếp, qua bưu điện hoặc đăng ký trực tuyến tại vci.edu.vn</p>
  </div>
  <div class="hoso-layout reveal">
  <ul class="step-list">
@@ -1754,9 +1754,9 @@ button{cursor:pointer;font-family:var(--fh)}
 <section class="section section-gray coso-section" id="co-so">
  <div class="container">
  <div class="reveal" style="text-align:center;margin-bottom:40px">
- <div class="eyebrow" style="justify-content:center" data-i18n="campus.eyebrow">Địa điểm</div>
- <h2 class="h-serif h2" style="color:var(--navy)" data-i18n="campus.title">Cơ sở trên toàn quốc</h2>
- <p class="lead" style="max-width:480px;margin:10px auto 0" data-i18n="campus.lead">Hiện diện tại 5 tỉnh thành – học gần nhà, tiện lợi</p>
+ <div class="eyebrow" style="justify-content:center">Địa điểm</div>
+ <h2 class="h-serif h2" style="color:var(--navy)">Cơ sở trên toàn quốc</h2>
+ <p class="lead" style="max-width:480px;margin:10px auto 0">Hiện diện tại 5 tỉnh thành – học gần nhà, tiện lợi</p>
  </div>
  <div class="coso-layout reveal">
  <div class="coso-list" id="cosoList"></div>
@@ -1768,13 +1768,13 @@ button{cursor:pointer;font-family:var(--fh)}
 <!-- CTA BANNER -->
 <div class="cta-section">
  <div class="container cta-inner reveal">
- <h2 data-i18n="cta.title">Sẵn sàng bắt đầu hành trình?</h2>
- <p data-i18n="cta.lead">Đăng ký ngay hôm nay – nhận tư vấn miễn phí, không áp lực, trong vòng 24 giờ.</p>
+ <h2>Sẵn sàng bắt đầu hành trình?</h2>
+ <p>Đăng ký ngay hôm nay – nhận tư vấn miễn phí, không áp lực, trong vòng 24 giờ.</p>
  <div class="cta-btns">
- <button class="btn btn-gold btn-lg" onclick="document.getElementById('dang-ky').scrollIntoView({behavior:'smooth'})" data-i18n="cta.btnPrimary">
+ <button class="btn btn-gold btn-lg" onclick="document.getElementById('dang-ky').scrollIntoView({behavior:'smooth'})">
  📋 Đăng ký xét tuyển ngay
  </button>
- <a href="tel:0965 670 100" class="btn btn-outline-white btn-lg" data-i18n="cta.btnPhone">📞 Gọi 0965 670 100</a>
+ <a href="tel:0965 670 100" class="btn btn-outline-white btn-lg">📞 Gọi 0965 670 100</a>
  </div>
  </div>
 </div>
@@ -2396,14 +2396,13 @@ async function fetchContent() {
   const h1 = document.querySelector('.hero h1');
   if (h1 && (hero.h1_1 || hero.h1_2)) {
    h1.innerHTML = (hero.h1_1||'') + '<br><span class="h1-accent">' + (hero.h1_2||'') + '</span>';
-   h1.removeAttribute('data-i18n-html');
   }
   const tagline = document.querySelector('.hero-tagline');
-  if (tagline && hero.desc) { tagline.textContent = hero.desc; tagline.removeAttribute('data-i18n'); }
+  if (tagline && hero.desc) { tagline.textContent = hero.desc; }
   const cta1 = document.querySelector('.hcta-primary');
-  if (cta1 && hero.cta1) { cta1.textContent = hero.cta1; cta1.removeAttribute('data-i18n'); }
+  if (cta1 && hero.cta1) { cta1.textContent = hero.cta1; }
   const cta2 = document.querySelector('.hcta-secondary');
-  if (cta2 && hero.cta2) { cta2.textContent = hero.cta2; cta2.removeAttribute('data-i18n'); }
+  if (cta2 && hero.cta2) { cta2.textContent = hero.cta2; }
   const personImg = document.getElementById('heroMainImg');
   if (personImg && hero.person_img) personImg.src = hero.person_img;
   if (hero.bg1 || hero.bg2) {
@@ -2487,9 +2486,9 @@ async function fetchContent() {
  const ab = c.about;
  if (ab) {
   const ey = document.querySelector('#gioi-thieu .eyebrow');
-  if (ey && ab.eyebrow) { ey.textContent = ab.eyebrow; ey.removeAttribute('data-i18n'); }
+  if (ey && ab.eyebrow) { ey.textContent = ab.eyebrow; }
   const h2 = document.querySelector('#gioi-thieu h2');
-  if (h2 && ab.title) { h2.textContent = ab.title; h2.removeAttribute('data-i18n'); }
+  if (h2 && ab.title) { h2.textContent = ab.title; }
   const lead = document.querySelector('#gioi-thieu .lead');
   if (lead && ab.desc) { lead.innerHTML = ab.desc; }
   const tagNum = document.querySelector('#gioi-thieu .about-tag-num');
@@ -2540,11 +2539,11 @@ async function fetchContent() {
  const ben = c.benefits;
  if (ben) {
   const bey = document.querySelector('.benefit-section .eyebrow');
-  if (bey && ben.eyebrow) { bey.textContent = ben.eyebrow; bey.removeAttribute('data-i18n'); }
+  if (bey && ben.eyebrow) { bey.textContent = ben.eyebrow; }
   const bh2 = document.querySelector('.benefit-section h2');
-  if (bh2 && ben.title) { bh2.textContent = ben.title; bh2.removeAttribute('data-i18n'); }
+  if (bh2 && ben.title) { bh2.textContent = ben.title; }
   const blead = document.querySelector('.benefit-section .lead');
-  if (blead && ben.desc) { blead.textContent = ben.desc; blead.removeAttribute('data-i18n'); }
+  if (blead && ben.desc) { blead.textContent = ben.desc; }
   const bimg = document.querySelector('.benefit-img img');
   if (bimg && ben.img) bimg.src = ben.img;
   if (Array.isArray(ben.cards) && ben.cards.length) {
@@ -2696,275 +2695,9 @@ async function fetchContent() {
 }
 
 /*
- I18N – Multi-language support (VI/EN/ZH/JA/KO/KM)
- */
-const I18N_LANGS = [
- { code:'vi', label:'Tiếng Việt', short:'VI', flag:'🇻🇳' },
- { code:'en', label:'English', short:'EN', flag:'🇬🇧' },
- { code:'zh', label:'中文', short:'ZH', flag:'🇨🇳' },
- { code:'ja', label:'日本語', short:'JA', flag:'🇯🇵' },
- { code:'ko', label:'한국어', short:'KO', flag:'🇰🇷' },
- { code:'km', label:'ខ្មែរ', short:'KM', flag:'🇰🇭' },
-];
-
-const I18N = {
- vi: {
- 'topbar.tagline': '🎓 Trường Cao đẳng Công thương Việt Nam – Mã trường <strong>C98</strong> – Tuyển sinh 2026',
- 'nav.about':'Giới thiệu','nav.programs':'Hệ đào tạo','nav.majors':'Ngành học',
- 'nav.tuition':'Học phí','nav.campus':'Cơ sở','nav.register':'Đăng ký',
- 'nav.application':'Hồ sơ xét tuyển','nav.cta':'Đăng ký ngay','nav.mobCta':'📋 Đăng ký xét tuyển',
- 'hero.sealCode':'Trường Cao đẳng Công thương Việt Nam &nbsp;·&nbsp;',
- 'hero.sealYear':'Tuyển sinh năm học 2026–2027',
- 'hero.sealStatus':'Đang nhận hồ sơ',
- 'hero.title':'Trường Cao đẳng<br><span class="h1-accent">Công thương Việt Nam</span>',
- 'hero.tagline':'Đào tạo gắn kết doanh nghiệp · Cam kết 100% việc làm · Thực tập lương cao tại Nhật, Hàn, Đức, Úc, Đài Loan',
- 'hero.ctaPrimary':'📋 Đăng ký xét tuyển ngay','hero.ctaSecondary':'Khám phá ngành học →',
- 'hero.trust1':'Được Bộ LĐTBXH cấp phép','hero.trust2':'Kiểm định chất lượng Bộ GDĐT','hero.trust3':'Hỗ trợ vay vốn Ngân hàng Nhà nước',
- 'announce.tag':'🔥 Ưu đãi',
- 'announce.text':'Nhập học trước <strong>30/5/2026</strong> nhận ngay học bổng <strong>2.000.000đ</strong> + áo đồng phục miễn phí',
- 'announce.btn':'Đăng ký ngay →',
- 'stats.jobs':'Cam kết việc làm','stats.salary':'Mức lương/tháng','stats.majors':'Ngành đào tạo',
- 'about.eyebrow':'Về chúng tôi','about.title':'Trường đào tạo chất lượng cao, đạt chuẩn quốc tế',
- 'programs.eyebrow':'Hệ đào tạo','programs.title':'Hệ đào tạo đa dạng',
- 'programs.lead':'Chương trình linh hoạt phù hợp mọi đối tượng – từ học sinh lớp 9 đến người đi làm muốn nâng cao trình độ.',
- 'majors.eyebrow':'Ngành đào tạo','majors.title':'54+ Ngành học đa lĩnh vực',
- 'majors.lead':'★ Ngành có dấu sao được ký cam kết việc làm trong nước và quốc tế',
- 'benefits.eyebrow':'Quyền lợi sinh viên','benefits.title':'Sinh viên VCI được gì?',
- 'benefits.lead':'Hơn 12 quyền lợi vượt trội dành cho sinh viên — từ học bổng, thực tập có lương đến cam kết việc làm và hoàn phí nếu thất nghiệp.',
- 'tuition.eyebrow':'Học phí','tuition.title':'Tính học phí nhanh',
- 'tuition.lead':'Chọn hệ và nhóm ngành để xem chi tiết học phí, số đợt đóng và các khoản phụ phí. Học phí trọn gói – <strong>không tăng theo năm học</strong>.',
- 'hoso.eyebrow':'Hồ sơ & Thủ tục','hoso.title':'Hồ sơ xét tuyển 2026',
- 'hoso.lead':'Nộp trực tiếp, qua bưu điện hoặc đăng ký trực tuyến tại vci.edu.vn',
- 'campus.eyebrow':'Địa điểm','campus.title':'Cơ sở trên toàn quốc',
- 'campus.lead':'Hiện diện tại 5 tỉnh thành – học gần nhà, tiện lợi',
- 'cta.title':'Sẵn sàng bắt đầu hành trình?',
- 'cta.lead':'Đăng ký ngay hôm nay – nhận tư vấn miễn phí, không áp lực, trong vòng 24 giờ.',
- 'cta.btnPrimary':'📋 Đăng ký xét tuyển ngay','cta.btnPhone':'📞 Gọi 0965 670 100',
- },
- en: {
- 'topbar.tagline':'🎓 Vietnam College of Industry and Trade – Code <strong>C98</strong> – Admissions 2026',
- 'nav.about':'About','nav.programs':'Programs','nav.majors':'Majors',
- 'nav.tuition':'Tuition','nav.campus':'Campus','nav.register':'Apply',
- 'nav.application':'Application','nav.cta':'Apply Now','nav.mobCta':'📋 Apply Now',
- 'hero.sealCode':'Vietnam College of Industry and Trade &nbsp;·&nbsp; Code C98',
- 'hero.sealYear':'Admissions 2026–2027',
- 'hero.sealStatus':'Now accepting applications',
- 'hero.title':'Vietnam College of<br>Industry and<br><span class="h1-accent">Trade</span>',
- 'hero.tagline':'Industry-linked training · 100% employment commitment · Paid internships in Japan, Korea, Germany, Australia, Taiwan',
- 'hero.ctaPrimary':'📋 Apply now','hero.ctaSecondary':'Explore majors →',
- 'hero.trust1':'Licensed by MOLISA','hero.trust2':'Quality accredited by MOET','hero.trust3':'State Bank loan support',
- 'announce.tag':'🔥 Promotion',
- 'announce.text':'Enroll before <strong>30/5/2026</strong> to receive a <strong>2,000,000 VND</strong> scholarship + free uniform',
- 'announce.btn':'Apply now →',
- 'stats.jobs':'Job guarantee','stats.salary':'Salary/month','stats.majors':'Majors',
- 'about.eyebrow':'About us','about.title':'A high-quality college with international standards',
- 'programs.eyebrow':'Programs','programs.title':'5 Diverse training programs',
- 'programs.lead':'Flexible curriculum for all backgrounds — from grade-9 students to working professionals seeking advancement.',
- 'majors.eyebrow':'Majors','majors.title':'54+ Majors across many fields',
- 'majors.lead':'★ Starred majors include domestic and international employment commitments',
- 'benefits.eyebrow':'Student benefits','benefits.title':'What VCI students get',
- 'benefits.lead':'12+ outstanding benefits — scholarships, paid internships, employment guarantee and full refund if unemployed.',
- 'tuition.eyebrow':'Tuition','tuition.title':'Quick tuition calculator',
- 'tuition.lead':'Choose your program and major to see detailed tuition, installment schedule and additional fees. All-inclusive — <strong>no annual increase</strong>.',
- 'hoso.eyebrow':'Application','hoso.title':'Application file 2026',
- 'hoso.lead':'Submit in person, by mail, or online at vci.edu.vn',
- 'campus.eyebrow':'Locations','campus.title':'Campuses nationwide',
- 'campus.lead':'Present in 5 provinces – study close to home, conveniently',
- 'cta.title':'Ready to start your journey?',
- 'cta.lead':'Register today – free consultation, no pressure, within 24 hours.',
- 'cta.btnPrimary':'📋 Apply now','cta.btnPhone':'📞 Call 0965 670 100',
- },
- zh: {
- 'topbar.tagline':'🎓 越南工商职业学院 – 代码 <strong>C98</strong> – 2026 招生',
- 'nav.about':'关于我们','nav.programs':'培训体系','nav.majors':'专业',
- 'nav.tuition':'学费','nav.campus':'校区','nav.register':'报名',
- 'nav.application':'报名材料','nav.cta':'立即报名','nav.mobCta':'📋 立即报名',
- 'hero.sealCode':'越南工商职业学院 &nbsp;·&nbsp; 代码 C98',
- 'hero.sealYear':'2026–2027 学年招生',
- 'hero.sealStatus':'正在接收申请',
- 'hero.title':'越南<br>工商<br><span class="h1-accent">职业学院</span>',
- 'hero.tagline':'校企合作培养 · 100% 就业承诺 · 日韩德澳台高薪实习',
- 'hero.ctaPrimary':'📋 立即报名','hero.ctaSecondary':'探索专业 →',
- 'hero.trust1':'劳动部许可','hero.trust2':'教育部质量认证','hero.trust3':'国家银行贷款支持',
- 'announce.tag':'🔥 优惠',
- 'announce.text':'<strong>2026/5/30</strong> 前入学即获 <strong>200 万越南盾</strong> 奖学金 + 免费校服',
- 'announce.btn':'立即报名 →',
- 'stats.jobs':'就业保障','stats.salary':'月薪','stats.majors':'专业',
- 'about.eyebrow':'关于我们','about.title':'国际标准的优质职业学院',
- 'programs.eyebrow':'培训体系','programs.title':'5 大培训体系',
- 'programs.lead':'灵活课程适合各类学员——从初中毕业生到希望进修的在职人员。',
- 'majors.eyebrow':'专业','majors.title':'54+ 多领域专业',
- 'majors.lead':'★ 带星专业附有国内外就业承诺',
- 'benefits.eyebrow':'学生福利','benefits.title':'VCI 学生能获得什么',
- 'benefits.lead':'12 + 项卓越福利——奖学金、带薪实习、就业保障,失业全额退费。',
- 'tuition.eyebrow':'学费','tuition.title':'快速学费计算',
- 'tuition.lead':'选择体系与专业查看详细学费、分期与附加费用。一次性收费——<strong>每年不涨价</strong>。',
- 'hoso.eyebrow':'报名材料','hoso.title':'2026 报名材料',
- 'hoso.lead':'可直接提交、邮寄,或通过 vci.edu.vn 在线报名',
- 'campus.eyebrow':'地点','campus.title':'全国多个校区',
- 'campus.lead':'分布于 5 个省市 — 就近就读,便利舒适',
- 'cta.title':'准备好启程了吗?',
- 'cta.lead':'今天就报名 – 免费咨询,无压力,24 小时内联系。',
- 'cta.btnPrimary':'📋 立即报名','cta.btnPhone':'📞 致电 0965 670 100',
- },
- ja: {
- 'topbar.tagline':'🎓 ベトナム工商専門学校 – コード <strong>C98</strong> – 2026 年度入学',
- 'nav.about':'学校紹介','nav.programs':'コース','nav.majors':'専攻',
- 'nav.tuition':'学費','nav.campus':'キャンパス','nav.register':'申込',
- 'nav.application':'出願書類','nav.cta':'今すぐ申込','nav.mobCta':'📋 今すぐ申込',
- 'hero.sealCode':'ベトナム工商専門学校 &nbsp;·&nbsp; コード C98',
- 'hero.sealYear':'2026–2027 年度入学',
- 'hero.sealStatus':'出願受付中',
- 'hero.title':'ベトナム<br>工商<br><span class="h1-accent">専門学校</span>',
- 'hero.tagline':'産学連携教育 · 就職率 100% 保証 · 日本・韓国・ドイツ・豪・台湾での有給インターン',
- 'hero.ctaPrimary':'📋 今すぐ申込','hero.ctaSecondary':'専攻を見る →',
- 'hero.trust1':'労働省認可','hero.trust2':'教育省品質認定','hero.trust3':'国営銀行融資サポート',
- 'announce.tag':'🔥 特典',
- 'announce.text':'<strong>2026/5/30</strong> までに入学で <strong>200 万ドン</strong> の奨学金 + 制服無料',
- 'announce.btn':'今すぐ申込 →',
- 'stats.jobs':'就職保証','stats.salary':'月給','stats.majors':'専攻',
- 'about.eyebrow':'学校紹介','about.title':'国際基準の高品質な専門学校',
- 'programs.eyebrow':'コース','programs.title':'5 つの教育コース',
- 'programs.lead':'中学卒業生から社会人まで対応する柔軟なカリキュラム。',
- 'majors.eyebrow':'専攻','majors.title':'54+ の多分野専攻',
- 'majors.lead':'★ 印付き専攻は国内外の就職保証付き',
- 'benefits.eyebrow':'学生特典','benefits.title':'VCI の学生が得られるもの',
- 'benefits.lead':'奨学金、有給インターン、就職保証、失業時の全額返金など 12 以上の特典。',
- 'tuition.eyebrow':'学費','tuition.title':'学費の見積り',
- 'tuition.lead':'コースと専攻を選択して詳細な学費・分割払い・追加費用を表示。総額固定 – <strong>年次値上げなし</strong>。',
- 'hoso.eyebrow':'出願書類','hoso.title':'2026 年度出願書類',
- 'hoso.lead':'直接提出・郵送・vci.edu.vn でオンライン申込',
- 'campus.eyebrow':'拠点','campus.title':'全国キャンパス',
- 'campus.lead':'5 省市に展開 — 自宅から近く便利',
- 'cta.title':'旅を始める準備はできましたか?',
- 'cta.lead':'今すぐ申込 – 無料相談,24 時間以内に連絡。',
- 'cta.btnPrimary':'📋 今すぐ申込','cta.btnPhone':'📞 0965 670 100 へ電話',
- },
- ko: {
- 'topbar.tagline':'🎓 베트남 공상 전문대학 – 코드 <strong>C98</strong> – 2026 모집',
- 'nav.about':'학교 소개','nav.programs':'교육 과정','nav.majors':'전공',
- 'nav.tuition':'학비','nav.campus':'캠퍼스','nav.register':'지원',
- 'nav.application':'지원 서류','nav.cta':'지금 지원','nav.mobCta':'📋 지금 지원',
- 'hero.sealCode':'베트남 공상 전문대학 &nbsp;·&nbsp; 코드 C98',
- 'hero.sealYear':'2026–2027 학년도 모집',
- 'hero.sealStatus':'원서 접수 중',
- 'hero.title':'베트남<br>공상<br><span class="h1-accent">전문대학</span>',
- 'hero.tagline':'산학 협력 교육 · 취업률 100% 보장 · 일본·한국·독일·호주·대만 유급 인턴십',
- 'hero.ctaPrimary':'📋 지금 지원','hero.ctaSecondary':'전공 살펴보기 →',
- 'hero.trust1':'노동부 허가','hero.trust2':'교육부 품질 인증','hero.trust3':'국영은행 대출 지원',
- 'announce.tag':'🔥 혜택',
- 'announce.text':'<strong>2026/5/30</strong> 이전 입학 시 <strong>200만 동</strong> 장학금 + 무료 교복',
- 'announce.btn':'지금 지원 →',
- 'stats.jobs':'취업 보장','stats.salary':'월급','stats.majors':'전공',
- 'about.eyebrow':'학교 소개','about.title':'국제 기준의 우수한 전문대학',
- 'programs.eyebrow':'교육 과정','programs.title':'5 가지 교육 과정',
- 'programs.lead':'중학교 졸업생부터 직장인까지 모두를 위한 유연한 커리큘럼.',
- 'majors.eyebrow':'전공','majors.title':'54+ 다양한 분야 전공',
- 'majors.lead':'★ 별표 전공은 국내외 취업 보장 포함',
- 'benefits.eyebrow':'학생 혜택','benefits.title':'VCI 학생이 받는 혜택',
- 'benefits.lead':'장학금·유급 인턴십·취업 보장·실업 시 전액 환불 등 12+ 가지 혜택.',
- 'tuition.eyebrow':'학비','tuition.title':'빠른 학비 계산',
- 'tuition.lead':'과정과 전공을 선택하여 학비 · 분납 일정 · 추가 비용을 확인하세요. 패키지 요금 – <strong>매년 인상 없음</strong>.',
- 'hoso.eyebrow':'지원 서류','hoso.title':'2026 지원 서류',
- 'hoso.lead':'직접 제출·우편 또는 vci.edu.vn 온라인 지원',
- 'campus.eyebrow':'위치','campus.title':'전국 캠퍼스',
- 'campus.lead':'5 개 성·시에 캠퍼스 — 집 근처에서 편리하게',
- 'cta.title':'여정을 시작할 준비가 되셨나요?',
- 'cta.lead':'오늘 등록 – 무료 상담,부담 없이 24 시간 이내 연락.',
- 'cta.btnPrimary':'📋 지금 지원','cta.btnPhone':'📞 0965 670 100 전화',
- },
- km: {
- 'topbar.tagline':'🎓 មហាវិទ្យាល័យឧស្សាហកម្ម និងពាណិជ្ជកម្មវៀតណាម – លេខកូដ <strong>C98</strong> – ការចុះឈ្មោះ 2026',
- 'nav.about':'អំពីយើង','nav.programs':'កម្មវិធីសិក្សា','nav.majors':'មុខវិជ្ជា',
- 'nav.tuition':'ថ្លៃសិក្សា','nav.campus':'សាខា','nav.register':'ចុះឈ្មោះ',
- 'nav.application':'ឯកសារដាក់ពាក្យ','nav.cta':'ចុះឈ្មោះឥឡូវ','nav.mobCta':'📋 ចុះឈ្មោះឥឡូវ',
- 'hero.sealCode':'មហាវិទ្យាល័យឧស្សាហកម្ម និងពាណិជ្ជកម្មវៀតណាម &nbsp;·&nbsp; លេខកូដ C98',
- 'hero.sealYear':'ការចុះឈ្មោះឆ្នាំសិក្សា 2026–2027',
- 'hero.sealStatus':'កំពុងទទួលពាក្យសុំ',
- 'hero.title':'មហាវិទ្យាល័យ<br>ឧស្សាហកម្ម និងពាណិជ្ជកម្ម<br><span class="h1-accent">វៀតណាម</span>',
- 'hero.tagline':'ការបណ្តុះបណ្តាលជាមួយសហគ្រាស · ការធានាការងារ 100% · កម្មសិក្សាមានប្រាក់ខែខ្ពស់នៅ ជប៉ុន កូរ៉េ អាល្លឺម៉ង់ អូស្ត្រាលី តៃវ៉ាន់',
- 'hero.ctaPrimary':'📋 ចុះឈ្មោះឥឡូវ','hero.ctaSecondary':'រកមើលមុខវិជ្ជា →',
- 'hero.trust1':'អនុញ្ញាតដោយក្រសួងការងារ','hero.trust2':'ការទទួលស្គាល់គុណភាពពីក្រសួងអប់រំ','hero.trust3':'ការគាំទ្រកម្ចីពីធនាគារជាតិ',
- 'announce.tag':'🔥 ប្រូម៉ូសិន',
- 'announce.text':'ចុះឈ្មោះមុនថ្ងៃ <strong>30/5/2026</strong> ទទួលបានអាហារូបករណ៍ <strong>2,000,000 ដុង</strong> + ឯកសណ្ឋានដោយឥតគិតថ្លៃ',
- 'announce.btn':'ចុះឈ្មោះឥឡូវ →',
- 'stats.jobs':'ការធានាការងារ','stats.salary':'ប្រាក់ខែ/ខែ','stats.majors':'មុខវិជ្ជា',
- 'about.eyebrow':'អំពីយើង','about.title':'មហាវិទ្យាល័យគុណភាពខ្ពស់តាមស្តង់ដារអន្តរជាតិ',
- 'programs.eyebrow':'កម្មវិធីសិក្សា','programs.title':'កម្មវិធីបណ្តុះបណ្តាល 5 ប្រភេទ',
- 'programs.lead':'កម្មវិធីបត់បែនសម្រាប់សិស្សគ្រប់រូប — ពីសិស្សថ្នាក់ទី 9 ដល់អ្នកធ្វើការដែលចង់បង្កើនជំនាញ។',
- 'majors.eyebrow':'មុខវិជ្ជា','majors.title':'មុខវិជ្ជាជាង 54+ វិស័យ',
- 'majors.lead':'★ មុខវិជ្ជាដែលមានសញ្ញាផ្កាយមានកិច្ចសន្យាការងារក្នុងស្រុក និងបរទេស',
- 'benefits.eyebrow':'អត្ថប្រយោជន៍សិស្ស','benefits.title':'សិស្ស VCI ទទួលបានអ្វី?',
- 'benefits.lead':'អត្ថប្រយោជន៍ជាង 12 — អាហារូបករណ៍ កម្មសិក្សាមានប្រាក់ខែ ការធានាការងារ និងបង្វិលថ្លៃសិក្សាប្រសិនបើគ្មានការងារ។',
- 'tuition.eyebrow':'ថ្លៃសិក្សា','tuition.title':'គណនាថ្លៃសិក្សាលឿន',
- 'tuition.lead':'ជ្រើសរើសកម្មវិធី និងមុខវិជ្ជា ដើម្បីមើលថ្លៃសិក្សា ការបង់ជាដំណាក់កាល និងថ្លៃផ្សេងៗ។ ថ្លៃរួមបញ្ចូលគ្នា – <strong>មិនកើនឡើងតាមឆ្នាំ</strong>។',
- 'hoso.eyebrow':'ឯកសារដាក់ពាក្យ','hoso.title':'ឯកសារដាក់ពាក្យ 2026',
- 'hoso.lead':'ដាក់ដោយផ្ទាល់ តាមប្រៃសណីយ៍ ឬចុះឈ្មោះអនឡាញនៅ vci.edu.vn',
- 'campus.eyebrow':'ទីតាំង','campus.title':'សាខានៅទូទាំងប្រទេស',
- 'campus.lead':'មានវត្តមាននៅ 5 ខេត្ត-ក្រុង – រៀននៅជិតផ្ទះ ងាយស្រួល',
- 'cta.title':'ត្រៀមខ្លួនចាប់ផ្តើមដំណើររបស់អ្នកហើយឬនៅ?',
- 'cta.lead':'ចុះឈ្មោះថ្ងៃនេះ – ប្រឹក្សាដោយឥតគិតថ្លៃ មិនមានសម្ពាធ ក្នុងរយៈពេល 24 ម៉ោង។',
- 'cta.btnPrimary':'📋 ចុះឈ្មោះឥឡូវ','cta.btnPhone':'📞 ហៅ 0965 670 100',
- },
-};
-
-function _getLangMeta(code) {
- return I18N_LANGS.find(l => l.code === code) || I18N_LANGS[0];
-}
-function applyI18n(code) {
- const dict = I18N[code] || I18N.vi;
- document.querySelectorAll('[data-i18n]').forEach(el => {
- const k = el.getAttribute('data-i18n');
- if (dict[k] != null) el.textContent = dict[k];
- });
- document.querySelectorAll('[data-i18n-html]').forEach(el => {
- const k = el.getAttribute('data-i18n-html');
- if (dict[k] != null) el.innerHTML = dict[k];
- });
- try { document.documentElement.setAttribute('lang', code); } catch(_) {}
- const m = _getLangMeta(code);
- const f = document.getElementById('langCurFlag'); if (f) f.textContent = m.flag;
- const s = document.getElementById('langCurCode'); if (s) s.textContent = m.short;
- document.querySelectorAll('#langMenu .lang-opt').forEach(b => {
- b.classList.toggle('active', b.dataset.lang === code);
- });
- try { localStorage.setItem('vci_lang', code); } catch(_) {}
-}
-function setLang(code) {
- applyI18n(code);
- const lp = document.getElementById('langPicker');
- if (lp) lp.classList.remove('open');
-}
-function toggleLang() {
- const lp = document.getElementById('langPicker');
- if (lp) lp.classList.toggle('open');
-}
-function initI18n() {
- const menu = document.getElementById('langMenu');
- if (menu && !menu.dataset.built) {
- menu.innerHTML = I18N_LANGS.map(l => `
- <button type="button" class="lang-opt" data-lang="${l.code}" onclick="setLang('${l.code}')">
- <span class="lang-flag">${l.flag}</span>
- <span>${l.label}</span>
- </button>
- `).join('');
- menu.dataset.built = '1';
- }
- // Đóng dropdown khi click ra ngoài
- document.addEventListener('click', e => {
- const lp = document.getElementById('langPicker');
- if (lp && !lp.contains(e.target)) lp.classList.remove('open');
- });
- let stored = 'vi';
- try { stored = localStorage.getItem('vci_lang') || 'vi'; } catch(_) {}
- applyI18n(I18N[stored] ? stored : 'vi');
-}
-
-/*
  HERO IMAGE LAZY LOAD + INIT
  */
 window.addEventListener('DOMContentLoaded', async ()=>{
- initI18n();
 
  // 1. Kiểm tra maintenance mode trước tiên
  try {
