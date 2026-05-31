@@ -3225,6 +3225,8 @@ function addTrustRow(text='') {
 function getTrustRows() {
   return [...document.querySelectorAll('#rep-hero-trust .trust-text')].map(i=>i.value.trim()).filter(Boolean);
 }
+
+/* ============================================================
    BENEFITS MANAGEMENT
 ============================================================ */
 let benefitsData = [];
