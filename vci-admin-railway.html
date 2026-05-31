@@ -1424,6 +1424,9 @@ async function showPage(id) {
   else if (id === 'articles') loadArticles();
   else if (id === 'chat-history') loadChatHistory();
   else if (id === 'settings')    loadSettings();
+  else if (id === 'benefits')    loadBenefits();
+  else if (id === 'templates')   loadTemplates();
+  else if (id === 'theme')       loadTheme();
 }
 
 /* ============================================================
@@ -2917,24 +2920,20 @@ let benefitsData = [];
 
 async function loadBenefits() {
   try {
-    const r = await apiGet('/api/benefits');
-    if (r && r.success) {
-      benefitsData = r.data || [];
-      renderBenefits();
-    }
-  } catch (e) {
-    console.error('Load benefits error:', e);
-    benefitsData = [
+    const {data} = await api('GET', '/api/content');
+    benefitsData = data?.benefits || [
       {id:1, icon:'🎓', title:'Học bổng hấp dẫn', desc:'Học bổng lên đến 50% học phí cho sinh viên xuất sắc'},
       {id:2, icon:'💼', title:'Cam kết việc làm', desc:'100% sinh viên có việc làm sau tốt nghiệp'},
       {id:3, icon:'🌍', title:'Cơ hội đi nước ngoài', desc:'Thực tập và làm việc tại Nhật, Hàn, Đức, Úc'}
     ];
-    renderBenefits();
+  } catch(e) {
+    benefitsData = [];
   }
+  renderBenefits();
 }
 
 function renderBenefits() {
-  const html = benefitsData.map(b => `
+  document.getElementById('benefitsList').innerHTML = benefitsData.map(b => `
     <div class="card" style="padding:20px">
       <div style="display:flex;gap:12px;align-items:start">
         <div style="font-size:32px">${b.icon}</div>
@@ -2948,8 +2947,7 @@ function renderBenefits() {
         </div>
       </div>
     </div>
-  `).join('');
-  document.getElementById('benefitsList').innerHTML = html || '<div class="empty" style="grid-column:1/-1">Chưa có quyền lợi nào</div>';
+  `).join('') || '<div class="empty" style="grid-column:1/-1">Chưa có quyền lợi nào</div>';
 }
 
 function addBenefit() {
@@ -2957,8 +2955,7 @@ function addBenefit() {
   const title = prompt('Tiêu đề:', '');
   const desc = prompt('Mô tả:', '');
   if (!title) return;
-  const newId = Math.max(0, ...benefitsData.map(b => b.id)) + 1;
-  benefitsData.push({id: newId, icon: icon || '🎁', title, desc});
+  benefitsData.push({id: Date.now(), icon: icon||'🎁', title, desc});
   renderBenefits();
   saveBenefits();
 }
@@ -2969,13 +2966,10 @@ function editBenefit(id) {
   const icon = prompt('Icon:', b.icon);
   const title = prompt('Tiêu đề:', b.title);
   const desc = prompt('Mô tả:', b.desc);
-  if (title) {
-    b.icon = icon || b.icon;
-    b.title = title;
-    b.desc = desc || b.desc;
-    renderBenefits();
-    saveBenefits();
-  }
+  if (!title) return;
+  b.icon = icon||b.icon; b.title = title; b.desc = desc||b.desc;
+  renderBenefits();
+  saveBenefits();
 }
 
 function deleteBenefit(id) {
@@ -2987,125 +2981,102 @@ function deleteBenefit(id) {
 
 async function saveBenefits() {
   try {
-    await apiPost('/api/benefits', {benefits: benefitsData});
+    await api('PUT', '/api/content/benefits', {value: benefitsData});
     toast('Đã lưu quyền lợi', 'ok');
-  } catch (e) {
-    toast('Lỗi lưu quyền lợi: ' + e.message, 'err');
-  }
+  } catch(e) { toast('Lỗi lưu: ' + e.message, 'err'); }
 }
 
 /* ============================================================
    TEMPLATES MANAGEMENT
 ============================================================ */
+const _selVal = id => { const el=document.getElementById(id); return el?el.value:''; };
+const _selSet = (id,v) => { const el=document.getElementById(id); if(el&&v) el.value=v; };
+
 async function loadTemplates() {
   try {
-    const r = await apiGet('/api/templates');
-    if (r && r.success) {
-      const t = r.data || {};
-      set('tpl-hero-layout', t.heroLayout || 'centered');
-      set('tpl-hero-bg', t.heroBg || 'gradient');
-      set('tpl-stats-layout', t.statsLayout || 'grid');
-      set('tpl-stats-anim', t.statsAnim || 'fade');
-    }
-  } catch (e) {
-    console.error('Load templates error:', e);
-  }
+    const {data} = await api('GET', '/api/content');
+    const t = data?.templates || {};
+    _selSet('tpl-hero-layout', t.heroLayout||'centered');
+    _selSet('tpl-hero-bg',     t.heroBg||'gradient');
+    _selSet('tpl-stats-layout',t.statsLayout||'grid');
+    _selSet('tpl-stats-anim',  t.statsAnim||'fade');
+  } catch(e) { console.error('Load templates error:', e); }
 }
 
 async function saveTemplates() {
-  const data = {
-    heroLayout: get('tpl-hero-layout'),
-    heroBg: get('tpl-hero-bg'),
-    statsLayout: get('tpl-stats-layout'),
-    statsAnim: get('tpl-stats-anim')
-  };
   try {
-    await apiPost('/api/templates', data);
+    await api('PUT', '/api/content/templates', {value: {
+      heroLayout:  _selVal('tpl-hero-layout'),
+      heroBg:      _selVal('tpl-hero-bg'),
+      statsLayout: _selVal('tpl-stats-layout'),
+      statsAnim:   _selVal('tpl-stats-anim')
+    }});
     toast('Đã lưu templates', 'ok');
-  } catch (e) {
-    toast('Lỗi lưu templates: ' + e.message, 'err');
-  }
+  } catch(e) { toast('Lỗi lưu: ' + e.message, 'err'); }
 }
 
 /* ============================================================
    THEME COLORS MANAGEMENT
 ============================================================ */
-async function loadTheme() {
-  try {
-    const r = await apiGet('/api/theme');
-    if (r && r.success) {
-      const t = r.data || {};
-      setColor('theme-red', t.red || '#DC2626');
-      setColor('theme-green', t.green || '#16A34A');
-      setColor('theme-navy', t.navy || '#1E40AF');
-      setColor('theme-gold', t.gold || '#F59E0B');
-      updateThemePreview();
-    }
-  } catch (e) {
-    console.error('Load theme error:', e);
-  }
-}
-
 function setColor(id, color) {
-  document.getElementById(id).value = color;
-  document.getElementById(id + '-hex').value = color;
+  const el = document.getElementById(id);
+  const hex = document.getElementById(id+'-hex');
+  if (el) el.value = color;
+  if (hex) hex.value = color;
 }
 
 function updateThemePreview() {
-  const red = get('theme-red');
-  const green = get('theme-green');
+  const red = document.getElementById('theme-red')?.value;
+  const green = document.getElementById('theme-green')?.value;
   const preview = document.getElementById('theme-preview');
-  if (preview) {
-    preview.querySelector('h3').style.color = red;
-    preview.querySelectorAll('button')[0].style.background = red;
-    preview.querySelectorAll('button')[1].style.background = green;
-    preview.querySelectorAll('[style*="background:#FEE2E2"]')[0].style.background = red + '20';
-    preview.querySelectorAll('[style*="color:#DC2626"]')[0].style.color = red;
-    preview.querySelectorAll('[style*="background:#DCFCE7"]')[0].style.background = green + '20';
-    preview.querySelectorAll('[style*="color:#16A34A"]')[0].style.color = green;
-  }
+  if (!preview || !red || !green) return;
+  preview.querySelector('h3').style.color = red;
+  const btns = preview.querySelectorAll('button');
+  if (btns[0]) btns[0].style.background = red;
+  if (btns[1]) btns[1].style.background = green;
+}
+
+async function loadTheme() {
+  try {
+    const {data} = await api('GET', '/api/content');
+    const t = data?.theme || {};
+    setColor('theme-red',   t.red   || '#DC2626');
+    setColor('theme-green', t.green || '#16A34A');
+    setColor('theme-navy',  t.navy  || '#1E40AF');
+    setColor('theme-gold',  t.gold  || '#F59E0B');
+    updateThemePreview();
+  } catch(e) { console.error('Load theme error:', e); }
 }
 
 async function saveTheme() {
-  const data = {
-    red: get('theme-red'),
-    green: get('theme-green'),
-    navy: get('theme-navy'),
-    gold: get('theme-gold')
-  };
   try {
-    await apiPost('/api/theme', data);
+    await api('PUT', '/api/content/theme', {value: {
+      red:   document.getElementById('theme-red')?.value,
+      green: document.getElementById('theme-green')?.value,
+      navy:  document.getElementById('theme-navy')?.value,
+      gold:  document.getElementById('theme-gold')?.value
+    }});
     toast('Đã lưu theme colors', 'ok');
-  } catch (e) {
-    toast('Lỗi lưu theme: ' + e.message, 'err');
-  }
+  } catch(e) { toast('Lỗi lưu: ' + e.message, 'err'); }
 }
 
 function resetTheme() {
   if (!confirm('Reset về màu mặc định?')) return;
-  setColor('theme-red', '#DC2626');
+  setColor('theme-red',   '#DC2626');
   setColor('theme-green', '#16A34A');
-  setColor('theme-navy', '#1E40AF');
-  setColor('theme-gold', '#F59E0B');
+  setColor('theme-navy',  '#1E40AF');
+  setColor('theme-gold',  '#F59E0B');
   updateThemePreview();
 }
 
-// Sync color picker with hex input
 ['red','green','navy','gold'].forEach(c => {
-  const picker = document.getElementById('theme-' + c);
-  const hex = document.getElementById('theme-' + c + '-hex');
-  if (picker && hex) {
-    picker.addEventListener('input', () => {
-      hex.value = picker.value;
-      updateThemePreview();
-    });
-    hex.addEventListener('input', () => {
-      if (/^#[0-9A-F]{6}$/i.test(hex.value)) {
-        picker.value = hex.value;
-        updateThemePreview();
-      }
-    });
-  }
+  const picker = document.getElementById('theme-'+c);
+  const hex    = document.getElementById('theme-'+c+'-hex');
+  if (!picker || !hex) return;
+  picker.addEventListener('input', () => { hex.value = picker.value; updateThemePreview(); });
+  hex.addEventListener('input', () => {
+    if (/^#[0-9A-F]{6}$/i.test(hex.value)) { picker.value = hex.value; updateThemePreview(); }
+  });
 });
 
 </script>
