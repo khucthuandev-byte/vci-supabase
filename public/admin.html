@@ -563,6 +563,7 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
         <div class="cms-tabs">
           <button class="cms-tab active" data-cms-tab="homepage" onclick="switchCmsTab('homepage')"><span class="cms-tab-ico">🏠</span> Trang chủ</button>
           <button class="cms-tab" data-cms-tab="content" onclick="switchCmsTab('content')"><span class="cms-tab-ico">📚</span> Nội dung</button>
+          <button class="cms-tab" data-cms-tab="about" onclick="switchCmsTab('about')"><span class="cms-tab-ico">🏫</span> Giới thiệu</button>
           <button class="cms-tab" data-cms-tab="brand" onclick="switchCmsTab('brand')"><span class="cms-tab-ico">🎨</span> Liên hệ &amp; Thương hiệu</button>
         </div>
 
@@ -651,7 +652,63 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
 
         </div><!-- /PANE 2 -->
 
-        <!-- ====== PANE 3: LIÊN HỆ & THƯƠNG HIỆU ====== -->
+        <!-- ====== PANE: GIỚI THIỆU ====== -->
+        <div class="cms-pane" data-cms-pane="about">
+
+        <div class="card">
+          <div class="ch"><span class="ch-title">🏫 Giới thiệu trường</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('about')">💾 Lưu</button>
+          </div>
+          <div class="cb"><div class="fgrid">
+            <div class="fg full"><label>Tiêu đề nhỏ (eyebrow)</label><input id="cms-about-eyebrow" placeholder="Về chúng tôi"></div>
+            <div class="fg full"><label>Tiêu đề chính</label><input id="cms-about-title" placeholder="Trường đào tạo chất lượng cao..."></div>
+            <div class="fg full"><label>Mô tả</label><textarea id="cms-about-desc" rows="4" style="width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;font-family:inherit;resize:vertical"></textarea></div>
+            <div class="fg"><label>Số năm đào tạo (badge)</label><input id="cms-about-years" placeholder="30+"></div>
+            <div class="fg"><label>Nhãn badge</label><input id="cms-about-years-lbl" placeholder="năm đào tạo"></div>
+          </div>
+
+          <div style="margin-top:20px">
+            <div class="ch" style="margin-bottom:12px"><span class="ch-title" style="font-size:13px">🖼 Ảnh chính</span></div>
+            <div class="fgrid">
+              <div class="fg full">
+                <label>URL ảnh chính</label>
+                <div style="display:flex;gap:8px">
+                  <input id="cms-about-img1" placeholder="https://..." style="flex:1" oninput="updatePreview('cms-about-img1','cms-about-img1-preview')">
+                  <label class="btn-outline" style="cursor:pointer;padding:8px 12px;font-size:12px;white-space:nowrap">📁 Upload<input type="file" accept="image/*" style="display:none" onchange="uploadBrandImage(this,'cms-about-img1','cms-about-img1-preview')"></label>
+                  <button class="btn-outline" style="padding:8px 12px;font-size:12px" onclick="pickFromMedia('cms-about-img1','cms-about-img1-preview')">🗂 Thư viện</button>
+                </div>
+                <img id="cms-about-img1-preview" style="display:none;margin-top:8px;max-height:120px;border-radius:8px;object-fit:cover">
+              </div>
+              <div class="fg full">
+                <label>URL ảnh phụ (góc dưới)</label>
+                <div style="display:flex;gap:8px">
+                  <input id="cms-about-img2" placeholder="https://..." style="flex:1" oninput="updatePreview('cms-about-img2','cms-about-img2-preview')">
+                  <label class="btn-outline" style="cursor:pointer;padding:8px 12px;font-size:12px;white-space:nowrap">📁 Upload<input type="file" accept="image/*" style="display:none" onchange="uploadBrandImage(this,'cms-about-img2','cms-about-img2-preview')"></label>
+                  <button class="btn-outline" style="padding:8px 12px;font-size:12px" onclick="pickFromMedia('cms-about-img2','cms-about-img2-preview')">🗂 Thư viện</button>
+                </div>
+                <img id="cms-about-img2-preview" style="display:none;margin-top:8px;max-height:120px;border-radius:8px;object-fit:cover">
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:20px">
+            <div class="ch" style="margin-bottom:12px"><span class="ch-title" style="font-size:13px">✅ 3 điểm nổi bật</span></div>
+            <div class="fgrid">
+              <div class="fg"><label>Icon 1</label><input id="cms-about-p1-icon" placeholder="🏆"></div>
+              <div class="fg"><label>Tiêu đề 1</label><input id="cms-about-p1-title" placeholder="Cam kết hoàn học phí"></div>
+              <div class="fg full"><label>Mô tả 1</label><input id="cms-about-p1-desc" placeholder="Nếu không bố trí được việc làm..."></div>
+              <div class="fg"><label>Icon 2</label><input id="cms-about-p2-icon" placeholder="🌏"></div>
+              <div class="fg"><label>Tiêu đề 2</label><input id="cms-about-p2-title" placeholder="Thực tập có lương tại nước ngoài"></div>
+              <div class="fg full"><label>Mô tả 2</label><input id="cms-about-p2-desc" placeholder="Thực tập 6–12 tháng..."></div>
+              <div class="fg"><label>Icon 3</label><input id="cms-about-p3-icon" placeholder="📜"></div>
+              <div class="fg"><label>Tiêu đề 3</label><input id="cms-about-p3-title" placeholder="Chương trình Cao đẳng Tiên tiến"></div>
+              <div class="fg full"><label>Mô tả 3</label><input id="cms-about-p3-desc" placeholder="Học sinh lớp 9 đăng ký..."></div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        </div><!-- /PANE ABOUT -->
         <div class="cms-pane" data-cms-pane="brand">
 
         <!-- LIÊN HỆ -->
@@ -1981,6 +2038,24 @@ function fillCmsForm() {
   renderHedtRep(cmsData.he_dao_tao || CMS_DEFAULTS.he_dao_tao);
   renderTestiRep(cmsData.testimonials || CMS_DEFAULTS.testimonials);
 
+  const ab = cmsData.about || {};
+  document.getElementById('cms-about-eyebrow').value    = ab.eyebrow || '';
+  document.getElementById('cms-about-title').value      = ab.title || '';
+  document.getElementById('cms-about-desc').value       = ab.desc || '';
+  document.getElementById('cms-about-years').value      = ab.years || '';
+  document.getElementById('cms-about-years-lbl').value  = ab.years_lbl || '';
+  document.getElementById('cms-about-img1').value       = ab.img1 || '';
+  document.getElementById('cms-about-img2').value       = ab.img2 || '';
+  updatePreview('cms-about-img1','cms-about-img1-preview');
+  updatePreview('cms-about-img2','cms-about-img2-preview');
+  const pts = ab.points || [{},{},{}];
+  [1,2,3].forEach(i => {
+    const p = pts[i-1] || {};
+    document.getElementById('cms-about-p'+i+'-icon').value  = p.icon || '';
+    document.getElementById('cms-about-p'+i+'-title').value = p.title || '';
+    document.getElementById('cms-about-p'+i+'-desc').value  = p.desc || '';
+  });
+
   const ct = cmsData.contact || CMS_DEFAULTS.contact;
   document.getElementById('cms-ct-phone').value    = ct.phone || '';
   document.getElementById('cms-ct-email').value    = ct.email || '';
@@ -2029,6 +2104,22 @@ async function saveContent(key) {
         break;
       case 'testimonials':
         value = getTestiRows();
+        break;
+      case 'about':
+        value = {
+          eyebrow:   document.getElementById('cms-about-eyebrow').value.trim(),
+          title:     document.getElementById('cms-about-title').value.trim(),
+          desc:      document.getElementById('cms-about-desc').value.trim(),
+          years:     document.getElementById('cms-about-years').value.trim(),
+          years_lbl: document.getElementById('cms-about-years-lbl').value.trim(),
+          img1:      document.getElementById('cms-about-img1').value.trim(),
+          img2:      document.getElementById('cms-about-img2').value.trim(),
+          points: [1,2,3].map(i => ({
+            icon:  document.getElementById('cms-about-p'+i+'-icon').value.trim(),
+            title: document.getElementById('cms-about-p'+i+'-title').value.trim(),
+            desc:  document.getElementById('cms-about-p'+i+'-desc').value.trim(),
+          }))
+        };
         break;
       case 'contact':
         value = {

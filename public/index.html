@@ -2566,6 +2566,37 @@ async function fetchContent() {
  }
  }
 
+ /* ---- ABOUT ---- */
+ const ab = c.about;
+ if (ab) {
+  const ey = document.querySelector('#gioi-thieu .eyebrow');
+  if (ey && ab.eyebrow) { ey.textContent = ab.eyebrow; ey.removeAttribute('data-i18n'); }
+  const h2 = document.querySelector('#gioi-thieu h2');
+  if (h2 && ab.title) { h2.textContent = ab.title; h2.removeAttribute('data-i18n'); }
+  const lead = document.querySelector('#gioi-thieu .lead');
+  if (lead && ab.desc) { lead.innerHTML = ab.desc; }
+  const tagNum = document.querySelector('#gioi-thieu .about-tag-num');
+  if (tagNum && ab.years) tagNum.innerHTML = ab.years;
+  const tagLbl = document.querySelector('#gioi-thieu .about-tag-lbl');
+  if (tagLbl && ab.years_lbl) tagLbl.textContent = ab.years_lbl;
+  const img1 = document.querySelector('#gioi-thieu .about-main-img img');
+  if (img1 && ab.img1) img1.src = ab.img1;
+  const img2 = document.querySelector('#gioi-thieu .about-sub-img img');
+  if (img2 && ab.img2) img2.src = ab.img2;
+  if (Array.isArray(ab.points)) {
+   const pts = document.querySelectorAll('#gioi-thieu .about-point');
+   ab.points.forEach((p, i) => {
+    if (!pts[i]) return;
+    const ico = pts[i].querySelector('.ap-icon');
+    const ttl = pts[i].querySelector('.ap-text h4');
+    const dsc = pts[i].querySelector('.ap-text p');
+    if (ico && p.icon) ico.textContent = p.icon;
+    if (ttl && p.title) ttl.textContent = p.title;
+    if (dsc && p.desc) dsc.textContent = p.desc;
+   });
+  }
+ }
+
  /* ---- CONTACT ---- */
  const ct = c.contact;
  if (ct) {
