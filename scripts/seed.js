@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const bcrypt = require('bcryptjs');
-const { getSupabase } = require('./config/supabase');
+const { getSupabase } = require('../src/config/supabase');
 
 const NGANH = [
   { name: 'Tiếp viên hàng không', grp: 'Kỹ thuật', don_gia: 590000, cam_ket: true },

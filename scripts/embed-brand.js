@@ -14,7 +14,7 @@ const gifB64  = 'data:image/gif;base64,' +
   fs.readFileSync(path.join(BRAND_DIR, 'bn-tuyen-sinh.gif')).toString('base64');
 
 // ---- Cập nhật public site ----
-let pub = fs.readFileSync('vci-v2-premium.html', 'utf8');
+let pub = fs.readFileSync('public/index.html', 'utf8');
 
 // Thay logo navbar (src="data:image/jpeg;base64,..." → logo.png thực)
 pub = pub.replace(
@@ -34,17 +34,17 @@ pub = pub.replace(
   `bgEl.style.backgroundImage = \`url('${gifB64}')\``
 );
 
-fs.writeFileSync('vci-v2-premium.html', pub);
-console.log('✅ vci-v2-premium.html updated');
+fs.writeFileSync('public/index.html', pub);
+console.log('✅ public/index.html updated');
 
 // ---- Cập nhật admin ----
-let adm = fs.readFileSync('vci-admin-railway.html', 'utf8');
+let adm = fs.readFileSync('public/admin.html', 'utf8');
 
 adm = adm.replace(
   /src="data:image\/jpeg;base64,[^"]+"/g,
   `src="${logoB64}"`
 );
 
-fs.writeFileSync('vci-admin-railway.html', adm);
-console.log('✅ vci-admin-railway.html updated');
+fs.writeFileSync('public/admin.html', adm);
+console.log('✅ public/admin.html updated');
 console.log('Done!');
