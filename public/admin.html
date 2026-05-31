@@ -1233,7 +1233,7 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
 /* ============================================================
    CONFIG – Railway URL cố định
 ============================================================ */
-const BASE = 'https://vci-supabase-production.up.railway.app';
+const BASE = location.hostname === '127.0.0.1' || location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://vci-supabase-production.up.railway.app';
 let TOKEN  = localStorage.getItem('vci_token') || '';
 let CU     = null;
 let hsPage = 1, hsPages = 1;
