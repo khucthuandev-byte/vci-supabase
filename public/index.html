@@ -2017,7 +2017,7 @@ button{cursor:pointer;font-family:var(--fh)}
 /*
  CONFIG – Railway API
  */
-const RAILWAY_URL = 'https://vci-supabase-production.up.railway.app';
+const RAILWAY_URL = location.hostname === '127.0.0.1' || location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://vci-supabase-production.up.railway.app';
 
 async function apiGet(path) {
  try {
