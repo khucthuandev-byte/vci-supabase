@@ -183,19 +183,19 @@ button{cursor:pointer;font-family:var(--fh)}
 .hero{
  position:relative;min-height:100vh;display:flex;flex-direction:column;
  overflow:hidden;
- background:#064e3b;
+ background:#15803d;
 }
 .hero-bg{
  position:absolute;inset:0;z-index:0;
- background-image:url('images/TUYENSINH2026.jpg');
- background-size:cover;background-position:center top;
- filter:brightness(.55) saturate(1.1);
+ background:
+  linear-gradient(135deg,#064e3b 0%,#065f46 25%,#047857 50%,#16a34a 75%,#22c55e 100%);
 }
 .hero-bg::before{
  content:'';position:absolute;inset:0;
  background:
-  linear-gradient(180deg,rgba(6,78,59,.55) 0%,rgba(4,120,87,.35) 50%,rgba(6,78,59,.75) 100%),
-  linear-gradient(90deg,rgba(0,0,0,.3) 0%,transparent 60%);
+  radial-gradient(ellipse 70% 55% at 15% 25%,rgba(134,239,172,.25) 0%,transparent 55%),
+  radial-gradient(ellipse 50% 65% at 85% 75%,rgba(6,78,59,.60) 0%,transparent 50%),
+  radial-gradient(ellipse 45% 35% at 55% 5%,rgba(187,247,208,.18) 0%,transparent 45%);
 }
 .hero-bg::after{
  content:'';position:absolute;inset:0;
