@@ -2509,17 +2509,23 @@ async function fetchContent() {
   if (gt && gal.title) gt.textContent = gal.title;
   const gd = document.querySelector('.gallery-section .gallery-intro .lead');
   if (gd && gal.desc) gd.textContent = gal.desc;
+  // Render động toàn bộ grid từ CMS
   if (Array.isArray(gal.items) && gal.items.length) {
    const grid = document.querySelector('.gallery-grid');
    if (grid) {
-    const items = grid.querySelectorAll('.gal-item');
-    gal.items.forEach((it, i) => {
-     if (!items[i]) return;
-     const img = items[i].querySelector('img');
-     const cap = items[i].querySelector('.gal-caption');
-     if (img && it.url) img.src = it.url;
-     if (cap && it.caption) cap.textContent = it.caption;
-    });
+    // Layout masonry: ảnh đầu tall (span 2 rows), ảnh cuối wide (span 2 cols) nếu chẵn
+    grid.innerHTML = gal.items.map((it, i) => {
+     const isFirst = i === 0;
+     const isLast  = i === gal.items.length - 1 && gal.items.length % 2 === 0;
+     const cls = isFirst ? 'gal-item gal-tall' : isLast ? 'gal-item gal-wide' : 'gal-item';
+     const rowSpan = isFirst ? 'grid-row:span 2;height:auto' : '';
+     const colSpan = isLast  ? 'grid-column:span 2;height:200px' : '';
+     const style = rowSpan || colSpan ? `style="${rowSpan}${colSpan}"` : '';
+     return `<div class="${cls}" ${style}>
+      <img src="${it.url||''}" alt="${it.caption||''}" loading="lazy">
+      <div class="gal-overlay"><div class="gal-caption">${it.caption||''}</div></div>
+     </div>`;
+    }).join('');
    }
   }
  }
