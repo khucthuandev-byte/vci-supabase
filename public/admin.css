@@ -295,3 +295,5 @@ input,select,textarea{font-family:var(--f);outline:none;color:var(--ink)}
 .chip-input{border:none;outline:none;font-size:13px;min-width:120px;background:transparent;padding:2px 4px}
 .color-pair{display:flex;gap:6px;align-items:center}
 .color-pair input[type=color]{width:36px;height:32px;border:1px solid #e0e0e0;border-radius:4px;padding:2px;cursor:pointer;background:#fff}
+/* Nhóm ngành chips */
+#grpList > div:hover{border-color:var(--blue);background:var(--blue-lt)}

@@ -1959,15 +1959,27 @@ async function apiPost(path, body) {
 /*
  NGÀNH HỌC – API + fallback
  */
-const NGANH_TABS = [
+// NGANH_TABS sẽ được build động từ API (xem loadNganhGroups)
+const NGANH_TABS_DEFAULT = [
  {id:'all',label:'Tất cả'},
- {id:'Kỹ thuật',label:'Kỹ thuật – CN'},
- {id:'Ngoại ngữ',label:'Ngoại ngữ'},
- {id:'Kinh tế',label:'Kinh tế – Quản trị'},
- {id:'Y tế',label:'Y tế – Sức khỏe'},
- {id:'Du lịch',label:'Du lịch – Nhà hàng'},
+ {id:'Kỹ thuật',   label:'Kỹ thuật – CN'},
+ {id:'Ngoại ngữ',  label:'Ngoại ngữ'},
+ {id:'Kinh tế',    label:'Kinh tế – Quản trị'},
+ {id:'Y tế',       label:'Y tế – Sức khỏe'},
+ {id:'Du lịch',    label:'Du lịch – Nhà hàng'},
  {id:'Truyền thông',label:'Truyền thông – Luật'},
 ];
+let NGANH_TABS = [...NGANH_TABS_DEFAULT];
+
+async function loadNganhGroups() {
+ try {
+  const d = await apiGet('/api/content');
+  const groups = d?.data?.nganh_groups;
+  if (Array.isArray(groups) && groups.length) {
+   NGANH_TABS = [{id:'all',label:'Tất cả'}, ...groups.map(g => ({id:g.name, label:g.label||g.name}))];
+  }
+ } catch(_) {}
+}
 const ICONS = {
  'Tiếp viên hàng không':'✈️','Dịch vụ TM hàng không':'✈️',
  'Điện công nghiệp':'⚡','Điện tử công nghiệp':'🔌',
@@ -2750,7 +2762,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
  setTimeout(()=>bgEl.classList.add('loaded'), 100);
  }
 
- // 4. Load ngành từ API
+ // 4. Load nhóm ngành + danh sách ngành
+ await loadNganhGroups();
  await loadNganhAPI();
 
  // 5. Auto-popup form đăng ký (1 lần / session)

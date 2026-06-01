@@ -129,6 +129,19 @@
 
       <!-- NGÀNH HỌC -->
       <div class="page" id="page-nganh">
+        <!-- Card quản lý nhóm ngành -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="ch">
+            <span class="ch-title">🗂️ Nhóm ngành</span>
+            <button class="hbtn hbtn-red" onclick="openModal('mAddGrp')" style="padding:6px 14px;font-size:12.5px">+ Thêm nhóm</button>
+          </div>
+          <div class="cb" style="padding:12px 16px">
+            <div id="grpList" style="display:flex;flex-wrap:wrap;gap:8px">
+              <div class="spin spin-dk" style="width:18px;height:18px"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Bảng ngành -->
         <div class="fbar">
           <div class="sbox">🔍<input placeholder="Tìm ngành..." oninput="filterNganh(this.value)"></div>
           <div class="factions"><button class="hbtn hbtn-red" onclick="openModal('mAddNganh')">+ Thêm ngành</button></div>
@@ -990,11 +1003,30 @@
   <div class="mf"><button class="btn-gray" onclick="closeModal('mEditHS')">Hủy</button><button class="btn-red" id="mEditHSBtn" onclick="submitEditHS()">💾 Lưu thay đổi</button></div>
 </div></div>
 
+<div class="overlay" id="mAddGrp"><div class="modal" style="max-width:400px">
+  <div class="mh"><h3>🗂️ Thêm nhóm ngành</h3><button class="mc" onclick="closeModal('mAddGrp')">✕</button></div>
+  <div class="mb"><div class="fgrid">
+    <div class="fg full"><label>Tên nhóm (key) *</label><input id="grpName" placeholder="VD: Kỹ thuật"></div>
+    <div class="fg full"><label>Nhãn hiển thị *</label><input id="grpLabel" placeholder="VD: Kỹ thuật – CN"></div>
+  </div></div>
+  <div class="mf"><button class="btn-gray" onclick="closeModal('mAddGrp')">Hủy</button><button class="btn-red" onclick="submitAddGrp()">➕ Thêm nhóm</button></div>
+</div></div>
+
+<div class="overlay" id="mEditGrp"><div class="modal" style="max-width:400px">
+  <div class="mh"><h3>✏️ Sửa nhóm ngành</h3><button class="mc" onclick="closeModal('mEditGrp')">✕</button></div>
+  <div class="mb"><div class="fgrid">
+    <input type="hidden" id="editGrpIdx">
+    <div class="fg full"><label>Tên nhóm (key) *</label><input id="editGrpName" placeholder="VD: Kỹ thuật"></div>
+    <div class="fg full"><label>Nhãn hiển thị *</label><input id="editGrpLabel" placeholder="VD: Kỹ thuật – CN"></div>
+  </div></div>
+  <div class="mf"><button class="btn-gray" onclick="closeModal('mEditGrp')">Hủy</button><button class="btn-red" onclick="submitEditGrp()">💾 Lưu</button></div>
+</div></div>
+
 <div class="overlay" id="mAddNganh"><div class="modal">
   <div class="mh"><h3>📚 Thêm ngành học</h3><button class="mc" onclick="closeModal('mAddNganh')">✕</button></div>
   <div class="mb"><div class="fgrid">
     <div class="fg full"><label>Tên ngành *</label><input id="nfName" placeholder="VD: Công nghệ thông tin"></div>
-    <div class="fg"><label>Nhóm ngành</label><select id="nfGrp"><option>Kỹ thuật</option><option>Ngoại ngữ</option><option>Kinh tế</option><option>Y tế</option><option>Du lịch</option><option>Truyền thông</option></select></div>
+    <div class="fg"><label>Nhóm ngành</label><select id="nfGrp"><option value="">-- Chọn nhóm --</option></select></div>
     <div class="fg"><label>HP/tín chỉ (đ)</label><input type="number" id="nfDon" value="525000"></div>
     <div class="fg"><label>Số TC Cao đẳng</label><input type="number" id="nfTcCd" value="100"></div>
     <div class="fg"><label>Số TC Trung cấp</label><input type="number" id="nfTcTc" value="72"></div>
@@ -1009,7 +1041,7 @@
   <div class="mb"><div class="fgrid">
     <input type="hidden" id="enfId">
     <div class="fg full"><label>Tên ngành *</label><input id="enfName" placeholder="VD: Công nghệ thông tin"></div>
-    <div class="fg"><label>Nhóm ngành</label><select id="enfGrp"><option>Kỹ thuật</option><option>Ngoại ngữ</option><option>Kinh tế</option><option>Y tế</option><option>Du lịch</option><option>Truyền thông</option></select></div>
+    <div class="fg"><label>Nhóm ngành</label><select id="enfGrp"><option value="">-- Chọn nhóm --</option></select></div>
     <div class="fg"><label>HP/tín chỉ (đ)</label><input type="number" id="enfDon"></div>
     <div class="fg"><label>Số TC Cao đẳng</label><input type="number" id="enfTcCd"></div>
     <div class="fg"><label>Số TC Trung cấp</label><input type="number" id="enfTcTc"></div>
@@ -1510,7 +1542,118 @@ async function syncSheets() {
 /* ============================================================
    NGÀNH HỌC
 ============================================================ */
+
+/* ---- NHÓM NGÀNH ---- */
+let grpData = []; // cache nhóm ngành
+
+const DEFAULT_GROUPS = [
+  {name:'Kỹ thuật',   label:'Kỹ thuật – CN'},
+  {name:'Ngoại ngữ',  label:'Ngoại ngữ'},
+  {name:'Kinh tế',    label:'Kinh tế – Quản trị'},
+  {name:'Y tế',       label:'Y tế – Sức khỏe'},
+  {name:'Du lịch',    label:'Du lịch – Nhà hàng'},
+  {name:'Truyền thông',label:'Truyền thông – Luật'},
+];
+
+async function loadGrp() {
+  try {
+    const {data} = await api('GET','/api/content');
+    grpData = data?.nganh_groups || DEFAULT_GROUPS;
+  } catch(e) {
+    grpData = DEFAULT_GROUPS;
+  }
+  renderGrpList();
+  populateGrpSelects();
+}
+
+function renderGrpList() {
+  const el = document.getElementById('grpList');
+  if (!el) return;
+  if (!grpData.length) {
+    el.innerHTML = '<span style="color:var(--muted);font-size:13px">Chưa có nhóm ngành nào.</span>';
+    return;
+  }
+  el.innerHTML = grpData.map((g, i) => `
+    <div style="display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px">
+      <span style="font-weight:600;color:var(--ink)">${g.name}</span>
+      ${g.label !== g.name ? `<span style="color:var(--muted);font-size:12px">/ ${g.label}</span>` : ''}
+      <button onclick="openEditGrp(${i})" style="background:none;border:none;cursor:pointer;font-size:13px;padding:0 2px;color:var(--blue)" title="Sửa">✏️</button>
+      <button onclick="deleteGrp(${i})" style="background:none;border:none;cursor:pointer;font-size:13px;padding:0 2px;color:var(--red)" title="Xóa">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function populateGrpSelects() {
+  ['nfGrp','enfGrp'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">-- Chọn nhóm --</option>' +
+      grpData.map(g => `<option value="${g.name}">${g.label || g.name}</option>`).join('');
+    if (cur) sel.value = cur;
+  });
+}
+
+async function saveGrpToDB() {
+  try {
+    await api('PUT','/api/content/nganh_groups', {value: grpData});
+  } catch(e) { toast('Lỗi lưu nhóm: '+e.message,'err'); }
+}
+
+async function submitAddGrp() {
+  const name  = getVal('grpName').trim();
+  const label = getVal('grpLabel').trim();
+  if (!name) { toast('Nhập tên nhóm!','warn'); return; }
+  if (grpData.find(g => g.name === name)) { toast('Nhóm đã tồn tại!','warn'); return; }
+  grpData.push({ name, label: label || name });
+  await saveGrpToDB();
+  renderGrpList(); populateGrpSelects();
+  setVal('grpName',''); setVal('grpLabel','');
+  closeModal('mAddGrp');
+  toast('Đã thêm nhóm ngành!');
+}
+
+function openEditGrp(idx) {
+  const g = grpData[idx];
+  if (!g) return;
+  setVal('editGrpIdx', idx);
+  setVal('editGrpName',  g.name);
+  setVal('editGrpLabel', g.label || g.name);
+  openModal('mEditGrp');
+}
+
+async function submitEditGrp() {
+  const idx   = Number(getVal('editGrpIdx'));
+  const name  = getVal('editGrpName').trim();
+  const label = getVal('editGrpLabel').trim();
+  if (!name) { toast('Nhập tên nhóm!','warn'); return; }
+  const oldName = grpData[idx]?.name;
+  grpData[idx] = { name, label: label || name };
+  await saveGrpToDB();
+  // Cập nhật ngành đang dùng nhóm cũ (client-side preview)
+  if (oldName && oldName !== name) {
+    ngAll.forEach(n => { if (n.grp === oldName) n.grp = name; });
+  }
+  renderGrpList(); populateGrpSelects(); renderNganh(ngAll);
+  closeModal('mEditGrp');
+  toast('Đã cập nhật nhóm!');
+}
+
+async function deleteGrp(idx) {
+  const g = grpData[idx];
+  if (!g) return;
+  const inUse = (ngAll||[]).filter(n => n.grp === g.name).length;
+  if (inUse > 0) {
+    if (!confirm(`Nhóm "${g.name}" đang có ${inUse} ngành. Vẫn xóa?`)) return;
+  }
+  grpData.splice(idx, 1);
+  await saveGrpToDB();
+  renderGrpList(); populateGrpSelects();
+  toast('Đã xóa nhóm ngành!');
+}
+
 async function loadNganh() {
+  await loadGrp(); // load nhóm trước để populate selects
   try {
     const {data} = await api('GET','/api/nganh'); ngAll = data;
     renderNganh(data);
