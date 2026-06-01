@@ -603,9 +603,6 @@
               </div>
             </div>
 
-            <input type="hidden" id="cms-theme-red">
-            <input type="hidden" id="cms-theme-navy">
-            <input type="hidden" id="cms-theme-gold">
           </div></div>
         </div>
 
@@ -2093,9 +2090,12 @@ function fillCmsForm() {
   document.getElementById('cms-ct-address').value  = ct.address || '';
 
   const th = cmsData.theme || {};
-  document.getElementById('cms-theme-red').value         = th.red || '';
-  document.getElementById('cms-theme-navy').value        = th.navy || '';
-  document.getElementById('cms-theme-gold').value        = th.gold || '';
+  // Sync color pickers (tab Màu sắc Theme) để saveContent('theme') đọc đúng
+  if (th.red)   setColor('theme-red',   th.red);
+  if (th.green) setColor('theme-green', th.green);
+  if (th.navy)  setColor('theme-navy',  th.navy);
+  if (th.gold)  setColor('theme-gold',  th.gold);
+  // Logo & brand fields
   document.getElementById('cms-theme-logo').value        = th.logo || '';
   document.getElementById('cms-theme-school-name').value = th.schoolName || '';
   document.getElementById('cms-theme-slogan').value      = th.slogan || '';
@@ -2194,14 +2194,17 @@ async function saveContent(key) {
         break;
       case 'theme':
         value = {
-          red:   document.getElementById('cms-theme-red').value.trim() || '#B71C1C',
-          navy:  document.getElementById('cms-theme-navy').value.trim() || '#0D2137',
-          gold:  document.getElementById('cms-theme-gold').value.trim() || '#F57F17',
-          logo:  document.getElementById('cms-theme-logo').value.trim(),
-          heroImage: document.getElementById('cms-theme-hero-img').value.trim(),
+          // Màu sắc — đọc từ color pickers thực (tab Màu sắc Theme)
+          red:   document.getElementById('theme-red')?.value  || '#DC2626',
+          green: document.getElementById('theme-green')?.value || '#16A34A',
+          navy:  document.getElementById('theme-navy')?.value  || '#1E40AF',
+          gold:  document.getElementById('theme-gold')?.value  || '#F59E0B',
+          // Logo & brand
+          logo:       document.getElementById('cms-theme-logo').value.trim(),
+          heroImage:  document.getElementById('cms-theme-hero-img').value.trim(),
           schoolName: document.getElementById('cms-theme-school-name').value.trim(),
-          slogan: document.getElementById('cms-theme-slogan').value.trim(),
-          favicon: document.getElementById('cms-theme-favicon').value.trim(),
+          slogan:     document.getElementById('cms-theme-slogan').value.trim(),
+          favicon:    document.getElementById('cms-theme-favicon').value.trim(),
         };
         break;
       default: toast('Key không hợp lệ', 'err'); return;
@@ -3288,12 +3291,19 @@ async function loadTheme() {
 async function saveTheme() {
   try {
     await api('PUT', '/api/content/theme', {value: {
-      red:   document.getElementById('theme-red')?.value,
-      green: document.getElementById('theme-green')?.value,
-      navy:  document.getElementById('theme-navy')?.value,
-      gold:  document.getElementById('theme-gold')?.value
+      // Màu sắc
+      red:   document.getElementById('theme-red')?.value   || '#DC2626',
+      green: document.getElementById('theme-green')?.value || '#16A34A',
+      navy:  document.getElementById('theme-navy')?.value  || '#1E40AF',
+      gold:  document.getElementById('theme-gold')?.value  || '#F59E0B',
+      // Logo & brand — giữ nguyên giá trị hiện tại từ card Logo
+      logo:       document.getElementById('cms-theme-logo')?.value.trim()       || (cmsData.theme?.logo || ''),
+      heroImage:  document.getElementById('cms-theme-hero-img')?.value.trim()   || (cmsData.theme?.heroImage || ''),
+      schoolName: document.getElementById('cms-theme-school-name')?.value.trim()|| (cmsData.theme?.schoolName || ''),
+      slogan:     document.getElementById('cms-theme-slogan')?.value.trim()     || (cmsData.theme?.slogan || ''),
+      favicon:    document.getElementById('cms-theme-favicon')?.value.trim()    || (cmsData.theme?.favicon || ''),
     }});
-    toast('Đã lưu theme colors', 'ok');
+    toast('✅ Đã lưu theme thành công!');
   } catch(e) { toast('Lỗi lưu: ' + e.message, 'err'); }
 }
 
