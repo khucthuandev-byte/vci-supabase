@@ -1719,11 +1719,11 @@ button{cursor:pointer;font-family:var(--fh)}
  <div class="container">
  <div class="reveal" style="text-align:center;margin-bottom:48px">
  <div class="eyebrow" style="justify-content:center">Hồ sơ & Thủ tục</div>
- <h2 class="h-serif h2" style="color:var(--navy)">Hồ sơ xét tuyển 2026</h2>
- <p class="lead" style="max-width:520px;margin:10px auto 0">Nộp trực tiếp, qua bưu điện hoặc đăng ký trực tuyến tại vci.edu.vn</p>
+ <h2 class="h-serif h2" id="hosoTitle" style="color:var(--navy)">Hồ sơ xét tuyển 2026</h2>
+ <p class="lead" id="hosoDesc" style="max-width:520px;margin:10px auto 0">Nộp trực tiếp, qua bưu điện hoặc đăng ký trực tuyến tại vci.edu.vn</p>
  </div>
  <div class="hoso-layout reveal">
- <ul class="step-list">
+ <ul class="step-list" id="hosoSteps">
  <li class="step"><div class="step-num">1</div><div><h4>Học bạ & Bằng tốt nghiệp</h4><p>Bản sao học bạ + bằng TN THCS (hệ TC) hoặc THPT (hệ CĐ). Kèm 03 bản công chứng.</p></div></li>
  <li class="step"><div class="step-num">2</div><div><h4>Ảnh thẻ & Giấy tờ định danh</h4><p>04 ảnh 3×4cm áo sơ mi trắng nền xanh. CCCD + Giấy khai sinh bản sao công chứng (03 bản/loại).</p></div></li>
  <li class="step"><div class="step-num">3</div><div><h4>Sơ yếu lý lịch & Xác nhận cư trú</h4><p>SYLL xác nhận UBND địa phương (02 bản). Xác nhận cư trú công chứng (03 bản).</p></div></li>
@@ -1733,13 +1733,15 @@ button{cursor:pointer;font-family:var(--fh)}
  </ul>
  <div>
  <div class="deadline-panel">
- <div class="dp-title">⏰ Lịch nhập học 2026</div>
+ <div class="dp-title" id="hosoSchedTitle">⏰ Lịch nhập học 2026</div>
+ <div id="hosoSchedRows">
  <div class="dp-row"><span class="dp-label">Nhận hồ sơ</span><span class="dp-val accent">01/01 – 30/12/2026</span></div>
  <div class="dp-row"><span class="dp-label">Đợt 1</span><span class="dp-val">06/02 – 03/05/2026</span></div>
  <div class="dp-row"><span class="dp-label">Đợt 2</span><span class="dp-val">04/05 – 27/06/2026</span></div>
  <div class="dp-row"><span class="dp-label">Đợt 3</span><span class="dp-val">01/07 – 30/08/2026</span></div>
  <div class="dp-row"><span class="dp-label">Đợt 4</span><span class="dp-val">03/09 – 30/10/2026</span></div>
  <div class="dp-row"><span class="dp-label">Lệ phí hồ sơ</span><span class="dp-val accent">150.000đ</span></div>
+ </div>
  <div class="hotline-box">
  <p>Hotline tư vấn Cần Thơ</p>
  <strong>0965 670 100</strong>
@@ -2572,6 +2574,35 @@ async function fetchContent() {
      if (ttl && card.title) ttl.textContent = card.title;
      if (dsc && card.desc) dsc.textContent = card.desc;
     });
+   }
+  }
+ }
+
+ /* ---- HỒ SƠ XÉT TUYỂN ---- */
+ const hs = c.ho_so;
+ if (hs) {
+  const ttl = document.getElementById('hosoTitle');
+  if (ttl && hs.title) ttl.textContent = hs.title;
+  const dsc = document.getElementById('hosoDesc');
+  if (dsc && hs.desc) dsc.textContent = hs.desc;
+  const schTtl = document.getElementById('hosoSchedTitle');
+  if (schTtl && hs.sched_title) schTtl.textContent = hs.sched_title;
+  // Steps
+  if (Array.isArray(hs.steps) && hs.steps.length) {
+   const wrap = document.getElementById('hosoSteps');
+   if (wrap) {
+    wrap.innerHTML = hs.steps.map((s, i) => `
+     <li class="step"><div class="step-num">${i+1}</div><div><h4>${s.title||''}</h4><p>${s.desc||''}</p></div></li>
+    `).join('');
+   }
+  }
+  // Schedule
+  if (Array.isArray(hs.schedule) && hs.schedule.length) {
+   const sw = document.getElementById('hosoSchedRows');
+   if (sw) {
+    sw.innerHTML = hs.schedule.map(r => `
+     <div class="dp-row"><span class="dp-label">${r.label||''}</span><span class="dp-val${r.accent?' accent':''}">${r.value||''}</span></div>
+    `).join('');
    }
   }
  }

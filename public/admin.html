@@ -387,6 +387,36 @@
           </div>
         </div>
 
+        <!-- HỒ SƠ XÉT TUYỂN -->
+        <div class="card">
+          <div class="ch"><span class="ch-title">📄 Hồ sơ xét tuyển</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('ho_so')">💾 Lưu</button>
+          </div>
+          <div class="cb">
+            <div class="fgrid" style="margin-bottom:16px">
+              <div class="fg"><label>Tiêu đề section</label><input id="hs-title" placeholder="Hồ sơ xét tuyển 2026"></div>
+              <div class="fg"><label>Mô tả dưới tiêu đề</label><input id="hs-desc" placeholder="Nộp trực tiếp, qua bưu điện..."></div>
+            </div>
+            <!-- Danh sách giấy tờ -->
+            <div class="fg full" style="margin-bottom:16px">
+              <label style="font-size:13px;font-weight:700;margin-bottom:8px;display:block">📋 Danh sách giấy tờ cần thiết</label>
+              <div id="rep-hoso-steps"></div>
+              <button class="rep-add" onclick="addHosoStep()">+ Thêm giấy tờ</button>
+            </div>
+            <!-- Lịch nhập học -->
+            <div class="fg full">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <label style="font-size:13px;font-weight:700">📅 Lịch nhập học</label>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <input id="hs-sched-title" placeholder="⏰ Lịch nhập học 2026" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;width:220px">
+                </div>
+              </div>
+              <div id="rep-hoso-sched"></div>
+              <button class="rep-add" onclick="addSchedRow()">+ Thêm dòng lịch</button>
+            </div>
+          </div>
+        </div>
+
         </div><!-- /PANE 2 -->
 
         <!-- ====== PANE: GIỚI THIỆU ====== -->
@@ -2001,6 +2031,7 @@ function fillCmsForm() {
 
   renderHedtRep(cmsData.he_dao_tao || CMS_DEFAULTS.he_dao_tao);
   renderTestiRep(cmsData.testimonials || CMS_DEFAULTS.testimonials);
+  fillHosoForm();
 
   const ab = cmsData.about || {};
   document.getElementById('cms-about-eyebrow').value    = ab.eyebrow || '';
@@ -2087,6 +2118,15 @@ async function saveContent(key) {
         break;
       case 'testimonials':
         value = getTestiRows();
+        break;
+      case 'ho_so':
+        value = {
+          title:     getVal('hs-title'),
+          desc:      getVal('hs-desc'),
+          sched_title: getVal('hs-sched-title'),
+          steps:     getHosoSteps(),
+          schedule:  getSchedRows(),
+        };
         break;
       case 'about':
         value = {
@@ -3251,6 +3291,103 @@ function resetTheme() {
     if (/^#[0-9A-F]{6}$/i.test(hex.value)) { picker.value = hex.value; updateThemePreview(); }
   });
 });
+
+/* ============================================================
+   HỒ SƠ XÉT TUYỂN CMS
+============================================================ */
+const HOSO_DEFAULTS = {
+  title: 'Hồ sơ xét tuyển 2026',
+  desc:  'Nộp trực tiếp, qua bưu điện hoặc đăng ký trực tuyến tại vci.edu.vn',
+  sched_title: '⏰ Lịch nhập học 2026',
+  steps: [
+    {title:'Học bạ & Bằng tốt nghiệp',      desc:'Bản sao học bạ + bằng TN THCS (hệ TC) hoặc THPT (hệ CĐ). Kèm 03 bản công chứng.'},
+    {title:'Ảnh thẻ & Giấy tờ định danh',   desc:'04 ảnh 3×4cm áo sơ mi trắng nền xanh. CCCD + Giấy khai sinh bản sao công chứng (03 bản/loại).'},
+    {title:'Sơ yếu lý lịch & Xác nhận cư trú', desc:'SYLL xác nhận UBND địa phương (02 bản). Xác nhận cư trú công chứng (03 bản).'},
+    {title:'02 Phong bì có dán tem',         desc:'Ghi rõ địa chỉ để trường gửi giấy báo nhập học về tận nơi.'},
+    {title:'Lệ phí hồ sơ: 150.000đ',        desc:'Nộp khi nộp hồ sơ trực tiếp hoặc chuyển khoản theo hướng dẫn.'},
+    {title:'Giấy tờ bổ sung (nếu có)',       desc:'Sổ đoàn, giấy chuyển NVQS, giấy ưu tiên, giấy tạm trú (học sinh ngoại tỉnh).'},
+  ],
+  schedule: [
+    {label:'Nhận hồ sơ', value:'01/01 – 30/12/2026', accent:true},
+    {label:'Đợt 1',      value:'06/02 – 03/05/2026', accent:false},
+    {label:'Đợt 2',      value:'04/05 – 27/06/2026', accent:false},
+    {label:'Đợt 3',      value:'01/07 – 30/08/2026', accent:false},
+    {label:'Đợt 4',      value:'03/09 – 30/10/2026', accent:false},
+    {label:'Lệ phí hồ sơ', value:'150.000đ',         accent:true},
+  ],
+};
+
+function fillHosoForm() {
+  const hs = cmsData.ho_so || HOSO_DEFAULTS;
+  setVal('hs-title',       hs.title       || HOSO_DEFAULTS.title);
+  setVal('hs-desc',        hs.desc        || HOSO_DEFAULTS.desc);
+  setVal('hs-sched-title', hs.sched_title || HOSO_DEFAULTS.sched_title);
+  renderHosoSteps(hs.steps    || HOSO_DEFAULTS.steps);
+  renderSchedRows(hs.schedule || HOSO_DEFAULTS.schedule);
+}
+
+/* ---- Steps (danh sách giấy tờ) ---- */
+let _hosoSteps = [];
+
+function renderHosoSteps(steps) {
+  _hosoSteps = steps ? steps.map(s => ({...s})) : [];
+  const el = document.getElementById('rep-hoso-steps');
+  if (!el) return;
+  el.innerHTML = (_hosoSteps||[]).map((s,i) => `
+    <div class="rep-row" data-idx="${i}" style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:start">
+      <input value="${_esc(s.title||'')}" placeholder="Tiêu đề giấy tờ" oninput="updateHosoStep(${i},'title',this.value)"
+        style="padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px">
+      <input value="${_esc(s.desc||'')}" placeholder="Mô tả chi tiết" oninput="updateHosoStep(${i},'desc',this.value)"
+        style="padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px">
+      <button onclick="removeHosoStep(${i})" style="background:var(--red-lt);border:none;border-radius:6px;padding:8px 10px;cursor:pointer;color:var(--red);font-size:14px">🗑️</button>
+    </div>
+  `).join('') || '<div style="color:var(--muted);font-size:13px;padding:8px 0">Chưa có giấy tờ nào.</div>';
+}
+
+function updateHosoStep(i, field, val) { if (_hosoSteps[i]) _hosoSteps[i][field] = val; }
+function removeHosoStep(i) { _hosoSteps.splice(i,1); renderHosoSteps(_hosoSteps); }
+function addHosoStep() {
+  _hosoSteps.push({title:'',desc:''});
+  renderHosoSteps(_hosoSteps);
+  const rows = document.querySelectorAll('#rep-hoso-steps .rep-row');
+  if (rows.length) rows[rows.length-1].querySelector('input')?.focus();
+}
+function getHosoSteps() {
+  return _hosoSteps.filter(s => s.title && s.title.trim());
+}
+
+/* ---- Schedule (lịch nhập học) ---- */
+let _hosoSched = [];
+
+function renderSchedRows(rows) {
+  _hosoSched = rows ? rows.map(r => ({...r})) : [];
+  const el = document.getElementById('rep-hoso-sched');
+  if (!el) return;
+  el.innerHTML = (_hosoSched||[]).map((r,i) => `
+    <div class="rep-row" data-idx="${i}" style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;margin-bottom:8px;align-items:center">
+      <input value="${_esc(r.label||'')}" placeholder="Nhãn (VD: Đợt 1)" oninput="updateSched(${i},'label',this.value)"
+        style="padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px">
+      <input value="${_esc(r.value||'')}" placeholder="Giá trị (VD: 06/02 – 03/05)" oninput="updateSched(${i},'value',this.value)"
+        style="padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px">
+      <label style="display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;cursor:pointer">
+        <input type="checkbox" ${r.accent?'checked':''} onchange="updateSched(${i},'accent',this.checked)" style="accent-color:var(--red)"> Vàng
+      </label>
+      <button onclick="removeSchedRow(${i})" style="background:var(--red-lt);border:none;border-radius:6px;padding:8px 10px;cursor:pointer;color:var(--red);font-size:14px">🗑️</button>
+    </div>
+  `).join('') || '<div style="color:var(--muted);font-size:13px;padding:8px 0">Chưa có dòng lịch nào.</div>';
+}
+
+function updateSched(i, field, val) { if (_hosoSched[i]) _hosoSched[i][field] = val; }
+function removeSchedRow(i) { _hosoSched.splice(i,1); renderSchedRows(_hosoSched); }
+function addSchedRow() {
+  _hosoSched.push({label:'',value:'',accent:false});
+  renderSchedRows(_hosoSched);
+  const els = document.querySelectorAll('#rep-hoso-sched .rep-row');
+  if (els.length) els[els.length-1].querySelector('input')?.focus();
+}
+function getSchedRows() {
+  return _hosoSched.filter(r => r.label && r.label.trim());
+}
 
 </script>
 </body>
