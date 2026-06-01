@@ -9,7 +9,6 @@
 <link rel="apple-touch-icon" id="apple-touch-icon" href="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
 <script src="common.js"></script>
 <style>
 /* TOKENS */
@@ -1765,7 +1764,9 @@ button{cursor:pointer;font-family:var(--fh)}
  </div>
  <div class="coso-layout reveal">
  <div class="coso-list" id="cosoList"></div>
- <div id="map" style="width:100%;height:100%;display:block"></div>
+ <div id="map" style="width:100%;height:100%;min-height:420px;border-radius:16px;overflow:hidden;background:#f3f4f6">
+  <iframe id="mapFrame" src="" width="100%" height="100%" style="border:0;min-height:420px;display:block" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+ </div>
  </div>
  </div>
 </section>
@@ -2062,65 +2063,38 @@ const COSO = [
  {city:'Đắk Lắk',icon:'🌳',addr:'349 Lê Duẩn, phường Ea Kao, tỉnh Đắk Lắk',phone:'0262.383.1111 | 0826.391.189',lat:12.6803,lng:108.0377},
  {city:'Thái Nguyên',icon:'🏔️',addr:'Tổ dân phố Đình Cả 2, Xã Phú Bình · Xã Phú Bình, Tỉnh Thái Nguyên',phone:'02083.567.555 | 0972.161.822',lat:21.5943,lng:105.8412},
 ];
-let map, markers=[], activeCs=2;
-function initMap(){
- if(!window.google){console.error('Google Maps not loaded');return;}
- map = new google.maps.Map(document.getElementById('map'),{
-  center:{lat:16,lng:107},
-  zoom:5,
-  gestureHandling:'cooperative',
-  styles:[{featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]}]
- });
- COSO.forEach((cs,i)=>{
-  const marker = new google.maps.Marker({
-   position:{lat:cs.lat,lng:cs.lng},
-   map:map,
-   title:cs.city,
-   animation:google.maps.Animation.DROP
-  });
-  const infoWindow = new google.maps.InfoWindow({
-   content:`<div style="padding:8px"><strong style="font-size:14px">${cs.city}</strong><br><span style="font-size:12px">${cs.addr}</span><br><b style="color:#16A34A">📞 ${cs.phone}</b></div>`
-  });
-  marker.addListener('click',()=>{
-   markers.forEach(m=>m.infoWindow.close());
-   infoWindow.open(map,marker);
-   selectCoso(i);
-  });
-  markers.push({marker,infoWindow});
- });
- selectCoso(2);
+let activeCs = 2;
+
+function getEmbedUrl(cs) {
+ const q = encodeURIComponent(cs.city + ' ' + cs.addr.split('·')[0].trim());
+ return `https://maps.google.com/maps?q=${q}&t=m&z=14&ie=UTF8&iwloc=&output=embed`;
 }
-function renderCosoList(){
- document.getElementById('cosoList').innerHTML=COSO.map((cs,i)=>`
- <div class="coso-item${i===activeCs?' active':''}" onclick="selectCoso(${i})">
- <div class="coso-icon">${cs.icon}</div>
- <div><div class="coso-city">${cs.city}</div>
- <div class="coso-addr">${cs.addr}</div>
- <div class="coso-phone">📞 ${cs.phone}</div></div>
- </div>`).join('');
+
+function renderCosoList() {
+ document.getElementById('cosoList').innerHTML = COSO.map((cs,i) => `
+  <div class="coso-item${i===activeCs?' active':''}" onclick="selectCoso(${i})">
+   <div class="coso-icon">${cs.icon}</div>
+   <div>
+    <div class="coso-city">${cs.city}</div>
+    <div class="coso-addr">${cs.addr}</div>
+    <div class="coso-phone">📞 ${cs.phone}</div>
+   </div>
+  </div>`).join('');
 }
-function selectCoso(i){
- activeCs=i;
+
+function selectCoso(i) {
+ activeCs = i;
  renderCosoList();
- if(map && markers[i]){
-  map.panTo({lat:COSO[i].lat,lng:COSO[i].lng});
-  map.setZoom(13);
-  markers.forEach(m=>m.infoWindow.close());
-  markers[i].infoWindow.open(map,markers[i].marker);
- }
+ const frame = document.getElementById('mapFrame');
+ if (frame) frame.src = getEmbedUrl(COSO[i]);
 }
+
 renderCosoList();
-(function(){
- const mapEl = document.getElementById('map');
- const script = document.querySelector('script[src*="maps.googleapis.com"]');
- const hasKey = script && !script.src.includes('YOUR_GOOGLE_MAPS_API_KEY');
- if(!hasKey && mapEl){
-  mapEl.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#f3f4f6;color:#6b7280;font-size:14px;flex-direction:column;gap:8px"><span style="font-size:32px">🗺️</span><span>Bản đồ chưa được cấu hình</span><span style="font-size:12px">Vui lòng thêm Google Maps API key</span></div>';
-  return;
- }
- window.initMap=initMap;
- if(typeof google!=='undefined') window.addEventListener('load',()=>setTimeout(initMap,300));
-})();
+// Hiển thị bản đồ cơ sở mặc định (Cần Thơ)
+document.addEventListener('DOMContentLoaded', () => {
+ const frame = document.getElementById('mapFrame');
+ if (frame) frame.src = getEmbedUrl(COSO[activeCs]);
+});
 
 /*
  TÍNH HỌC PHÍ
