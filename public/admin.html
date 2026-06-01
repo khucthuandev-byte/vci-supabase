@@ -628,58 +628,6 @@
       </div>
 
       <!-- TEMPLATES -->
-      <div class="page" id="page-templates">
-        <div class="fbar">
-          <p style="font-size:13px;color:var(--muted);flex:1">Quản lý templates sections và layouts.</p>
-          <div class="factions">
-            <button class="hbtn hbtn-red" onclick="saveTemplates()">💾 Lưu thay đổi</button>
-            <button class="hbtn hbtn-out" onclick="loadTemplates()">↻ Tải lại</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="ch"><div class="ch-title">🎨 Hero Section Template</div></div>
-          <div class="cb">
-            <div class="fgrid">
-              <div class="fg"><label>Layout</label>
-                <select id="tpl-hero-layout">
-                  <option value="centered">Centered - Full Width</option>
-                  <option value="split">Split - 2 Columns</option>
-                  <option value="minimal">Minimal - Text Only</option>
-                </select>
-              </div>
-              <div class="fg"><label>Background Style</label>
-                <select id="tpl-hero-bg">
-                  <option value="gradient">Gradient Overlay</option>
-                  <option value="image">Image Background</option>
-                  <option value="video">Video Background</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="ch"><div class="ch-title">📊 Stats Section Template</div></div>
-          <div class="cb">
-            <div class="fgrid">
-              <div class="fg"><label>Layout</label>
-                <select id="tpl-stats-layout">
-                  <option value="grid">Grid - 4 Columns</option>
-                  <option value="cards">Cards with Shadow</option>
-                  <option value="minimal">Minimal - Inline</option>
-                </select>
-              </div>
-              <div class="fg"><label>Animation</label>
-                <select id="tpl-stats-anim">
-                  <option value="fade">Fade In</option>
-                  <option value="slide">Slide Up</option>
-                  <option value="scale">Scale</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- MÀU SẮC THEME -->
       <div class="page" id="page-theme">
         <div class="fbar">
@@ -1152,11 +1100,11 @@ const _hsStore = {};
 
 // STATUS_VN đã khai báo trong common.js
 const ROLE_VN   = {admin:'Quản trị viên',staff:'Nhân viên tư vấn',viewer:'Xem báo cáo'};
-const PERM_LBL  = {dashboard:'Dashboard',hoSo:'Hồ sơ',nganh:'Ngành học',taiKhoan:'Tài khoản',phanQuyen:'Phân quyền',caiDat:'Cài đặt',baoCao:'Báo cáo',chatbot:'Chatbot',benefits:'Quyền lợi',templates:'Templates',theme:'Theme'};
+const PERM_LBL  = {dashboard:'Dashboard',hoSo:'Hồ sơ',nganh:'Ngành học',taiKhoan:'Tài khoản',phanQuyen:'Phân quyền',caiDat:'Cài đặt',baoCao:'Báo cáo',chatbot:'Chatbot',benefits:'Quyền lợi',theme:'Theme'};
 const PERM_DEF  = {
-  admin: {dashboard:true,hoSo:true,nganh:true,taiKhoan:true,phanQuyen:true,caiDat:true,baoCao:true,chatbot:true,benefits:true,templates:true,theme:true},
-  staff: {dashboard:true,hoSo:true,nganh:false,taiKhoan:false,phanQuyen:false,caiDat:false,baoCao:true,chatbot:false,benefits:false,templates:false,theme:false},
-  viewer: {dashboard:true,hoSo:false,nganh:false,taiKhoan:false,phanQuyen:false,caiDat:false,baoCao:true,chatbot:false,benefits:false,templates:false,theme:false},
+  admin:  {dashboard:true,hoSo:true,nganh:true,taiKhoan:true,phanQuyen:true,caiDat:true,baoCao:true,chatbot:true,benefits:true,theme:true},
+  staff:  {dashboard:true,hoSo:true,nganh:false,taiKhoan:false,phanQuyen:false,caiDat:false,baoCao:true,chatbot:false,benefits:false,theme:false},
+  viewer: {dashboard:true,hoSo:false,nganh:false,taiKhoan:false,phanQuyen:false,caiDat:false,baoCao:true,chatbot:false,benefits:false,theme:false},
 };
 const NAV = [
   {id:'dashboard',    ico:'🏠',lbl:'Dashboard',          grp:'Tổng quan',  perm:'dashboard'},
@@ -1169,7 +1117,6 @@ const NAV = [
   {id:'settings',     ico:'⚙️',lbl:'Cài đặt',            grp:'Hệ thống',   perm:'caiDat'},
   {id:'content',      ico:'🖊️',lbl:'Nội dung Website',   grp:'Giao diện',  perm:'caiDat'},
   {id:'benefits',     ico:'🎁',lbl:'Quyền lợi',           grp:'Giao diện',  perm:'benefits'},
-  {id:'templates',    ico:'📄',lbl:'Templates',           grp:'Giao diện',  perm:'templates'},
   {id:'theme',        ico:'🎨',lbl:'Màu sắc Theme',       grp:'Giao diện',  perm:'theme'},
   {id:'banners',      ico:'🖼️',lbl:'Banner & Slider',    grp:'Giao diện',  perm:'caiDat'},
   {id:'media',        ico:'📁',lbl:'Thư viện Media',      grp:'Giao diện',  perm:'caiDat'},
@@ -1188,7 +1135,6 @@ const PAGE_TITLES = {
   settings:         ['Cài đặt','Bảo trì · SMTP · Railway & Supabase'],
   content:          ['Nội dung Website','Quản lý nội dung giao diện frontend'],
   benefits:         ['Quyền lợi','Quản lý các quyền lợi sinh viên'],
-  templates:        ['Templates','Quản lý templates sections'],
   theme:            ['Màu sắc Theme','Tùy chỉnh màu sắc toàn trang'],
   banners:          ['Banner & Slider','Quản lý banner hiển thị trang chủ'],
   media:            ['Thư viện Media','Upload và quản lý ảnh / video'],
@@ -1342,7 +1288,6 @@ async function showPage(id) {
   else if (id === 'chat-history') loadChatHistory();
   else if (id === 'settings')    loadSettings();
   else if (id === 'benefits')    loadBenefits();
-  else if (id === 'templates')   loadTemplates();
   else if (id === 'theme')       loadTheme();
 }
 
@@ -3238,29 +3183,6 @@ async function saveBenefits() {
 ============================================================ */
 const _selVal = id => { const el=document.getElementById(id); return el?el.value:''; };
 const _selSet = (id,v) => { const el=document.getElementById(id); if(el&&v) el.value=v; };
-
-async function loadTemplates() {
-  try {
-    const {data} = await api('GET', '/api/content');
-    const t = data?.templates || {};
-    _selSet('tpl-hero-layout', t.heroLayout||'centered');
-    _selSet('tpl-hero-bg',     t.heroBg||'gradient');
-    _selSet('tpl-stats-layout',t.statsLayout||'grid');
-    _selSet('tpl-stats-anim',  t.statsAnim||'fade');
-  } catch(e) { toast('Lỗi tải templates: '+e.message,'err'); }
-}
-
-async function saveTemplates() {
-  try {
-    await api('PUT', '/api/content/templates', {value: {
-      heroLayout:  _selVal('tpl-hero-layout'),
-      heroBg:      _selVal('tpl-hero-bg'),
-      statsLayout: _selVal('tpl-stats-layout'),
-      statsAnim:   _selVal('tpl-stats-anim')
-    }});
-    toast('Đã lưu templates', 'ok');
-  } catch(e) { toast('Lỗi lưu: ' + e.message, 'err'); }
-}
 
 /* ============================================================
    THEME COLORS MANAGEMENT
