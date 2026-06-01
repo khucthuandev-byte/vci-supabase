@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="description" content="Trường Cao đẳng Công thương Việt Nam - Tuyển sinh 2026. Đào tạo chất lượng cao, cam kết việc làm 100%, học bổng hấp dẫn.">
 <title>VCI – Cao đẳng Công thương Việt Nam | Tuyển sinh 2026</title>
+<link id="favicon" rel="icon" type="image/png" href="">
+<link rel="apple-touch-icon" id="apple-touch-icon" href="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
@@ -2659,6 +2661,13 @@ async function fetchContent() {
  if (theme.slogan) {
  const navSpan = document.querySelector('.nav-name span');
  if (navSpan) navSpan.textContent = theme.slogan;
+ }
+ // Favicon
+ if (theme.favicon) {
+  const fav = document.getElementById('favicon');
+  const ati = document.getElementById('apple-touch-icon');
+  if (fav) { fav.href = theme.favicon; }
+  if (ati) { ati.href = theme.favicon; }
  }
  }
 

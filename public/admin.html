@@ -566,6 +566,27 @@
             </div>
 
             <div class="fg full">
+              <label>⭐ Favicon (icon trên tab trình duyệt – khuyến nghị PNG 32×32 hoặc 64×64)</label>
+              <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">
+                <div style="width:48px;height:48px;border:2px solid var(--border);border-radius:8px;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden">
+                  <img id="cms-theme-favicon-preview" src="" alt="" style="width:32px;height:32px;object-fit:contain;display:none">
+                  <span id="cms-theme-favicon-empty" style="font-size:20px">🌐</span>
+                </div>
+                <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:8px">
+                  <input id="cms-theme-favicon" placeholder="https://... (PNG/ICO 32×32 tốt nhất)" oninput="updateFaviconPreview()">
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <label class="hbtn hbtn-out" style="cursor:pointer;padding:7px 12px;font-size:12px">📤 Upload
+                      <input type="file" accept="image/*,.ico" style="display:none" onchange="uploadBrandImage(this,'cms-theme-favicon','',true)">
+                    </label>
+                    <button type="button" class="hbtn hbtn-out" style="padding:7px 12px;font-size:12px" onclick="pickFromMedia('cms-theme-favicon','')">🗂️ Thư viện</button>
+                    <button type="button" class="hbtn hbtn-out" style="padding:7px 12px;font-size:12px" onclick="clearFavicon()">✕ Xóa</button>
+                  </div>
+                  <small style="color:var(--muted);font-size:11.5px">Sau khi lưu, refresh trang để thấy icon trên tab trình duyệt.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="fg full">
               <label>🖼️ Ảnh banner Hero (cột phải trang chủ)</label>
               <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">
                 <img id="cms-theme-hero-img-preview" src="" alt="" style="width:140px;height:90px;border-radius:8px;object-fit:cover;border:2px solid var(--border);background:var(--bg);flex-shrink:0;display:none">
@@ -2079,8 +2100,10 @@ function fillCmsForm() {
   document.getElementById('cms-theme-school-name').value = th.schoolName || '';
   document.getElementById('cms-theme-slogan').value      = th.slogan || '';
   document.getElementById('cms-theme-hero-img').value    = th.heroImage || '';
+  document.getElementById('cms-theme-favicon').value     = th.favicon || '';
   updatePreview('cms-theme-logo','cms-theme-logo-preview');
   updatePreview('cms-theme-hero-img','cms-theme-hero-img-preview');
+  updateFaviconPreview();
 }
 
 async function saveContent(key) {
@@ -2177,7 +2200,8 @@ async function saveContent(key) {
           logo:  document.getElementById('cms-theme-logo').value.trim(),
           heroImage: document.getElementById('cms-theme-hero-img').value.trim(),
           schoolName: document.getElementById('cms-theme-school-name').value.trim(),
-          slogan: document.getElementById('cms-theme-slogan').value.trim()
+          slogan: document.getElementById('cms-theme-slogan').value.trim(),
+          favicon: document.getElementById('cms-theme-favicon').value.trim(),
         };
         break;
       default: toast('Key không hợp lệ', 'err'); return;
@@ -3387,6 +3411,27 @@ function addSchedRow() {
 }
 function getSchedRows() {
   return _hosoSched.filter(r => r.label && r.label.trim());
+}
+
+/* ---- Favicon helpers ---- */
+function updateFaviconPreview() {
+  const url = document.getElementById('cms-theme-favicon')?.value?.trim();
+  const img  = document.getElementById('cms-theme-favicon-preview');
+  const empty = document.getElementById('cms-theme-favicon-empty');
+  if (!img || !empty) return;
+  if (url) {
+    img.src = url;
+    img.style.display = 'block';
+    empty.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    empty.style.display = 'block';
+  }
+}
+function clearFavicon() {
+  const inp = document.getElementById('cms-theme-favicon');
+  if (inp) inp.value = '';
+  updateFaviconPreview();
 }
 
 </script>
