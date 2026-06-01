@@ -539,10 +539,10 @@
           </div></div>
         </div>
 
-        <!-- LOGO & BRAND -->
+        <!-- LOGO & BRAND + MÀU SẮC (gộp 1 card, 1 nút Lưu) -->
         <div class="card">
-          <div class="ch"><span class="ch-title">🖼️ Logo &amp; ảnh thương hiệu</span>
-            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveContent('theme')">💾 Lưu</button>
+          <div class="ch"><span class="ch-title">🎨 Thương hiệu & Màu sắc</span>
+            <button class="btn-red" style="padding:6px 14px;font-size:12.5px" onclick="saveAllTheme()">💾 Lưu tất cả</button>
           </div>
           <div class="cb"><div class="fgrid">
             <div class="fg"><label>Tên trường (hiển thị trên navbar)</label><input id="cms-theme-school-name" placeholder="VCI – Tuyển sinh 2026"></div>
@@ -603,6 +603,40 @@
               </div>
             </div>
 
+            <!-- MÀU SẮC - gộp vào đây -->
+            <div class="fg full"><label style="font-size:13px;font-weight:700;margin-bottom:4px;display:block">🎨 Màu sắc theme</label></div>
+            <div class="fg">
+              <label>Đỏ chính</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="theme-red" value="#DC2626" style="width:44px;height:36px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;padding:2px" oninput="document.getElementById('theme-red-hex').value=this.value;updateThemePreview()">
+                <input type="text" id="theme-red-hex" value="#DC2626" style="flex:1;font-family:monospace" oninput="if(/^#[0-9A-F]{6}$/i.test(this.value)){document.getElementById('theme-red').value=this.value;updateThemePreview()}">
+              </div>
+            </div>
+            <div class="fg">
+              <label>Xanh lá</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="theme-green" value="#16A34A" style="width:44px;height:36px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;padding:2px" oninput="document.getElementById('theme-green-hex').value=this.value;updateThemePreview()">
+                <input type="text" id="theme-green-hex" value="#16A34A" style="flex:1;font-family:monospace" oninput="if(/^#[0-9A-F]{6}$/i.test(this.value)){document.getElementById('theme-green').value=this.value;updateThemePreview()}">
+              </div>
+            </div>
+            <div class="fg">
+              <label>Navy</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="theme-navy" value="#1E40AF" style="width:44px;height:36px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;padding:2px" oninput="document.getElementById('theme-navy-hex').value=this.value;updateThemePreview()">
+                <input type="text" id="theme-navy-hex" value="#1E40AF" style="flex:1;font-family:monospace" oninput="if(/^#[0-9A-F]{6}$/i.test(this.value)){document.getElementById('theme-navy').value=this.value;updateThemePreview()}">
+              </div>
+            </div>
+            <div class="fg">
+              <label>Vàng</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="theme-gold" value="#F59E0B" style="width:44px;height:36px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;padding:2px" oninput="document.getElementById('theme-gold-hex').value=this.value;updateThemePreview()">
+                <input type="text" id="theme-gold-hex" value="#F59E0B" style="flex:1;font-family:monospace" oninput="if(/^#[0-9A-F]{6}$/i.test(this.value)){document.getElementById('theme-gold').value=this.value;updateThemePreview()}">
+              </div>
+            </div>
+            <div class="fg full" style="display:flex;gap:8px;align-items:center">
+              <button type="button" class="hbtn hbtn-out" onclick="resetTheme()" style="font-size:12px">↻ Reset màu mặc định</button>
+            </div>
+
           </div></div>
         </div>
 
@@ -628,73 +662,6 @@
       </div>
 
       <!-- TEMPLATES -->
-      <!-- MÀU SẮC THEME -->
-      <div class="page" id="page-theme">
-        <div class="fbar">
-          <p style="font-size:13px;color:var(--muted);flex:1">Tùy chỉnh màu sắc theme toàn trang website.</p>
-          <div class="factions">
-            <button class="hbtn hbtn-red" onclick="saveTheme()">💾 Lưu & Áp dụng</button>
-            <button class="hbtn hbtn-out" onclick="resetTheme()">↻ Reset mặc định</button>
-          </div>
-        </div>
-        <div class="g2">
-          <div class="card">
-            <div class="ch"><div class="ch-title">🎨 Màu chính</div></div>
-            <div class="cb">
-              <div class="fg"><label>Đỏ chính (Primary Red)</label>
-                <div style="display:flex;gap:10px;align-items:center">
-                  <input type="color" id="theme-red" value="#DC2626" style="width:60px;height:40px;border:none;border-radius:8px;cursor:pointer">
-                  <input type="text" id="theme-red-hex" value="#DC2626" style="flex:1;font-family:monospace">
-                </div>
-              </div>
-              <div class="fg"><label>Xanh lá (Green)</label>
-                <div style="display:flex;gap:10px;align-items:center">
-                  <input type="color" id="theme-green" value="#16A34A" style="width:60px;height:40px;border:none;border-radius:8px;cursor:pointer">
-                  <input type="text" id="theme-green-hex" value="#16A34A" style="flex:1;font-family:monospace">
-                </div>
-              </div>
-              <div class="fg"><label>Navy (Blue)</label>
-                <div style="display:flex;gap:10px;align-items:center">
-                  <input type="color" id="theme-navy" value="#1E40AF" style="width:60px;height:40px;border:none;border-radius:8px;cursor:pointer">
-                  <input type="text" id="theme-navy-hex" value="#1E40AF" style="flex:1;font-family:monospace">
-                </div>
-              </div>
-              <div class="fg"><label>Vàng (Gold)</label>
-                <div style="display:flex;gap:10px;align-items:center">
-                  <input type="color" id="theme-gold" value="#F59E0B" style="width:60px;height:40px;border:none;border-radius:8px;cursor:pointer">
-                  <input type="text" id="theme-gold-hex" value="#F59E0B" style="flex:1;font-family:monospace">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="ch"><div class="ch-title">👁️ Preview</div></div>
-            <div class="cb">
-              <div id="theme-preview" style="padding:20px;border-radius:12px;background:var(--bg)">
-                <div style="background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)">
-                  <h3 style="margin-bottom:12px;color:#DC2626">Trường Cao đẳng Công thương Việt Nam</h3>
-                  <p style="margin-bottom:16px;color:#6B7280">Đào tạo chất lượng cao, cam kết việc làm 100%</p>
-                  <div style="display:flex;gap:10px">
-                    <button style="padding:10px 20px;background:#DC2626;color:#fff;border:none;border-radius:8px;font-weight:600">Đăng ký ngay</button>
-                    <button style="padding:10px 20px;background:#16A34A;color:#fff;border:none;border-radius:8px;font-weight:600">Tư vấn</button>
-                  </div>
-                  <div style="margin-top:16px;display:flex;gap:16px">
-                    <div style="flex:1;padding:12px;background:#FEE2E2;border-radius:8px;text-align:center">
-                      <div style="font-size:24px;font-weight:800;color:#DC2626">1000+</div>
-                      <div style="font-size:12px;color:#6B7280">Sinh viên</div>
-                    </div>
-                    <div style="flex:1;padding:12px;background:#DCFCE7;border-radius:8px;text-align:center">
-                      <div style="font-size:24px;font-weight:800;color:#16A34A">50+</div>
-                      <div style="font-size:12px;color:#6B7280">Ngành học</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- BANNER & SLIDER -->
       <div class="page" id="page-banners">
         <div class="fbar">
@@ -1117,7 +1084,6 @@ const NAV = [
   {id:'settings',     ico:'⚙️',lbl:'Cài đặt',            grp:'Hệ thống',   perm:'caiDat'},
   {id:'content',      ico:'🖊️',lbl:'Nội dung Website',   grp:'Giao diện',  perm:'caiDat'},
   {id:'benefits',     ico:'🎁',lbl:'Quyền lợi',           grp:'Giao diện',  perm:'benefits'},
-  {id:'theme',        ico:'🎨',lbl:'Màu sắc Theme',       grp:'Giao diện',  perm:'theme'},
   {id:'banners',      ico:'🖼️',lbl:'Banner & Slider',    grp:'Giao diện',  perm:'caiDat'},
   {id:'media',        ico:'📁',lbl:'Thư viện Media',      grp:'Giao diện',  perm:'caiDat'},
   {id:'form',         ico:'📝',lbl:'Form đăng ký',        grp:'Giao diện',  perm:'caiDat'},
@@ -1135,7 +1101,6 @@ const PAGE_TITLES = {
   settings:         ['Cài đặt','Bảo trì · SMTP · Railway & Supabase'],
   content:          ['Nội dung Website','Quản lý nội dung giao diện frontend'],
   benefits:         ['Quyền lợi','Quản lý các quyền lợi sinh viên'],
-  theme:            ['Màu sắc Theme','Tùy chỉnh màu sắc toàn trang'],
   banners:          ['Banner & Slider','Quản lý banner hiển thị trang chủ'],
   media:            ['Thư viện Media','Upload và quản lý ảnh / video'],
   chatbot:          ['Chatbot','Cấu hình chatbot tư vấn tự động'],
@@ -1288,7 +1253,6 @@ async function showPage(id) {
   else if (id === 'chat-history') loadChatHistory();
   else if (id === 'settings')    loadSettings();
   else if (id === 'benefits')    loadBenefits();
-  else if (id === 'theme')       loadTheme();
 }
 
 /* ============================================================
@@ -2035,7 +1999,7 @@ function fillCmsForm() {
   document.getElementById('cms-ct-address').value  = ct.address || '';
 
   const th = cmsData.theme || {};
-  // Sync color pickers (tab Màu sắc Theme) để saveContent('theme') đọc đúng
+  // Sync color pickers khi load
   if (th.red)   setColor('theme-red',   th.red);
   if (th.green) setColor('theme-green', th.green);
   if (th.navy)  setColor('theme-navy',  th.navy);
@@ -2055,9 +2019,6 @@ async function saveContent(key) {
   let value;
   // Với key 'theme': fetch DB trước để merge, tránh ghi đè dữ liệu tab khác
   let _dbTheme = {};
-  if (key === 'theme') {
-    try { const r = await api('GET','/api/content'); _dbTheme = r.data?.theme || {}; } catch(_) {}
-  }
   try {
     switch(key) {
       case 'announcement':
@@ -2140,23 +2101,6 @@ async function saveContent(key) {
           facebook: document.getElementById('cms-ct-facebook').value.trim(),
           website:  document.getElementById('cms-ct-website').value.trim(),
           address:  document.getElementById('cms-ct-address').value.trim()
-        };
-        break;
-      case 'theme':
-        value = {
-          // Giữ nguyên toàn bộ data từ DB, override bằng giá trị form
-          ..._dbTheme,
-          // Màu — đọc từ color pickers (nếu đang ở tab Màu sắc mới có giá trị)
-          red:        document.getElementById('theme-red')?.value   || _dbTheme.red   || '#DC2626',
-          green:      document.getElementById('theme-green')?.value || _dbTheme.green || '#16A34A',
-          navy:       document.getElementById('theme-navy')?.value  || _dbTheme.navy  || '#1E40AF',
-          gold:       document.getElementById('theme-gold')?.value  || _dbTheme.gold  || '#F59E0B',
-          // Logo & brand — đọc từ form (tab Logo & Brand)
-          logo:       document.getElementById('cms-theme-logo')?.value.trim()        || _dbTheme.logo       || '',
-          heroImage:  document.getElementById('cms-theme-hero-img')?.value.trim()    || _dbTheme.heroImage  || '',
-          schoolName: document.getElementById('cms-theme-school-name')?.value.trim() || _dbTheme.schoolName || '',
-          slogan:     document.getElementById('cms-theme-slogan')?.value.trim()      || _dbTheme.slogan     || '',
-          favicon:    document.getElementById('cms-theme-favicon')?.value.trim()     || _dbTheme.favicon    || '',
         };
         break;
       default: toast('Key không hợp lệ', 'err'); return;
@@ -3205,39 +3149,25 @@ function updateThemePreview() {
   if (btns[1]) btns[1].style.background = green;
 }
 
-async function loadTheme() {
+/* ---- Theme: 1 hàm duy nhất, không bao giờ mất data ---- */
+async function saveAllTheme() {
   try {
-    const {data} = await api('GET', '/api/content');
-    const t = data?.theme || {};
-    setColor('theme-red',   t.red   || '#DC2626');
-    setColor('theme-green', t.green || '#16A34A');
-    setColor('theme-navy',  t.navy  || '#1E40AF');
-    setColor('theme-gold',  t.gold  || '#F59E0B');
-    updateThemePreview();
-  } catch(e) { toast('Lỗi tải theme: '+e.message,'err'); }
-}
-
-async function saveTheme() {
-  try {
-    // Fetch data hiện tại từ DB để không ghi đè logo/favicon khi chỉ đổi màu
-    let existing = {};
-    try {
-      const res = await api('GET', '/api/content');
-      existing = res.data?.theme || {};
-    } catch(_) {}
-
     await api('PUT', '/api/content/theme', {value: {
-      // Giữ nguyên toàn bộ data cũ, chỉ override màu sắc
-      ...existing,
-      red:   document.getElementById('theme-red')?.value   || existing.red   || '#DC2626',
-      green: document.getElementById('theme-green')?.value || existing.green || '#16A34A',
-      navy:  document.getElementById('theme-navy')?.value  || existing.navy  || '#1E40AF',
-      gold:  document.getElementById('theme-gold')?.value  || existing.gold  || '#F59E0B',
+      // Màu sắc
+      red:        document.getElementById('theme-red')?.value          || '#DC2626',
+      green:      document.getElementById('theme-green')?.value        || '#16A34A',
+      navy:       document.getElementById('theme-navy')?.value         || '#1E40AF',
+      gold:       document.getElementById('theme-gold')?.value         || '#F59E0B',
+      // Logo & Brand
+      logo:       document.getElementById('cms-theme-logo')?.value.trim()        || '',
+      heroImage:  document.getElementById('cms-theme-hero-img')?.value.trim()    || '',
+      schoolName: document.getElementById('cms-theme-school-name')?.value.trim() || '',
+      slogan:     document.getElementById('cms-theme-slogan')?.value.trim()      || '',
+      favicon:    document.getElementById('cms-theme-favicon')?.value.trim()     || '',
     }});
-    // Sync lại cmsData
-    const res2 = await api('GET', '/api/content');
-    if (res2.data?.theme) cmsData.theme = res2.data.theme;
-    toast('✅ Đã lưu màu sắc thành công!');
+    const res = await api('GET', '/api/content');
+    if (res.data?.theme) cmsData.theme = res.data.theme;
+    toast('✅ Đã lưu thương hiệu & màu sắc!');
   } catch(e) { toast('Lỗi lưu: ' + e.message, 'err'); }
 }
 
