@@ -1134,6 +1134,20 @@ button{cursor:pointer;font-family:var(--fh)}
  .topbar-links{display:none}
  .footer-grid{grid-template-columns:1fr}
  .cta-btns{flex-direction:column;align-items:center}
+ /* Topbar mobile */
+ .topbar .container{flex-direction:column;align-items:flex-start;gap:4px;padding:6px 16px}
+ .topbar-tagline{font-size:11px;line-height:1.4}
+ .topbar-phone{font-size:11.5px}
+ /* Hero mobile */
+ .hero h1{font-size:clamp(1.8rem,8vw,2.6rem);text-align:center}
+ .hero-tagline{font-size:14px;text-align:center}
+ .hero-actions{flex-direction:column;align-items:center;gap:12px}
+ .hcta-primary,.hcta-secondary{width:100%;max-width:300px;justify-content:center;padding:14px 24px;font-size:14px}
+ .hero-trust{flex-direction:column;align-items:center;gap:8px}
+ .hero-text-col{padding:16px 16px 24px}
+ .hero-kpi-inner{grid-template-columns:1fr 1fr;gap:0}
+ .hkpi-item{padding:14px 12px}
+ .hkpi-item strong{font-size:1.4rem}
 }
 
 /*
@@ -1208,7 +1222,7 @@ button{cursor:pointer;font-family:var(--fh)}
 <!-- TOPBAR -->
 <div class="topbar">
  <div class="container">
- <span>🎓 Trường Cao đẳng Công thương Việt Nam – Mã trường <strong>C98</strong> – Tuyển sinh 2026</span>
+ <span class="topbar-tagline">🎓 Trường Cao đẳng Công thương Việt Nam – Mã trường <strong>C98</strong> – Tuyển sinh 2026</span>
  <div class="topbar-links">
  <a href="https://facebook.com/CaodangCongThuongVietNam" target="_blank">📘 Facebook</a>
  <div class="lang-picker lang-picker-topbar" id="langPicker">
